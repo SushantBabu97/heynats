@@ -1,5 +1,5 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { kvApi, CreateBucketRequest } from '@/lib/api';
+import { type CreateBucketRequest, kvApi } from '@/lib/api';
 import { showErrorToast, showSuccessToast } from '@/lib/error-utils';
 
 // Query keys for KV operations
@@ -7,9 +7,12 @@ export const kvQueryKeys = {
   kv: {
     all: ['kv'] as const,
     buckets: () => [...kvQueryKeys.kv.all, 'buckets'] as const,
-    bucket: (bucketName: string) => [...kvQueryKeys.kv.all, 'bucket', bucketName] as const,
-    bucketKeys: (bucketName: string) => [...kvQueryKeys.kv.all, 'bucketKeys', bucketName] as const,
-    key: (bucketName: string, key: string) => [...kvQueryKeys.kv.all, 'key', bucketName, key] as const,
+    bucket: (bucketName: string) =>
+      [...kvQueryKeys.kv.all, 'bucket', bucketName] as const,
+    bucketKeys: (bucketName: string) =>
+      [...kvQueryKeys.kv.all, 'bucketKeys', bucketName] as const,
+    key: (bucketName: string, key: string) =>
+      [...kvQueryKeys.kv.all, 'key', bucketName, key] as const,
   },
 };
 
@@ -25,7 +28,7 @@ export function useKVBuckets() {
 }
 
 // Get specific bucket details
-export function useKVBucket(bucketName: string, enabled: boolean = true) {
+export function useKVBucket(bucketName: string, enabled = true) {
   return useQuery({
     queryKey: kvQueryKeys.kv.bucket(bucketName),
     queryFn: () => kvApi.getBucket(bucketName),
@@ -37,7 +40,7 @@ export function useKVBucket(bucketName: string, enabled: boolean = true) {
 }
 
 // Get all keys in a bucket
-export function useKVBucketKeys(bucketName: string, enabled: boolean = true) {
+export function useKVBucketKeys(bucketName: string, enabled = true) {
   return useQuery({
     queryKey: kvQueryKeys.kv.bucketKeys(bucketName),
     queryFn: () => kvApi.getBucketKeys(bucketName),
@@ -49,7 +52,7 @@ export function useKVBucketKeys(bucketName: string, enabled: boolean = true) {
 }
 
 // Get specific key value
-export function useKVKey(bucketName: string, key: string, enabled: boolean = true) {
+export function useKVKey(bucketName: string, key: string, enabled = true) {
   return useQuery({
     queryKey: kvQueryKeys.kv.key(bucketName, key),
     queryFn: () => kvApi.getKey(bucketName, key),
@@ -69,13 +72,17 @@ export function useCreateKVBucket() {
     onSuccess: (data) => {
       queryClient.invalidateQueries({ queryKey: kvQueryKeys.kv.buckets() });
       showSuccessToast(
-        'KV Bucket created successfully!', 
+        'KV Bucket created successfully!',
         `Bucket "${data.bucket}" is now ready for key-value operations`
       );
     },
     onError: (error) => {
       console.error('Failed to create KV bucket:', error);
-      showErrorToast('create KV bucket', error, 'Failed to create KV bucket. Please try again.');
+      showErrorToast(
+        'create KV bucket',
+        error,
+        'Failed to create KV bucket. Please try again.'
+      );
     },
   });
 }
@@ -88,16 +95,24 @@ export function useDeleteKVBucket() {
     mutationFn: (bucketName: string) => kvApi.deleteBucket(bucketName),
     onSuccess: (_, bucketName) => {
       queryClient.invalidateQueries({ queryKey: kvQueryKeys.kv.buckets() });
-      queryClient.removeQueries({ queryKey: kvQueryKeys.kv.bucket(bucketName) });
-      queryClient.removeQueries({ queryKey: kvQueryKeys.kv.bucketKeys(bucketName) });
+      queryClient.removeQueries({
+        queryKey: kvQueryKeys.kv.bucket(bucketName),
+      });
+      queryClient.removeQueries({
+        queryKey: kvQueryKeys.kv.bucketKeys(bucketName),
+      });
       showSuccessToast(
-        'KV Bucket deleted successfully!', 
+        'KV Bucket deleted successfully!',
         `Bucket "${bucketName}" and all its keys have been removed`
       );
     },
     onError: (error) => {
       console.error('Failed to delete KV bucket:', error);
-      showErrorToast('delete KV bucket', error, 'Failed to delete KV bucket. Please try again.');
+      showErrorToast(
+        'delete KV bucket',
+        error,
+        'Failed to delete KV bucket. Please try again.'
+      );
     },
   });
 }
@@ -107,20 +122,37 @@ export function useSetKVKey() {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: ({ bucketName, key, value }: { bucketName: string; key: string; value: string }) =>
-      kvApi.setKey(bucketName, key, value),
+    mutationFn: ({
+      bucketName,
+      key,
+      value,
+    }: {
+      bucketName: string;
+      key: string;
+      value: string;
+    }) => kvApi.setKey(bucketName, key, value),
     onSuccess: (_, { bucketName, key }) => {
-      queryClient.invalidateQueries({ queryKey: kvQueryKeys.kv.bucketKeys(bucketName) });
-      queryClient.invalidateQueries({ queryKey: kvQueryKeys.kv.key(bucketName, key) });
-      queryClient.invalidateQueries({ queryKey: kvQueryKeys.kv.bucket(bucketName) });
+      queryClient.invalidateQueries({
+        queryKey: kvQueryKeys.kv.bucketKeys(bucketName),
+      });
+      queryClient.invalidateQueries({
+        queryKey: kvQueryKeys.kv.key(bucketName, key),
+      });
+      queryClient.invalidateQueries({
+        queryKey: kvQueryKeys.kv.bucket(bucketName),
+      });
       showSuccessToast(
-        'Key updated successfully!', 
+        'Key updated successfully!',
         `Key "${key}" has been set in bucket "${bucketName}"`
       );
     },
     onError: (error) => {
       console.error('Failed to set key:', error);
-      showErrorToast('set key', error, 'Failed to set key value. Please try again.');
+      showErrorToast(
+        'set key',
+        error,
+        'Failed to set key value. Please try again.'
+      );
     },
   });
 }
@@ -133,17 +165,27 @@ export function useDeleteKVKey() {
     mutationFn: ({ bucketName, key }: { bucketName: string; key: string }) =>
       kvApi.deleteKey(bucketName, key),
     onSuccess: (_, { bucketName, key }) => {
-      queryClient.invalidateQueries({ queryKey: kvQueryKeys.kv.bucketKeys(bucketName) });
-      queryClient.removeQueries({ queryKey: kvQueryKeys.kv.key(bucketName, key) });
-      queryClient.invalidateQueries({ queryKey: kvQueryKeys.kv.bucket(bucketName) });
+      queryClient.invalidateQueries({
+        queryKey: kvQueryKeys.kv.bucketKeys(bucketName),
+      });
+      queryClient.removeQueries({
+        queryKey: kvQueryKeys.kv.key(bucketName, key),
+      });
+      queryClient.invalidateQueries({
+        queryKey: kvQueryKeys.kv.bucket(bucketName),
+      });
       showSuccessToast(
-        'Key deleted successfully!', 
+        'Key deleted successfully!',
         `Key "${key}" has been removed from bucket "${bucketName}"`
       );
     },
     onError: (error) => {
       console.error('Failed to delete key:', error);
-      showErrorToast('delete key', error, 'Failed to delete key. Please try again.');
+      showErrorToast(
+        'delete key',
+        error,
+        'Failed to delete key. Please try again.'
+      );
     },
   });
 }

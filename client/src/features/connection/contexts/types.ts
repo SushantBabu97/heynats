@@ -1,4 +1,4 @@
-import type { ConnectionCredentials } from "@/lib/api";
+import type { ConnectionCredentials } from '@/lib/api';
 
 /**
  * Represents a saved NATS connection context

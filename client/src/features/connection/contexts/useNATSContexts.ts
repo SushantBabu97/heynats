@@ -1,15 +1,17 @@
-import { useState, useEffect, useCallback } from "react";
-import { contextStorage } from "./contextStorage";
-import type { NATSContext, ContextOperationResult } from "./types";
+import { useCallback, useEffect, useState } from 'react';
+import { contextStorage } from './contextStorage';
+import type { ContextOperationResult, NATSContext } from './types';
 
 interface UseNATSContextsReturn {
   contexts: NATSContext[];
   isLoading: boolean;
   error: string | null;
-  addContext: (context: NATSContext) => Promise<ContextOperationResult<NATSContext>>;
+  addContext: (
+    context: NATSContext
+  ) => Promise<ContextOperationResult<NATSContext>>;
   updateContext: (
     id: string,
-    updates: Partial<NATSContext>,
+    updates: Partial<NATSContext>
   ) => Promise<ContextOperationResult<NATSContext>>;
   deleteContext: (id: string) => Promise<ContextOperationResult<void>>;
   setDefaultContext: (id: string) => Promise<ContextOperationResult<void>>;
@@ -35,10 +37,10 @@ export function useNATSContexts(): UseNATSContextsReturn {
       if (result.success && result.data) {
         setContexts(result.data);
       } else {
-        setError(result.error || "Failed to load contexts");
+        setError(result.error || 'Failed to load contexts');
       }
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Unknown error occurred");
+      setError(err instanceof Error ? err.message : 'Unknown error occurred');
     } finally {
       setIsLoading(false);
     }
@@ -58,17 +60,18 @@ export function useNATSContexts(): UseNATSContextsReturn {
         if (result.success) {
           await loadContexts();
         } else {
-          setError(result.error || "Failed to add context");
+          setError(result.error || 'Failed to add context');
         }
 
         return result;
       } catch (err) {
-        const errorMsg = err instanceof Error ? err.message : "Unknown error occurred";
+        const errorMsg =
+          err instanceof Error ? err.message : 'Unknown error occurred';
         setError(errorMsg);
         return { success: false, error: errorMsg };
       }
     },
-    [loadContexts],
+    [loadContexts]
   );
 
   const updateContext = useCallback(
@@ -80,17 +83,18 @@ export function useNATSContexts(): UseNATSContextsReturn {
         if (result.success) {
           await loadContexts();
         } else {
-          setError(result.error || "Failed to update context");
+          setError(result.error || 'Failed to update context');
         }
 
         return result;
       } catch (err) {
-        const errorMsg = err instanceof Error ? err.message : "Unknown error occurred";
+        const errorMsg =
+          err instanceof Error ? err.message : 'Unknown error occurred';
         setError(errorMsg);
         return { success: false, error: errorMsg };
       }
     },
-    [loadContexts],
+    [loadContexts]
   );
 
   const deleteContext = useCallback(
@@ -102,17 +106,18 @@ export function useNATSContexts(): UseNATSContextsReturn {
         if (result.success) {
           await loadContexts();
         } else {
-          setError(result.error || "Failed to delete context");
+          setError(result.error || 'Failed to delete context');
         }
 
         return result;
       } catch (err) {
-        const errorMsg = err instanceof Error ? err.message : "Unknown error occurred";
+        const errorMsg =
+          err instanceof Error ? err.message : 'Unknown error occurred';
         setError(errorMsg);
         return { success: false, error: errorMsg };
       }
     },
-    [loadContexts],
+    [loadContexts]
   );
 
   const setDefaultContext = useCallback(
@@ -124,17 +129,18 @@ export function useNATSContexts(): UseNATSContextsReturn {
         if (result.success) {
           await loadContexts();
         } else {
-          setError(result.error || "Failed to set default context");
+          setError(result.error || 'Failed to set default context');
         }
 
         return result;
       } catch (err) {
-        const errorMsg = err instanceof Error ? err.message : "Unknown error occurred";
+        const errorMsg =
+          err instanceof Error ? err.message : 'Unknown error occurred';
         setError(errorMsg);
         return { success: false, error: errorMsg };
       }
     },
-    [loadContexts],
+    [loadContexts]
   );
 
   const getDefaultContext = useCallback(async () => {
@@ -143,12 +149,13 @@ export function useNATSContexts(): UseNATSContextsReturn {
       const result = await contextStorage.getDefaultContext();
 
       if (!result.success) {
-        setError(result.error || "Failed to get default context");
+        setError(result.error || 'Failed to get default context');
       }
 
       return result;
     } catch (err) {
-      const errorMsg = err instanceof Error ? err.message : "Unknown error occurred";
+      const errorMsg =
+        err instanceof Error ? err.message : 'Unknown error occurred';
       setError(errorMsg);
       return { success: false, error: errorMsg, data: null };
     }

@@ -1,6 +1,6 @@
 import { useQuery } from '@tanstack/react-query';
-import { healthApi } from '@/lib/api';
 import { useConnectionStatus } from '@/features/connection/useNATS';
+import { healthApi } from '@/lib/api';
 
 export function DevTools() {
   const { data: health } = useQuery({
@@ -16,12 +16,18 @@ export function DevTools() {
       <div className="bg-gray-800 text-white px-3 py-2 rounded text-xs font-mono shadow-lg">
         <div className="flex items-center space-x-3">
           <div className="flex items-center space-x-1">
-            <div className={`w-2 h-2 rounded-full ${health?.status === 'healthy' ? 'bg-green-400' : 'bg-red-400'}`}></div>
+            <div
+              className={`w-2 h-2 rounded-full ${health?.status === 'healthy' ? 'bg-green-400' : 'bg-red-400'}`}
+            />
             <span>API: {health?.status || 'unknown'}</span>
           </div>
           <div className="flex items-center space-x-1">
-            <div className={`w-2 h-2 rounded-full ${natsStatus?.connected ? 'bg-green-400' : 'bg-gray-400'}`}></div>
-            <span>NATS: {natsStatus?.connected ? 'connected' : 'disconnected'}</span>
+            <div
+              className={`w-2 h-2 rounded-full ${natsStatus?.connected ? 'bg-green-400' : 'bg-gray-400'}`}
+            />
+            <span>
+              NATS: {natsStatus?.connected ? 'connected' : 'disconnected'}
+            </span>
           </div>
         </div>
       </div>

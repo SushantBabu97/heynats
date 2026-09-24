@@ -1,10 +1,10 @@
-import { useState, useEffect } from "react";
-import { Button } from "@/components/ui/button";
-import type { ConnectionCredentials } from "@/lib/api";
-import { useNATSContexts } from "@/features/connection/contexts/useNATSContexts";
-import type { NATSContext } from "@/features/connection/contexts/types";
-import { ContextManager } from "@/features/connection/contexts/ContextManager";
-import { History } from "lucide-react";
+import { History } from 'lucide-react';
+import { useEffect, useState } from 'react';
+import { Button } from '@/components/ui/button';
+import { ContextManager } from '@/features/connection/contexts/ContextManager';
+import type { NATSContext } from '@/features/connection/contexts/types';
+import { useNATSContexts } from '@/features/connection/contexts/useNATSContexts';
+import type { ConnectionCredentials } from '@/lib/api';
 
 interface ConnectionFormProps {
   onConnect: (credentials: ConnectionCredentials) => Promise<void>;
@@ -13,10 +13,10 @@ interface ConnectionFormProps {
 
 export function ConnectionForm({ onConnect, isLoading }: ConnectionFormProps) {
   const [credentials, setCredentials] = useState<ConnectionCredentials>({
-    host: "localhost",
-    port: "4222",
-    username: "",
-    password: "",
+    host: 'localhost',
+    port: '4222',
+    username: '',
+    password: '',
   });
   const [saveConnection, setSaveConnection] = useState(false);
   const [showContextManager, setShowContextManager] = useState(false);
@@ -37,14 +37,14 @@ export function ConnectionForm({ onConnect, isLoading }: ConnectionFormProps) {
         setSaveConnection(true);
       } else {
         // Fallback to localStorage if no context is set
-        const savedCredentials = localStorage.getItem("nats-connection");
+        const savedCredentials = localStorage.getItem('nats-connection');
         if (savedCredentials) {
           try {
             const parsed = JSON.parse(savedCredentials);
             setCredentials(parsed);
             setSaveConnection(true);
           } catch (error) {
-            console.error("Failed to parse saved credentials:", error);
+            console.error('Failed to parse saved credentials:', error);
           }
         }
       }
@@ -58,15 +58,18 @@ export function ConnectionForm({ onConnect, isLoading }: ConnectionFormProps) {
 
     // Save credentials to localStorage if checkbox is checked
     if (saveConnection) {
-      localStorage.setItem("nats-connection", JSON.stringify(credentials));
+      localStorage.setItem('nats-connection', JSON.stringify(credentials));
     } else {
-      localStorage.removeItem("nats-connection");
+      localStorage.removeItem('nats-connection');
     }
 
     await onConnect(credentials);
   };
 
-  const handleInputChange = (field: keyof ConnectionCredentials, value: string) => {
+  const handleInputChange = (
+    field: keyof ConnectionCredentials,
+    value: string
+  ) => {
     setCredentials((prev) => ({
       ...prev,
       [field]: value,
@@ -99,7 +102,10 @@ export function ConnectionForm({ onConnect, isLoading }: ConnectionFormProps) {
           <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
             <div className="rounded-md shadow-sm space-y-4">
               <div>
-                <label htmlFor="host" className="block text-sm font-medium text-gray-700">
+                <label
+                  htmlFor="host"
+                  className="block text-sm font-medium text-gray-700"
+                >
                   Host
                 </label>
                 <input
@@ -110,13 +116,16 @@ export function ConnectionForm({ onConnect, isLoading }: ConnectionFormProps) {
                   className="mt-1 appearance-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
                   placeholder="localhost"
                   value={credentials.host}
-                  onChange={(e) => handleInputChange("host", e.target.value)}
+                  onChange={(e) => handleInputChange('host', e.target.value)}
                   disabled={isLoading}
                 />
               </div>
 
               <div>
-                <label htmlFor="port" className="block text-sm font-medium text-gray-700">
+                <label
+                  htmlFor="port"
+                  className="block text-sm font-medium text-gray-700"
+                >
                   Port
                 </label>
                 <input
@@ -127,13 +136,16 @@ export function ConnectionForm({ onConnect, isLoading }: ConnectionFormProps) {
                   className="mt-1 appearance-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
                   placeholder="4222"
                   value={credentials.port}
-                  onChange={(e) => handleInputChange("port", e.target.value)}
+                  onChange={(e) => handleInputChange('port', e.target.value)}
                   disabled={isLoading}
                 />
               </div>
 
               <div>
-                <label htmlFor="username" className="block text-sm font-medium text-gray-700">
+                <label
+                  htmlFor="username"
+                  className="block text-sm font-medium text-gray-700"
+                >
                   Username (optional)
                 </label>
                 <input
@@ -143,13 +155,18 @@ export function ConnectionForm({ onConnect, isLoading }: ConnectionFormProps) {
                   className="mt-1 appearance-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
                   placeholder="Username"
                   value={credentials.username}
-                  onChange={(e) => handleInputChange("username", e.target.value)}
+                  onChange={(e) =>
+                    handleInputChange('username', e.target.value)
+                  }
                   disabled={isLoading}
                 />
               </div>
 
               <div>
-                <label htmlFor="password" className="block text-sm font-medium text-gray-700">
+                <label
+                  htmlFor="password"
+                  className="block text-sm font-medium text-gray-700"
+                >
                   Password (optional)
                 </label>
                 <input
@@ -159,7 +176,9 @@ export function ConnectionForm({ onConnect, isLoading }: ConnectionFormProps) {
                   className="mt-1 appearance-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
                   placeholder="Password"
                   value={credentials.password}
-                  onChange={(e) => handleInputChange("password", e.target.value)}
+                  onChange={(e) =>
+                    handleInputChange('password', e.target.value)
+                  }
                   disabled={isLoading}
                 />
               </div>
@@ -175,7 +194,10 @@ export function ConnectionForm({ onConnect, isLoading }: ConnectionFormProps) {
                 disabled={isLoading}
                 className="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded"
               />
-              <label htmlFor="save-connection" className="ml-2 block text-sm text-gray-700">
+              <label
+                htmlFor="save-connection"
+                className="ml-2 block text-sm text-gray-700"
+              >
                 Save connection information
               </label>
             </div>
@@ -212,7 +234,7 @@ export function ConnectionForm({ onConnect, isLoading }: ConnectionFormProps) {
                     Connecting...
                   </>
                 ) : (
-                  "Connect to NATS"
+                  'Connect to NATS'
                 )}
               </Button>
 
@@ -235,7 +257,9 @@ export function ConnectionForm({ onConnect, isLoading }: ConnectionFormProps) {
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
           <div className="bg-white rounded-lg shadow-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
             <div className="sticky top-0 bg-white border-b border-gray-200 px-6 py-4 flex justify-between items-center">
-              <h2 className="text-2xl font-bold text-gray-900">NATS Contexts</h2>
+              <h2 className="text-2xl font-bold text-gray-900">
+                NATS Contexts
+              </h2>
               <button
                 onClick={() => setShowContextManager(false)}
                 className="text-gray-500 hover:text-gray-700 transition-colors"

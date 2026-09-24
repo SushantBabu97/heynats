@@ -1,7 +1,7 @@
 import { Outlet } from 'react-router-dom';
-import { QueryProvider } from '@/app/QueryProvider';
-import { DevTools } from '@/app/DevTools';
 import { Toaster } from 'sonner';
+import { DevTools } from '@/app/DevTools';
+import { QueryProvider } from '@/app/QueryProvider';
 
 export function RootLayout() {
   return (
@@ -9,9 +9,9 @@ export function RootLayout() {
       <div className="min-h-screen bg-gray-50 overflow-hidden">
         <Outlet />
         <DevTools />
-        <Toaster 
-          richColors 
-          position="top-right" 
+        <Toaster
+          richColors
+          position="top-right"
           expand={true}
           visibleToasts={5}
           closeButton={true}

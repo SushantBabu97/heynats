@@ -1,16 +1,20 @@
-import type { NATSContext, NATSContextsStore, ContextOperationResult } from "./types";
+import type {
+  ContextOperationResult,
+  NATSContext,
+  NATSContextsStore,
+} from './types';
 
-const DB_NAME = "HeyNATS";
+const DB_NAME = 'HeyNATS';
 const DB_VERSION = 1;
-const STORE_NAME = "nats-contexts";
-const FALLBACK_KEY = "nats-contexts-store";
+const STORE_NAME = 'nats-contexts';
+const FALLBACK_KEY = 'nats-contexts-store';
 
 /**
  * Service for managing NATS contexts with IndexDB and localStorage fallback
  */
 export class NATSContextStorage {
   private db: IDBDatabase | null = null;
-  private useIndexDB: boolean = false;
+  private useIndexDB = false;
   private initPromise: Promise<void>;
 
   constructor() {
@@ -22,8 +26,8 @@ export class NATSContextStorage {
    */
   private async initialize(): Promise<void> {
     try {
-      if (!("indexedDB" in window)) {
-        console.warn("IndexDB not available, using localStorage");
+      if (!('indexedDB' in window)) {
+        console.warn('IndexDB not available, using localStorage');
         this.useIndexDB = false;
         return;
       }
@@ -32,7 +36,9 @@ export class NATSContextStorage {
 
       await new Promise<void>((resolve) => {
         request.onerror = () => {
-          console.warn("IndexDB initialization failed, falling back to localStorage");
+          console.warn(
+            'IndexDB initialization failed, falling back to localStorage'
+          );
           this.useIndexDB = false;
           resolve();
         };
@@ -46,12 +52,12 @@ export class NATSContextStorage {
         request.onupgradeneeded = (event) => {
           const db = (event.target as IDBOpenDBRequest).result;
           if (!db.objectStoreNames.contains(STORE_NAME)) {
-            db.createObjectStore(STORE_NAME, { keyPath: "id" });
+            db.createObjectStore(STORE_NAME, { keyPath: 'id' });
           }
         };
       });
     } catch (error) {
-      console.warn("IndexDB not available, using localStorage fallback", error);
+      console.warn('IndexDB not available, using localStorage fallback', error);
       this.useIndexDB = false;
     }
   }
@@ -76,8 +82,8 @@ export class NATSContextStorage {
         return this.getFromLocalStorage();
       }
     } catch (error) {
-      console.error("Error getting contexts:", error);
-      return { success: false, error: "Failed to retrieve contexts" };
+      console.error('Error getting contexts:', error);
+      return { success: false, error: 'Failed to retrieve contexts' };
     }
   }
 
@@ -90,25 +96,27 @@ export class NATSContextStorage {
     try {
       const result = await this.getAllContexts();
       if (!result.success || !result.data) {
-        return { success: false, error: "Failed to retrieve contexts" };
+        return { success: false, error: 'Failed to retrieve contexts' };
       }
 
       const context = result.data.find((ctx) => ctx.id === id);
       if (!context) {
-        return { success: false, error: "Context not found" };
+        return { success: false, error: 'Context not found' };
       }
 
       return { success: true, data: context };
     } catch (error) {
-      console.error("Error getting context:", error);
-      return { success: false, error: "Failed to retrieve context" };
+      console.error('Error getting context:', error);
+      return { success: false, error: 'Failed to retrieve context' };
     }
   }
 
   /**
    * Save a new context
    */
-  async saveContext(context: NATSContext): Promise<ContextOperationResult<NATSContext>> {
+  async saveContext(
+    context: NATSContext
+  ): Promise<ContextOperationResult<NATSContext>> {
     await this.ensureInitialized();
 
     try {
@@ -118,8 +126,8 @@ export class NATSContextStorage {
         return this.saveToLocalStorage(context);
       }
     } catch (error) {
-      console.error("Error saving context:", error);
-      return { success: false, error: "Failed to save context" };
+      console.error('Error saving context:', error);
+      return { success: false, error: 'Failed to save context' };
     }
   }
 
@@ -128,14 +136,14 @@ export class NATSContextStorage {
    */
   async updateContext(
     id: string,
-    updates: Partial<NATSContext>,
+    updates: Partial<NATSContext>
   ): Promise<ContextOperationResult<NATSContext>> {
     await this.ensureInitialized();
 
     try {
       const getResult = await this.getContext(id);
       if (!getResult.success || !getResult.data) {
-        return { success: false, error: "Context not found" };
+        return { success: false, error: 'Context not found' };
       }
 
       const updatedContext: NATSContext = {
@@ -148,8 +156,8 @@ export class NATSContextStorage {
 
       return await this.saveContext(updatedContext);
     } catch (error) {
-      console.error("Error updating context:", error);
-      return { success: false, error: "Failed to update context" };
+      console.error('Error updating context:', error);
+      return { success: false, error: 'Failed to update context' };
     }
   }
 
@@ -166,8 +174,8 @@ export class NATSContextStorage {
         return this.deleteFromLocalStorage(id);
       }
     } catch (error) {
-      console.error("Error deleting context:", error);
-      return { success: false, error: "Failed to delete context" };
+      console.error('Error deleting context:', error);
+      return { success: false, error: 'Failed to delete context' };
     }
   }
 
@@ -180,12 +188,12 @@ export class NATSContextStorage {
     try {
       const getResult = await this.getContext(id);
       if (!getResult.success) {
-        return { success: false, error: "Context not found" };
+        return { success: false, error: 'Context not found' };
       }
 
       const allResult = await this.getAllContexts();
       if (!allResult.success || !allResult.data) {
-        return { success: false, error: "Failed to retrieve contexts" };
+        return { success: false, error: 'Failed to retrieve contexts' };
       }
 
       if (this.useIndexDB && this.db) {
@@ -194,15 +202,17 @@ export class NATSContextStorage {
         return this.setDefaultInLocalStorage(id);
       }
     } catch (error) {
-      console.error("Error setting default context:", error);
-      return { success: false, error: "Failed to set default context" };
+      console.error('Error setting default context:', error);
+      return { success: false, error: 'Failed to set default context' };
     }
   }
 
   /**
    * Get default context
    */
-  async getDefaultContext(): Promise<ContextOperationResult<NATSContext | null>> {
+  async getDefaultContext(): Promise<
+    ContextOperationResult<NATSContext | null>
+  > {
     await this.ensureInitialized();
 
     try {
@@ -219,8 +229,8 @@ export class NATSContextStorage {
 
       return { success: true, data: defaultContext || null };
     } catch (error) {
-      console.error("Error getting default context:", error);
-      return { success: false, error: "Failed to retrieve default context" };
+      console.error('Error getting default context:', error);
+      return { success: false, error: 'Failed to retrieve default context' };
     }
   }
 
@@ -238,8 +248,8 @@ export class NATSContextStorage {
         return { success: true };
       }
     } catch (error) {
-      console.error("Error clearing contexts:", error);
-      return { success: false, error: "Failed to clear contexts" };
+      console.error('Error clearing contexts:', error);
+      return { success: false, error: 'Failed to clear contexts' };
     }
   }
 
@@ -251,12 +261,12 @@ export class NATSContextStorage {
   private getFromIndexDB(): Promise<ContextOperationResult<NATSContext[]>> {
     return new Promise((resolve) => {
       if (!this.db) {
-        resolve({ success: false, error: "Database not initialized" });
+        resolve({ success: false, error: 'Database not initialized' });
         return;
       }
 
       try {
-        const transaction = this.db.transaction([STORE_NAME], "readonly");
+        const transaction = this.db.transaction([STORE_NAME], 'readonly');
         const store = transaction.objectStore(STORE_NAME);
         const request = store.getAll();
 
@@ -265,10 +275,10 @@ export class NATSContextStorage {
         };
 
         request.onerror = () => {
-          resolve({ success: false, error: "Failed to retrieve from IndexDB" });
+          resolve({ success: false, error: 'Failed to retrieve from IndexDB' });
         };
       } catch (error) {
-        resolve({ success: false, error: "Failed to access IndexDB" });
+        resolve({ success: false, error: 'Failed to access IndexDB' });
       }
     });
   }
@@ -276,15 +286,17 @@ export class NATSContextStorage {
   /**
    * Save to IndexDB
    */
-  private saveToIndexDB(context: NATSContext): Promise<ContextOperationResult<NATSContext>> {
+  private saveToIndexDB(
+    context: NATSContext
+  ): Promise<ContextOperationResult<NATSContext>> {
     return new Promise((resolve) => {
       if (!this.db) {
-        resolve({ success: false, error: "Database not initialized" });
+        resolve({ success: false, error: 'Database not initialized' });
         return;
       }
 
       try {
-        const transaction = this.db.transaction([STORE_NAME], "readwrite");
+        const transaction = this.db.transaction([STORE_NAME], 'readwrite');
         const store = transaction.objectStore(STORE_NAME);
         const request = store.put(context);
 
@@ -293,10 +305,10 @@ export class NATSContextStorage {
         };
 
         request.onerror = () => {
-          resolve({ success: false, error: "Failed to save to IndexDB" });
+          resolve({ success: false, error: 'Failed to save to IndexDB' });
         };
       } catch (error) {
-        resolve({ success: false, error: "Failed to access IndexDB" });
+        resolve({ success: false, error: 'Failed to access IndexDB' });
       }
     });
   }
@@ -307,12 +319,12 @@ export class NATSContextStorage {
   private deleteFromIndexDB(id: string): Promise<ContextOperationResult<void>> {
     return new Promise((resolve) => {
       if (!this.db) {
-        resolve({ success: false, error: "Database not initialized" });
+        resolve({ success: false, error: 'Database not initialized' });
         return;
       }
 
       try {
-        const transaction = this.db.transaction([STORE_NAME], "readwrite");
+        const transaction = this.db.transaction([STORE_NAME], 'readwrite');
         const store = transaction.objectStore(STORE_NAME);
         const request = store.delete(id);
 
@@ -321,10 +333,10 @@ export class NATSContextStorage {
         };
 
         request.onerror = () => {
-          resolve({ success: false, error: "Failed to delete from IndexDB" });
+          resolve({ success: false, error: 'Failed to delete from IndexDB' });
         };
       } catch (error) {
-        resolve({ success: false, error: "Failed to access IndexDB" });
+        resolve({ success: false, error: 'Failed to access IndexDB' });
       }
     });
   }
@@ -335,12 +347,12 @@ export class NATSContextStorage {
   private clearIndexDB(): Promise<ContextOperationResult<void>> {
     return new Promise((resolve) => {
       if (!this.db) {
-        resolve({ success: false, error: "Database not initialized" });
+        resolve({ success: false, error: 'Database not initialized' });
         return;
       }
 
       try {
-        const transaction = this.db.transaction([STORE_NAME], "readwrite");
+        const transaction = this.db.transaction([STORE_NAME], 'readwrite');
         const store = transaction.objectStore(STORE_NAME);
         const request = store.clear();
 
@@ -349,10 +361,10 @@ export class NATSContextStorage {
         };
 
         request.onerror = () => {
-          resolve({ success: false, error: "Failed to clear IndexDB" });
+          resolve({ success: false, error: 'Failed to clear IndexDB' });
         };
       } catch (error) {
-        resolve({ success: false, error: "Failed to access IndexDB" });
+        resolve({ success: false, error: 'Failed to access IndexDB' });
       }
     });
   }
@@ -369,7 +381,7 @@ export class NATSContextStorage {
     try {
       return JSON.parse(stored);
     } catch (error) {
-      console.error("Failed to parse localStorage:", error);
+      console.error('Failed to parse localStorage:', error);
       return { contexts: [], version: 1 };
     }
   }
@@ -382,15 +394,17 @@ export class NATSContextStorage {
       const store = this.getLocalStorageStore();
       return { success: true, data: store.contexts || [] };
     } catch (error) {
-      console.error("Error getting from localStorage:", error);
-      return { success: false, error: "Failed to retrieve from localStorage" };
+      console.error('Error getting from localStorage:', error);
+      return { success: false, error: 'Failed to retrieve from localStorage' };
     }
   }
 
   /**
    * Save to localStorage
    */
-  private saveToLocalStorage(context: NATSContext): ContextOperationResult<NATSContext> {
+  private saveToLocalStorage(
+    context: NATSContext
+  ): ContextOperationResult<NATSContext> {
     try {
       const store = this.getLocalStorageStore();
       const index = store.contexts.findIndex((ctx) => ctx.id === context.id);
@@ -404,8 +418,8 @@ export class NATSContextStorage {
       localStorage.setItem(FALLBACK_KEY, JSON.stringify(store));
       return { success: true, data: context };
     } catch (error) {
-      console.error("Error saving to localStorage:", error);
-      return { success: false, error: "Failed to save to localStorage" };
+      console.error('Error saving to localStorage:', error);
+      return { success: false, error: 'Failed to save to localStorage' };
     }
   }
 
@@ -424,23 +438,25 @@ export class NATSContextStorage {
       localStorage.setItem(FALLBACK_KEY, JSON.stringify(store));
       return { success: true };
     } catch (error) {
-      console.error("Error deleting from localStorage:", error);
-      return { success: false, error: "Failed to delete from localStorage" };
+      console.error('Error deleting from localStorage:', error);
+      return { success: false, error: 'Failed to delete from localStorage' };
     }
   }
 
   /**
    * Set default in IndexDB
    */
-  private setDefaultInIndexDB(id: string): Promise<ContextOperationResult<void>> {
+  private setDefaultInIndexDB(
+    id: string
+  ): Promise<ContextOperationResult<void>> {
     return new Promise((resolve) => {
       if (!this.db) {
-        resolve({ success: false, error: "Database not initialized" });
+        resolve({ success: false, error: 'Database not initialized' });
         return;
       }
 
       try {
-        const transaction = this.db.transaction([STORE_NAME], "readwrite");
+        const transaction = this.db.transaction([STORE_NAME], 'readwrite');
         const store = transaction.objectStore(STORE_NAME);
         const getAllRequest = store.getAll();
 
@@ -458,15 +474,21 @@ export class NATSContextStorage {
           };
 
           transaction.onerror = () => {
-            resolve({ success: false, error: "Failed to set default in IndexDB" });
+            resolve({
+              success: false,
+              error: 'Failed to set default in IndexDB',
+            });
           };
         };
 
         getAllRequest.onerror = () => {
-          resolve({ success: false, error: "Failed to retrieve contexts from IndexDB" });
+          resolve({
+            success: false,
+            error: 'Failed to retrieve contexts from IndexDB',
+          });
         };
       } catch (error) {
-        resolve({ success: false, error: "Failed to access IndexDB" });
+        resolve({ success: false, error: 'Failed to access IndexDB' });
       }
     });
   }
@@ -484,8 +506,8 @@ export class NATSContextStorage {
       localStorage.setItem(FALLBACK_KEY, JSON.stringify(store));
       return { success: true };
     } catch (error) {
-      console.error("Error setting default in localStorage:", error);
-      return { success: false, error: "Failed to set default in localStorage" };
+      console.error('Error setting default in localStorage:', error);
+      return { success: false, error: 'Failed to set default in localStorage' };
     }
   }
 }

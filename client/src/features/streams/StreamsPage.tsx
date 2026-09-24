@@ -1,19 +1,21 @@
-import { useState } from "react";
-import { useNavigate } from "react-router-dom";
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { streamsApi, Stream, StreamConfig } from "@/lib/api";
-import { StreamCard } from "./StreamCard";
-import { CreateStreamModal } from "./CreateStreamModal";
-import { ViewStreamDataModal } from "./ViewStreamDataModal";
-import { Button } from "@/components/ui/button";
-import { StatsCard } from "@/components/StatsCard";
-import { showErrorToast, showSuccessToast } from "@/lib/error-utils";
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { StatsCard } from '@/components/StatsCard';
+import { Button } from '@/components/ui/button';
+import { type Stream, type StreamConfig, streamsApi } from '@/lib/api';
+import { showErrorToast, showSuccessToast } from '@/lib/error-utils';
+import { CreateStreamModal } from './CreateStreamModal';
+import { StreamCard } from './StreamCard';
+import { ViewStreamDataModal } from './ViewStreamDataModal';
 
 export function StreamsPage() {
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
   const [isViewDataModalOpen, setIsViewDataModalOpen] = useState(false);
-  const [selectedStreamForData, setSelectedStreamForData] = useState<string | null>(null);
-  const [searchTerm, setSearchTerm] = useState("");
+  const [selectedStreamForData, setSelectedStreamForData] = useState<
+    string | null
+  >(null);
+  const [searchTerm, setSearchTerm] = useState('');
   const navigate = useNavigate();
 
   const queryClient = useQueryClient();
@@ -25,7 +27,7 @@ export function StreamsPage() {
     error,
     refetch,
   } = useQuery({
-    queryKey: ["streams"],
+    queryKey: ['streams'],
     queryFn: streamsApi.getStreams,
     refetchInterval: 30000, // Refetch every 30 seconds
   });
@@ -34,16 +36,20 @@ export function StreamsPage() {
   const createStreamMutation = useMutation({
     mutationFn: streamsApi.createStream,
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["streams"] });
+      queryClient.invalidateQueries({ queryKey: ['streams'] });
       setIsCreateModalOpen(false);
       showSuccessToast(
-        "Stream created successfully!",
-        "The new stream is now available for publishing messages",
+        'Stream created successfully!',
+        'The new stream is now available for publishing messages'
       );
     },
     onError: (error) => {
-      console.error("Failed to create stream:", error);
-      showErrorToast("create stream", error, "Failed to create stream. Please try again.");
+      console.error('Failed to create stream:', error);
+      showErrorToast(
+        'create stream',
+        error,
+        'Failed to create stream. Please try again.'
+      );
     },
   });
 
@@ -51,36 +57,45 @@ export function StreamsPage() {
   const deleteStreamMutation = useMutation({
     mutationFn: streamsApi.deleteStream,
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["streams"] });
+      queryClient.invalidateQueries({ queryKey: ['streams'] });
       showSuccessToast(
-        "Stream deleted successfully!",
-        "All associated messages and consumers have been removed",
+        'Stream deleted successfully!',
+        'All associated messages and consumers have been removed'
       );
     },
     onError: (error) => {
-      console.error("Failed to delete stream:", error);
-      showErrorToast("delete stream", error, "Failed to delete stream. Please try again.");
+      console.error('Failed to delete stream:', error);
+      showErrorToast(
+        'delete stream',
+        error,
+        'Failed to delete stream. Please try again.'
+      );
     },
   });
 
   const streams = streamsData?.streams || [];
   const filteredStreams = streams.filter(
     (stream) =>
-      (stream.config?.name || "").toLowerCase().includes(searchTerm.toLowerCase()) ||
+      (stream.config?.name || '')
+        .toLowerCase()
+        .includes(searchTerm.toLowerCase()) ||
       stream.config?.subjects?.some((subject) =>
-        subject.toLowerCase().includes(searchTerm.toLowerCase()),
-      ),
+        subject.toLowerCase().includes(searchTerm.toLowerCase())
+      )
   );
 
   // Calculate aggregate statistics
-  const totalMessages = streams.reduce((sum, stream) => sum + (stream.state?.messages || 0), 0);
+  const totalMessages = streams.reduce(
+    (sum, stream) => sum + (stream.state?.messages || 0),
+    0
+  );
   const totalConsumers = streams.reduce(
     (sum, stream) => sum + (stream.state?.consumer_count || 0),
-    0,
+    0
   );
   const totalSubjects = streams.reduce(
     (sum, stream) => sum + (stream.config?.subjects?.length || 0),
-    0,
+    0
   );
 
   const handleViewDetails = (stream: Stream) => {
@@ -107,7 +122,7 @@ export function StreamsPage() {
   const handleDeleteStream = async (streamName: string) => {
     if (
       window.confirm(
-        `Are you sure you want to delete stream "${streamName}"? This action cannot be undone.`,
+        `Are you sure you want to delete stream "${streamName}"? This action cannot be undone.`
       )
     ) {
       await deleteStreamMutation.mutateAsync(streamName);
@@ -121,7 +136,11 @@ export function StreamsPage() {
           <div className="bg-red-50 border border-red-200 rounded-lg p-4">
             <div className="flex">
               <div className="flex-shrink-0">
-                <svg className="h-5 w-5 text-red-400" viewBox="0 0 20 20" fill="currentColor">
+                <svg
+                  className="h-5 w-5 text-red-400"
+                  viewBox="0 0 20 20"
+                  fill="currentColor"
+                >
                   <path
                     fillRule="evenodd"
                     d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z"
@@ -130,9 +149,13 @@ export function StreamsPage() {
                 </svg>
               </div>
               <div className="ml-3">
-                <h3 className="text-sm font-medium text-red-800">Error loading streams</h3>
+                <h3 className="text-sm font-medium text-red-800">
+                  Error loading streams
+                </h3>
                 <p className="mt-2 text-sm text-red-700">
-                  {error instanceof Error ? error.message : "Failed to load streams"}
+                  {error instanceof Error
+                    ? error.message
+                    : 'Failed to load streams'}
                 </p>
                 <div className="mt-4">
                   <Button onClick={() => refetch()} size="sm" variant="outline">
@@ -155,10 +178,17 @@ export function StreamsPage() {
           <div className="flex items-center justify-between">
             <div>
               <h2 className="text-xl font-bold text-gray-900">Streams</h2>
-              <p className="text-sm text-gray-600">Manage JetStream streams and consumers</p>
+              <p className="text-sm text-gray-600">
+                Manage JetStream streams and consumers
+              </p>
             </div>
             <Button onClick={() => setIsCreateModalOpen(true)} size="sm">
-              <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <svg
+                className="w-4 h-4 mr-2"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
                 <path
                   strokeLinecap="round"
                   strokeLinejoin="round"
@@ -282,7 +312,12 @@ export function StreamsPage() {
                 />
               </div>
               <Button variant="outline" onClick={() => refetch()}>
-                <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg
+                  className="w-4 h-4 mr-2"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
                   <path
                     strokeLinecap="round"
                     strokeLinejoin="round"
@@ -300,7 +335,11 @@ export function StreamsPage() {
         {isLoading ? (
           <div className="flex items-center justify-center py-12">
             <div className="flex items-center space-x-2">
-              <svg className="animate-spin h-5 w-5 text-gray-500" fill="none" viewBox="0 0 24 24">
+              <svg
+                className="animate-spin h-5 w-5 text-gray-500"
+                fill="none"
+                viewBox="0 0 24 24"
+              >
                 <circle
                   className="opacity-25"
                   cx="12"
@@ -308,12 +347,12 @@ export function StreamsPage() {
                   r="10"
                   stroke="currentColor"
                   strokeWidth="4"
-                ></circle>
+                />
                 <path
                   className="opacity-75"
                   fill="currentColor"
                   d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-                ></path>
+                />
               </svg>
               <span className="text-gray-500">Loading streams...</span>
             </div>
@@ -347,12 +386,20 @@ export function StreamsPage() {
                   d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v4a2 2 0 01-2 2h-2a2 2 0 01-2-2z"
                 />
               </svg>
-              <h3 className="text-lg font-medium text-gray-900 mb-2">No streams found</h3>
+              <h3 className="text-lg font-medium text-gray-900 mb-2">
+                No streams found
+              </h3>
               <p className="text-gray-500 mb-6">
-                Get started by creating your first JetStream stream to begin processing messages.
+                Get started by creating your first JetStream stream to begin
+                processing messages.
               </p>
               <Button onClick={() => setIsCreateModalOpen(true)}>
-                <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg
+                  className="w-4 h-4 mr-2"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
                   <path
                     strokeLinecap="round"
                     strokeLinejoin="round"
@@ -388,10 +435,12 @@ export function StreamsPage() {
                 Try adjusting your search terms or create a new stream.
               </p>
               <div className="flex justify-center gap-3">
-                <Button variant="outline" onClick={() => setSearchTerm("")}>
+                <Button variant="outline" onClick={() => setSearchTerm('')}>
                   Clear Search
                 </Button>
-                <Button onClick={() => setIsCreateModalOpen(true)}>Create Stream</Button>
+                <Button onClick={() => setIsCreateModalOpen(true)}>
+                  Create Stream
+                </Button>
               </div>
             </div>
           </div>

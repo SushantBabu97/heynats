@@ -1,9 +1,9 @@
-import { useState, useEffect } from "react";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
-import { useNATSContexts } from "./useNATSContexts";
-import type { NATSContext } from "./types";
+import { useEffect, useState } from 'react';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Textarea } from '@/components/ui/textarea';
+import type { NATSContext } from './types';
+import { useNATSContexts } from './useNATSContexts';
 
 interface ContextFormProps {
   editingId?: string | null;
@@ -14,12 +14,12 @@ export function ContextForm({ editingId, onClose }: ContextFormProps) {
   const { contexts, addContext, updateContext } = useNATSContexts();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [formData, setFormData] = useState<Partial<NATSContext>>({
-    name: "",
-    description: "",
-    host: "localhost",
-    port: "4222",
-    username: "",
-    password: "",
+    name: '',
+    description: '',
+    host: 'localhost',
+    port: '4222',
+    username: '',
+    password: '',
   });
 
   // Load existing context if editing
@@ -42,8 +42,12 @@ export function ContextForm({ editingId, onClose }: ContextFormProps) {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    if (!formData.name?.trim() || !formData.host?.trim() || !formData.port?.trim()) {
-      alert("Please fill in all required fields (Name, Host, Port)");
+    if (
+      !formData.name?.trim() ||
+      !formData.host?.trim() ||
+      !formData.port?.trim()
+    ) {
+      alert('Please fill in all required fields (Name, Host, Port)');
       return;
     }
 
@@ -57,8 +61,8 @@ export function ContextForm({ editingId, onClose }: ContextFormProps) {
           description: formData.description,
           host: formData.host,
           port: formData.port,
-          username: formData.username || "",
-          password: formData.password || "",
+          username: formData.username || '',
+          password: formData.password || '',
         });
 
         if (result.success) {
@@ -72,8 +76,8 @@ export function ContextForm({ editingId, onClose }: ContextFormProps) {
           description: formData.description,
           host: formData.host!,
           port: formData.port!,
-          username: formData.username || "",
-          password: formData.password || "",
+          username: formData.username || '',
+          password: formData.password || '',
           createdAt: Date.now(),
           updatedAt: Date.now(),
           isDefault: contexts.length === 0,
@@ -96,11 +100,14 @@ export function ContextForm({ editingId, onClose }: ContextFormProps) {
       className="space-y-4 p-4 bg-gray-50 rounded-lg border border-gray-200"
     >
       <h3 className="text-lg font-semibold text-gray-900 mb-4">
-        {editingId ? "Edit Context" : "Add New Context"}
+        {editingId ? 'Edit Context' : 'Add New Context'}
       </h3>
 
       <div>
-        <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-2">
+        <label
+          htmlFor="name"
+          className="block text-sm font-medium text-gray-700 mb-2"
+        >
           Context Name <span className="text-red-500">*</span>
         </label>
         <Input
@@ -108,21 +115,26 @@ export function ContextForm({ editingId, onClose }: ContextFormProps) {
           type="text"
           required
           placeholder="e.g., Production, Development, Local"
-          value={formData.name || ""}
+          value={formData.name || ''}
           onChange={(e) => setFormData({ ...formData, name: e.target.value })}
           disabled={isSubmitting}
         />
       </div>
 
       <div>
-        <label htmlFor="description" className="block text-sm font-medium text-gray-700 mb-2">
+        <label
+          htmlFor="description"
+          className="block text-sm font-medium text-gray-700 mb-2"
+        >
           Description
         </label>
         <Textarea
           id="description"
           placeholder="Optional description for this context"
-          value={formData.description || ""}
-          onChange={(e) => setFormData({ ...formData, description: e.target.value })}
+          value={formData.description || ''}
+          onChange={(e) =>
+            setFormData({ ...formData, description: e.target.value })
+          }
           disabled={isSubmitting}
           rows={2}
         />
@@ -130,7 +142,10 @@ export function ContextForm({ editingId, onClose }: ContextFormProps) {
 
       <div className="grid grid-cols-2 gap-4">
         <div>
-          <label htmlFor="host" className="block text-sm font-medium text-gray-700 mb-2">
+          <label
+            htmlFor="host"
+            className="block text-sm font-medium text-gray-700 mb-2"
+          >
             Host <span className="text-red-500">*</span>
           </label>
           <Input
@@ -138,14 +153,17 @@ export function ContextForm({ editingId, onClose }: ContextFormProps) {
             type="text"
             required
             placeholder="localhost or IP address"
-            value={formData.host || ""}
+            value={formData.host || ''}
             onChange={(e) => setFormData({ ...formData, host: e.target.value })}
             disabled={isSubmitting}
           />
         </div>
 
         <div>
-          <label htmlFor="port" className="block text-sm font-medium text-gray-700 mb-2">
+          <label
+            htmlFor="port"
+            className="block text-sm font-medium text-gray-700 mb-2"
+          >
             Port <span className="text-red-500">*</span>
           </label>
           <Input
@@ -153,7 +171,7 @@ export function ContextForm({ editingId, onClose }: ContextFormProps) {
             type="text"
             required
             placeholder="4222"
-            value={formData.port || ""}
+            value={formData.port || ''}
             onChange={(e) => setFormData({ ...formData, port: e.target.value })}
             disabled={isSubmitting}
           />
@@ -162,29 +180,39 @@ export function ContextForm({ editingId, onClose }: ContextFormProps) {
 
       <div className="grid grid-cols-2 gap-4">
         <div>
-          <label htmlFor="username" className="block text-sm font-medium text-gray-700 mb-2">
+          <label
+            htmlFor="username"
+            className="block text-sm font-medium text-gray-700 mb-2"
+          >
             Username
           </label>
           <Input
             id="username"
             type="text"
             placeholder="Optional"
-            value={formData.username || ""}
-            onChange={(e) => setFormData({ ...formData, username: e.target.value })}
+            value={formData.username || ''}
+            onChange={(e) =>
+              setFormData({ ...formData, username: e.target.value })
+            }
             disabled={isSubmitting}
           />
         </div>
 
         <div>
-          <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-2">
+          <label
+            htmlFor="password"
+            className="block text-sm font-medium text-gray-700 mb-2"
+          >
             Password
           </label>
           <Input
             id="password"
             type="password"
             placeholder="Optional"
-            value={formData.password || ""}
-            onChange={(e) => setFormData({ ...formData, password: e.target.value })}
+            value={formData.password || ''}
+            onChange={(e) =>
+              setFormData({ ...formData, password: e.target.value })
+            }
             disabled={isSubmitting}
           />
         </div>
@@ -204,7 +232,11 @@ export function ContextForm({ editingId, onClose }: ContextFormProps) {
           disabled={isSubmitting}
           className="bg-indigo-600 hover:bg-indigo-700 text-white disabled:opacity-50"
         >
-          {isSubmitting ? "Saving..." : editingId ? "Update Context" : "Save Context"}
+          {isSubmitting
+            ? 'Saving...'
+            : editingId
+              ? 'Update Context'
+              : 'Save Context'}
         </Button>
       </div>
     </form>

@@ -1,7 +1,7 @@
+import { Archive, Clock, Eye, HardDrive, Hash, Trash2 } from 'lucide-react';
 import { useState } from 'react';
-import { KVBucket } from '@/lib/api';
 import { Button } from '@/components/ui/button';
-import { HardDrive, Hash, Clock, Archive, Trash2, Eye } from 'lucide-react';
+import type { KVBucket } from '@/lib/api';
 
 interface BucketCardProps {
   bucket: KVBucket;
@@ -17,7 +17,7 @@ export function BucketCard({ bucket, onView, onDelete }: BucketCardProps) {
     const k = 1024;
     const sizes = ['B', 'KB', 'MB', 'GB'];
     const i = Math.floor(Math.log(bytes) / Math.log(k));
-    return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+    return Number.parseFloat((bytes / k ** i).toFixed(2)) + ' ' + sizes[i];
   };
 
   const formatTTL = (ttl: string): string => {
@@ -71,8 +71,8 @@ export function BucketCard({ bucket, onView, onDelete }: BucketCardProps) {
               size="sm"
               variant="outline"
               className={`${
-                isDeleteConfirming 
-                  ? 'text-red-600 border-red-300 hover:bg-red-50' 
+                isDeleteConfirming
+                  ? 'text-red-600 border-red-300 hover:bg-red-50'
                   : 'text-gray-600 hover:text-red-600'
               }`}
             >
@@ -102,14 +102,18 @@ export function BucketCard({ bucket, onView, onDelete }: BucketCardProps) {
             <HardDrive className="w-4 h-4 text-gray-400" />
             <div>
               <div className="text-gray-500">Storage</div>
-              <div className="font-medium capitalize">{bucket.backing_store}</div>
+              <div className="font-medium capitalize">
+                {bucket.backing_store}
+              </div>
             </div>
           </div>
           <div className="flex items-center space-x-2 text-sm">
             <Archive className="w-4 h-4 text-gray-400" />
             <div>
               <div className="text-gray-500">Compression</div>
-              <div className="font-medium">{bucket.is_compressed ? 'Enabled' : 'Disabled'}</div>
+              <div className="font-medium">
+                {bucket.is_compressed ? 'Enabled' : 'Disabled'}
+              </div>
             </div>
           </div>
         </div>

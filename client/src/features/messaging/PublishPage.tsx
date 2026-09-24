@@ -1,11 +1,16 @@
-import { useState } from 'react';
 import { useMutation, useQuery } from '@tanstack/react-query';
-import { publishApi, type PublishRequest, type PublishMessage, type RequestReplyRequest } from '@/lib/api';
+import { useState } from 'react';
+import { AutocompleteInput } from '@/components/ui/autocomplete-input';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Textarea } from '@/components/ui/textarea';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { AutocompleteInput } from '@/components/ui/autocomplete-input';
+import { Textarea } from '@/components/ui/textarea';
+import {
+  type PublishMessage,
+  type PublishRequest,
+  publishApi,
+  type RequestReplyRequest,
+} from '@/lib/api';
 
 interface Header {
   key: string;
@@ -20,13 +25,15 @@ export function PublishPage() {
 
   // Batch message state
   const [batchMessages, setBatchMessages] = useState<PublishMessage[]>([
-    { subject: '', data: '', headers: {} }
+    { subject: '', data: '', headers: {} },
   ]);
 
   // Request-reply state
   const [requestSubject, setRequestSubject] = useState('');
   const [requestData, setRequestData] = useState('');
-  const [requestHeaders, setRequestHeaders] = useState<Header[]>([{ key: '', value: '' }]);
+  const [requestHeaders, setRequestHeaders] = useState<Header[]>([
+    { key: '', value: '' },
+  ]);
   const [timeout, setTimeout] = useState(30); // Default 30 seconds
   const [replySubject, setReplySubject] = useState('');
 
@@ -63,12 +70,15 @@ export function PublishPage() {
   });
 
   const handlePublishMessage = () => {
-    const headersObject = headers.reduce((acc, header) => {
-      if (header.key && header.value) {
-        acc[header.key] = header.value;
-      }
-      return acc;
-    }, {} as Record<string, string>);
+    const headersObject = headers.reduce(
+      (acc, header) => {
+        if (header.key && header.value) {
+          acc[header.key] = header.value;
+        }
+        return acc;
+      },
+      {} as Record<string, string>
+    );
 
     const request: PublishRequest = {
       subject,
@@ -80,19 +90,24 @@ export function PublishPage() {
   };
 
   const handleBatchPublish = () => {
-    const validMessages = batchMessages.filter(msg => msg.subject && msg.data);
+    const validMessages = batchMessages.filter(
+      (msg) => msg.subject && msg.data
+    );
     if (validMessages.length === 0) return;
 
     batchPublishMutation.mutate({ messages: validMessages });
   };
 
   const handleRequestReply = () => {
-    const headersObject = requestHeaders.reduce((acc, header) => {
-      if (header.key && header.value) {
-        acc[header.key] = header.value;
-      }
-      return acc;
-    }, {} as Record<string, string>);
+    const headersObject = requestHeaders.reduce(
+      (acc, header) => {
+        if (header.key && header.value) {
+          acc[header.key] = header.value;
+        }
+        return acc;
+      },
+      {} as Record<string, string>
+    );
 
     const request: RequestReplyRequest = {
       subject: requestSubject,
@@ -109,7 +124,11 @@ export function PublishPage() {
     setHeaders([...headers, { key: '', value: '' }]);
   };
 
-  const updateHeader = (index: number, field: 'key' | 'value', value: string) => {
+  const updateHeader = (
+    index: number,
+    field: 'key' | 'value',
+    value: string
+  ) => {
     const newHeaders = headers.map((header, i) =>
       i === index ? { ...header, [field]: value } : header
     );
@@ -121,10 +140,17 @@ export function PublishPage() {
   };
 
   const addBatchMessage = () => {
-    setBatchMessages([...batchMessages, { subject: '', data: '', headers: {} }]);
+    setBatchMessages([
+      ...batchMessages,
+      { subject: '', data: '', headers: {} },
+    ]);
   };
 
-  const updateBatchMessage = (index: number, field: keyof PublishMessage, value: any) => {
+  const updateBatchMessage = (
+    index: number,
+    field: keyof PublishMessage,
+    value: any
+  ) => {
     const newMessages = batchMessages.map((msg, i) =>
       i === index ? { ...msg, [field]: value } : msg
     );
@@ -139,7 +165,11 @@ export function PublishPage() {
     setRequestHeaders([...requestHeaders, { key: '', value: '' }]);
   };
 
-  const updateRequestHeader = (index: number, field: 'key' | 'value', value: string) => {
+  const updateRequestHeader = (
+    index: number,
+    field: 'key' | 'value',
+    value: string
+  ) => {
     const newHeaders = requestHeaders.map((header, i) =>
       i === index ? { ...header, [field]: value } : header
     );
@@ -155,7 +185,9 @@ export function PublishPage() {
       <div className="max-w-full">
         <div className="mb-4">
           <h2 className="text-xl font-bold text-gray-900">Publish Messages</h2>
-          <p className="text-sm text-gray-600">Send messages to NATS subjects</p>
+          <p className="text-sm text-gray-600">
+            Send messages to NATS subjects
+          </p>
         </div>
 
         <Tabs defaultValue="single" className="w-full">
@@ -168,8 +200,10 @@ export function PublishPage() {
           {/* Single Message Tab */}
           <TabsContent value="single" className="space-y-4">
             <div className="bg-white rounded-lg border border-gray-200 p-6">
-              <h3 className="text-lg font-medium text-gray-900 mb-4">Publish Single Message</h3>
-              
+              <h3 className="text-lg font-medium text-gray-900 mb-4">
+                Publish Single Message
+              </h3>
+
               <div className="space-y-4">
                 {/* Subject */}
                 <div>
@@ -208,14 +242,18 @@ export function PublishPage() {
                         <Input
                           type="text"
                           value={header.key}
-                          onChange={(e) => updateHeader(index, 'key', e.target.value)}
+                          onChange={(e) =>
+                            updateHeader(index, 'key', e.target.value)
+                          }
                           placeholder="Header key"
                           className="flex-1"
                         />
                         <Input
                           type="text"
                           value={header.value}
-                          onChange={(e) => updateHeader(index, 'value', e.target.value)}
+                          onChange={(e) =>
+                            updateHeader(index, 'value', e.target.value)
+                          }
                           placeholder="Header value"
                           className="flex-1"
                         />
@@ -249,7 +287,9 @@ export function PublishPage() {
                     onClick={handlePublishMessage}
                     disabled={!subject || !data || publishMutation.isPending}
                   >
-                    {publishMutation.isPending ? 'Publishing...' : 'Publish Message'}
+                    {publishMutation.isPending
+                      ? 'Publishing...'
+                      : 'Publish Message'}
                   </Button>
                 </div>
 
@@ -257,7 +297,8 @@ export function PublishPage() {
                 {publishMutation.data && (
                   <div className="p-4 bg-green-50 border border-green-200 rounded-md">
                     <p className="text-sm text-green-800">
-                      Message published successfully to subject: {publishMutation.data.subject}
+                      Message published successfully to subject:{' '}
+                      {publishMutation.data.subject}
                     </p>
                   </div>
                 )}
@@ -276,13 +317,20 @@ export function PublishPage() {
           {/* Batch Messages Tab */}
           <TabsContent value="batch" className="space-y-4">
             <div className="bg-white rounded-lg border border-gray-200 p-6">
-              <h3 className="text-lg font-medium text-gray-900 mb-4">Publish Batch Messages</h3>
-              
+              <h3 className="text-lg font-medium text-gray-900 mb-4">
+                Publish Batch Messages
+              </h3>
+
               <div className="space-y-4">
                 {batchMessages.map((message, index) => (
-                  <div key={index} className="border border-gray-200 rounded-md p-4">
+                  <div
+                    key={index}
+                    className="border border-gray-200 rounded-md p-4"
+                  >
                     <div className="flex justify-between items-center mb-3">
-                      <h4 className="text-sm font-medium text-gray-700">Message {index + 1}</h4>
+                      <h4 className="text-sm font-medium text-gray-700">
+                        Message {index + 1}
+                      </h4>
                       {batchMessages.length > 1 && (
                         <Button
                           type="button"
@@ -294,7 +342,7 @@ export function PublishPage() {
                         </Button>
                       )}
                     </div>
-                    
+
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                       <div>
                         <label className="block text-sm font-medium text-gray-700 mb-1">
@@ -302,7 +350,9 @@ export function PublishPage() {
                         </label>
                         <AutocompleteInput
                           value={message.subject}
-                          onChange={(value) => updateBatchMessage(index, 'subject', value)}
+                          onChange={(value) =>
+                            updateBatchMessage(index, 'subject', value)
+                          }
                           suggestions={subjectsData?.subjects || []}
                           placeholder="e.g., events.user.created"
                         />
@@ -313,7 +363,9 @@ export function PublishPage() {
                         </label>
                         <Textarea
                           value={message.data}
-                          onChange={(e) => updateBatchMessage(index, 'data', e.target.value)}
+                          onChange={(e) =>
+                            updateBatchMessage(index, 'data', e.target.value)
+                          }
                           placeholder="Message content"
                           className="min-h-[60px]"
                         />
@@ -332,9 +384,14 @@ export function PublishPage() {
                   </Button>
                   <Button
                     onClick={handleBatchPublish}
-                    disabled={batchMessages.every(m => !m.subject || !m.data) || batchPublishMutation.isPending}
+                    disabled={
+                      batchMessages.every((m) => !m.subject || !m.data) ||
+                      batchPublishMutation.isPending
+                    }
                   >
-                    {batchPublishMutation.isPending ? 'Publishing...' : 'Publish Batch'}
+                    {batchPublishMutation.isPending
+                      ? 'Publishing...'
+                      : 'Publish Batch'}
                   </Button>
                 </div>
 
@@ -342,11 +399,16 @@ export function PublishPage() {
                 {batchPublishMutation.data && (
                   <div className="p-4 bg-green-50 border border-green-200 rounded-md">
                     <p className="text-sm text-green-800 mb-2">
-                      Batch publish completed: {batchPublishMutation.data.succeeded}/{batchPublishMutation.data.total} successful
+                      Batch publish completed:{' '}
+                      {batchPublishMutation.data.succeeded}/
+                      {batchPublishMutation.data.total} successful
                     </p>
                     {batchPublishMutation.data.results.map((result, index) => (
                       <div key={index} className="text-xs text-green-700">
-                        {result.subject}: {result.success ? 'Success' : `Failed - ${result.error}`}
+                        {result.subject}:{' '}
+                        {result.success
+                          ? 'Success'
+                          : `Failed - ${result.error}`}
                       </div>
                     ))}
                   </div>
@@ -366,8 +428,10 @@ export function PublishPage() {
           {/* Request-Reply Tab */}
           <TabsContent value="request-reply" className="space-y-4">
             <div className="bg-white rounded-lg border border-gray-200 p-6">
-              <h3 className="text-lg font-medium text-gray-900 mb-4">Request-Reply Pattern</h3>
-              
+              <h3 className="text-lg font-medium text-gray-900 mb-4">
+                Request-Reply Pattern
+              </h3>
+
               <div className="space-y-4">
                 {/* Subject */}
                 <div>
@@ -404,7 +468,9 @@ export function PublishPage() {
                     <Input
                       type="number"
                       value={timeout}
-                      onChange={(e) => setTimeout(parseInt(e.target.value) || 5)}
+                      onChange={(e) =>
+                        setTimeout(Number.parseInt(e.target.value) || 5)
+                      }
                       min="1"
                       max="60"
                     />
@@ -435,14 +501,18 @@ export function PublishPage() {
                         <Input
                           type="text"
                           value={header.key}
-                          onChange={(e) => updateRequestHeader(index, 'key', e.target.value)}
+                          onChange={(e) =>
+                            updateRequestHeader(index, 'key', e.target.value)
+                          }
                           placeholder="Header key"
                           className="flex-1"
                         />
                         <Input
                           type="text"
                           value={header.value}
-                          onChange={(e) => updateRequestHeader(index, 'value', e.target.value)}
+                          onChange={(e) =>
+                            updateRequestHeader(index, 'value', e.target.value)
+                          }
                           placeholder="Header value"
                           className="flex-1"
                         />
@@ -474,19 +544,32 @@ export function PublishPage() {
                 <div className="flex gap-2">
                   <Button
                     onClick={handleRequestReply}
-                    disabled={!requestSubject || !requestData || requestReplyMutation.isPending}
+                    disabled={
+                      !requestSubject ||
+                      !requestData ||
+                      requestReplyMutation.isPending
+                    }
                   >
-                    {requestReplyMutation.isPending ? 'Sending...' : 'Send Request'}
+                    {requestReplyMutation.isPending
+                      ? 'Sending...'
+                      : 'Send Request'}
                   </Button>
                 </div>
 
                 {/* Results */}
                 {requestReplyMutation.data && (
                   <div className="p-4 bg-green-50 border border-green-200 rounded-md">
-                    <h4 className="text-sm font-medium text-green-800 mb-2">Response Received:</h4>
+                    <h4 className="text-sm font-medium text-green-800 mb-2">
+                      Response Received:
+                    </h4>
                     <div className="text-xs space-y-1">
-                      <div><strong>Reply Subject:</strong> {requestReplyMutation.data.reply_subject}</div>
-                      <div><strong>Reply Data:</strong></div>
+                      <div>
+                        <strong>Reply Subject:</strong>{' '}
+                        {requestReplyMutation.data.reply_subject}
+                      </div>
+                      <div>
+                        <strong>Reply Data:</strong>
+                      </div>
                       <pre className="bg-white p-2 rounded border text-xs overflow-x-auto">
                         {requestReplyMutation.data.reply_data}
                       </pre>

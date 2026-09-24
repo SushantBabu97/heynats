@@ -1,10 +1,10 @@
-import { useState, useEffect } from "react";
-import { useQuery } from "@tanstack/react-query";
-import { streamsApi } from "@/lib/api";
-import type { StreamMessage } from "@/lib/api";
-import { Button } from "@/components/ui/button";
-import { formatTimestamp } from "@/lib/utils";
-import { ChevronDown, ChevronRight, Copy } from "lucide-react";
+import { useQuery } from '@tanstack/react-query';
+import { ChevronDown, ChevronRight, Copy } from 'lucide-react';
+import { useEffect, useState } from 'react';
+import { Button } from '@/components/ui/button';
+import type { StreamMessage } from '@/lib/api';
+import { streamsApi } from '@/lib/api';
+import { formatTimestamp } from '@/lib/utils';
 
 interface ViewStreamDataModalProps {
   streamName: string;
@@ -39,7 +39,12 @@ interface JsonNodeProps {
   defaultExpanded?: boolean;
 }
 
-function JsonNode({ name, value, isLast, defaultExpanded = false }: JsonNodeProps) {
+function JsonNode({
+  name,
+  value,
+  isLast,
+  defaultExpanded = false,
+}: JsonNodeProps) {
   const [expanded, setExpanded] = useState(defaultExpanded);
 
   // Helper to render property key
@@ -69,7 +74,7 @@ function JsonNode({ name, value, isLast, defaultExpanded = false }: JsonNodeProp
     );
   }
 
-  if (typeof value === "boolean") {
+  if (typeof value === 'boolean') {
     return (
       <div className="font-mono text-sm leading-6">
         {renderKey()}
@@ -79,7 +84,7 @@ function JsonNode({ name, value, isLast, defaultExpanded = false }: JsonNodeProp
     );
   }
 
-  if (typeof value === "number") {
+  if (typeof value === 'number') {
     return (
       <div className="font-mono text-sm leading-6">
         {renderKey()}
@@ -89,7 +94,7 @@ function JsonNode({ name, value, isLast, defaultExpanded = false }: JsonNodeProp
     );
   }
 
-  if (typeof value === "string") {
+  if (typeof value === 'string') {
     return (
       <div className="font-mono text-sm leading-6">
         {renderKey()}
@@ -100,12 +105,12 @@ function JsonNode({ name, value, isLast, defaultExpanded = false }: JsonNodeProp
   }
 
   // Arrays and Objects
-  if (typeof value === "object") {
+  if (typeof value === 'object') {
     const isArray = Array.isArray(value);
     const keys = Object.keys(value as object);
     const isEmpty = keys.length === 0;
-    const openChar = isArray ? "[" : "{";
-    const closeChar = isArray ? "]" : "}";
+    const openChar = isArray ? '[' : '{';
+    const closeChar = isArray ? ']' : '}';
     const itemCount = keys.length;
 
     if (isEmpty) {
@@ -152,7 +157,7 @@ function JsonNode({ name, value, isLast, defaultExpanded = false }: JsonNodeProp
                   onClick={() => setExpanded(true)}
                   className="px-1 text-gray-400 hover:text-gray-600 text-xs bg-gray-50 rounded mx-1"
                 >
-                  {itemCount} {itemCount === 1 ? "item" : "items"}
+                  {itemCount} {itemCount === 1 ? 'item' : 'items'}
                 </button>
                 <span className="text-gray-600">{closeChar}</span>
                 {renderComma()}
@@ -209,7 +214,7 @@ interface CodeDisplayProps {
   maxHeight?: string;
 }
 
-function CodeDisplay({ code, maxHeight = "max-h-64" }: CodeDisplayProps) {
+function CodeDisplay({ code, maxHeight = 'max-h-64' }: CodeDisplayProps) {
   const [copied, setCopied] = useState(false);
 
   const handleCopy = () => {
@@ -249,8 +254,12 @@ interface MessageDetailModalProps {
   onClose: () => void;
 }
 
-function MessageDetailModal({ message, isOpen, onClose }: MessageDetailModalProps) {
-  const [viewMode, setViewMode] = useState<"formatted" | "raw">("formatted");
+function MessageDetailModal({
+  message,
+  isOpen,
+  onClose,
+}: MessageDetailModalProps) {
+  const [viewMode, setViewMode] = useState<'formatted' | 'raw'>('formatted');
 
   if (!isOpen || !message) return null;
 
@@ -311,31 +320,36 @@ function MessageDetailModal({ message, isOpen, onClose }: MessageDetailModalProp
           {/* Data Payload */}
           <div>
             <div className="flex items-center justify-between mb-2">
-              <label htmlFor="detail-data" className="block text-sm font-medium text-gray-700">
+              <label
+                htmlFor="detail-data"
+                className="block text-sm font-medium text-gray-700"
+              >
                 Data Payload
                 {isMessageJSON && (
-                  <span className="ml-2 text-xs font-normal text-green-600">(JSON)</span>
+                  <span className="ml-2 text-xs font-normal text-green-600">
+                    (JSON)
+                  </span>
                 )}
               </label>
               {isMessageJSON && (
                 <div className="flex gap-2">
                   <button
-                    onClick={() => setViewMode("formatted")}
+                    onClick={() => setViewMode('formatted')}
                     className={`px-3 py-1 rounded text-xs font-medium transition-colors ${
-                      viewMode === "formatted"
-                        ? "bg-blue-100 text-blue-700"
-                        : "bg-gray-200 text-gray-700 hover:bg-gray-300"
+                      viewMode === 'formatted'
+                        ? 'bg-blue-100 text-blue-700'
+                        : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
                     }`}
                     type="button"
                   >
                     Formatted
                   </button>
                   <button
-                    onClick={() => setViewMode("raw")}
+                    onClick={() => setViewMode('raw')}
                     className={`px-3 py-1 rounded text-xs font-medium transition-colors ${
-                      viewMode === "raw"
-                        ? "bg-blue-100 text-blue-700"
-                        : "bg-gray-200 text-gray-700 hover:bg-gray-300"
+                      viewMode === 'raw'
+                        ? 'bg-blue-100 text-blue-700'
+                        : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
                     }`}
                     type="button"
                   >
@@ -346,7 +360,7 @@ function MessageDetailModal({ message, isOpen, onClose }: MessageDetailModalProp
             </div>
 
             <div id="detail-data">
-              {viewMode === "formatted" && isMessageJSON ? (
+              {viewMode === 'formatted' && isMessageJSON ? (
                 <div className="p-4 bg-gray-50 rounded border border-gray-300 overflow-auto max-h-96">
                   <JsonViewer data={JSON.parse(message.data)} />
                 </div>
@@ -376,7 +390,10 @@ function MessageDetailModal({ message, isOpen, onClose }: MessageDetailModalProp
               </div>
             </div>
             <div>
-              <label htmlFor="detail-size" className="block text-sm font-medium text-gray-700 mb-2">
+              <label
+                htmlFor="detail-size"
+                className="block text-sm font-medium text-gray-700 mb-2"
+              >
                 Size
               </label>
               <div
@@ -416,11 +433,14 @@ function MessageDetailModal({ message, isOpen, onClose }: MessageDetailModalProp
                 className="p-3 bg-gray-50 rounded border border-gray-300 space-y-2 max-h-48 overflow-auto"
               >
                 {Object.entries(message.headers).map(([key, value]) => (
-                  <div key={key} className="text-sm border-b border-gray-200 pb-2 last:border-b-0">
+                  <div
+                    key={key}
+                    className="text-sm border-b border-gray-200 pb-2 last:border-b-0"
+                  >
                     <span className="font-medium text-gray-700">{key}</span>
                     <span className="text-gray-500 mx-2">:</span>
                     <span className="text-gray-600 break-all">
-                      {Array.isArray(value) ? value.join(", ") : String(value)}
+                      {Array.isArray(value) ? value.join(', ') : String(value)}
                     </span>
                   </div>
                 ))}
@@ -440,11 +460,17 @@ function MessageDetailModal({ message, isOpen, onClose }: MessageDetailModalProp
   );
 }
 
-export function ViewStreamDataModal({ streamName, isOpen, onClose }: ViewStreamDataModalProps) {
+export function ViewStreamDataModal({
+  streamName,
+  isOpen,
+  onClose,
+}: ViewStreamDataModalProps) {
   const [offset, setOffset] = useState(0);
   const [limit, setLimit] = useState(10);
-  const [searchTerm, setSearchTerm] = useState("");
-  const [selectedMessage, setSelectedMessage] = useState<StreamMessage | null>(null);
+  const [searchTerm, setSearchTerm] = useState('');
+  const [selectedMessage, setSelectedMessage] = useState<StreamMessage | null>(
+    null
+  );
   const [isDetailModalOpen, setIsDetailModalOpen] = useState(false);
 
   const {
@@ -453,8 +479,14 @@ export function ViewStreamDataModal({ streamName, isOpen, onClose }: ViewStreamD
     error,
     refetch,
   } = useQuery({
-    queryKey: ["streamMessages", streamName, offset, limit, searchTerm],
-    queryFn: () => streamsApi.getStreamMessages(streamName, offset * limit, limit, searchTerm),
+    queryKey: ['streamMessages', streamName, offset, limit, searchTerm],
+    queryFn: () =>
+      streamsApi.getStreamMessages(
+        streamName,
+        offset * limit,
+        limit,
+        searchTerm
+      ),
     enabled: isOpen,
   });
 
@@ -508,8 +540,12 @@ export function ViewStreamDataModal({ streamName, isOpen, onClose }: ViewStreamD
         {/* Header */}
         <div className="flex items-center justify-between p-6 border-b border-gray-200">
           <div>
-            <h2 className="text-2xl font-bold text-gray-900">Stream Data: {streamName}</h2>
-            <p className="text-sm text-gray-600">Total Messages: {total.toLocaleString()}</p>
+            <h2 className="text-2xl font-bold text-gray-900">
+              Stream Data: {streamName}
+            </h2>
+            <p className="text-sm text-gray-600">
+              Total Messages: {total.toLocaleString()}
+            </p>
           </div>
           <button
             type="button"
@@ -571,13 +607,18 @@ export function ViewStreamDataModal({ streamName, isOpen, onClose }: ViewStreamD
 
             {/* Limit selector */}
             <div className="flex items-center gap-2">
-              <label htmlFor="limit-select" className="text-sm font-medium text-gray-700">
+              <label
+                htmlFor="limit-select"
+                className="text-sm font-medium text-gray-700"
+              >
                 Messages per page:
               </label>
               <select
                 id="limit-select"
                 value={limit}
-                onChange={(e) => handleLimitChange(parseInt(e.target.value))}
+                onChange={(e) =>
+                  handleLimitChange(Number.parseInt(e.target.value))
+                }
                 className="px-3 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-1 focus:ring-blue-500"
                 aria-label="Select number of messages per page"
               >
@@ -616,8 +657,8 @@ export function ViewStreamDataModal({ streamName, isOpen, onClose }: ViewStreamD
           {/* Pagination Info */}
           <div className="flex items-center justify-between text-sm text-gray-600">
             <span>
-              Page {currentPage} of {totalPages || 1} | Showing {messages.length} of {total}{" "}
-              messages
+              Page {currentPage} of {totalPages || 1} | Showing{' '}
+              {messages.length} of {total} messages
             </span>
           </div>
         </div>
@@ -640,12 +681,12 @@ export function ViewStreamDataModal({ streamName, isOpen, onClose }: ViewStreamD
                     r="10"
                     stroke="currentColor"
                     strokeWidth="4"
-                  ></circle>
+                  />
                   <path
                     className="opacity-75"
                     fill="currentColor"
                     d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-                  ></path>
+                  />
                 </svg>
                 <span className="text-gray-500">Loading messages...</span>
               </div>
@@ -669,9 +710,13 @@ export function ViewStreamDataModal({ streamName, isOpen, onClose }: ViewStreamD
                     </svg>
                   </div>
                   <div className="ml-3">
-                    <h3 className="text-sm font-medium text-red-800">Error loading messages</h3>
+                    <h3 className="text-sm font-medium text-red-800">
+                      Error loading messages
+                    </h3>
                     <p className="mt-2 text-sm text-red-700">
-                      {error instanceof Error ? error.message : "Failed to load messages"}
+                      {error instanceof Error
+                        ? error.message
+                        : 'Failed to load messages'}
                     </p>
                   </div>
                 </div>
@@ -697,8 +742,8 @@ export function ViewStreamDataModal({ streamName, isOpen, onClose }: ViewStreamD
                 <p className="text-gray-700 font-medium">No messages found</p>
                 <p className="text-gray-600 text-sm mt-1">
                   {searchTerm
-                    ? "Try adjusting your search criteria"
-                    : "This stream has no messages yet"}
+                    ? 'Try adjusting your search criteria'
+                    : 'This stream has no messages yet'}
                 </p>
               </div>
             </div>
@@ -710,7 +755,7 @@ export function ViewStreamDataModal({ streamName, isOpen, onClose }: ViewStreamD
                   key={msg.sequence}
                   onClick={() => handleMessageClick(msg)}
                   onKeyDown={(e) => {
-                    if (e.key === "Enter" || e.key === " ") {
+                    if (e.key === 'Enter' || e.key === ' ') {
                       handleMessageClick(msg);
                     }
                   }}
@@ -733,7 +778,7 @@ export function ViewStreamDataModal({ streamName, isOpen, onClose }: ViewStreamD
                       </div>
                       <div className="mt-2 p-2 bg-gray-50 rounded text-sm text-gray-700 truncate font-mono">
                         {msg.data.substring(0, 100)}
-                        {msg.data.length > 100 ? "..." : ""}
+                        {msg.data.length > 100 ? '...' : ''}
                       </div>
                     </div>
                     <svg
@@ -761,8 +806,8 @@ export function ViewStreamDataModal({ streamName, isOpen, onClose }: ViewStreamD
         {total > 0 && !isLoading && (
           <div className="flex items-center justify-between p-4 border-t border-gray-200 bg-gray-50">
             <div className="text-sm text-gray-600">
-              Showing {offset * limit + 1} to {Math.min((offset + 1) * limit, total)} of {total}{" "}
-              messages
+              Showing {offset * limit + 1} to{' '}
+              {Math.min((offset + 1) * limit, total)} of {total} messages
             </div>
             <div className="flex items-center gap-2">
               <Button

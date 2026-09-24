@@ -1,8 +1,8 @@
+import { X } from 'lucide-react';
 import { useState } from 'react';
-import { CreateBucketRequest } from '@/lib/api';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { X } from 'lucide-react';
+import type { CreateBucketRequest } from '@/lib/api';
 
 interface CreateBucketModalProps {
   isOpen: boolean;
@@ -11,7 +11,12 @@ interface CreateBucketModalProps {
   isLoading: boolean;
 }
 
-export function CreateBucketModal({ isOpen, onClose, onSubmit, isLoading }: CreateBucketModalProps) {
+export function CreateBucketModal({
+  isOpen,
+  onClose,
+  onSubmit,
+  isLoading,
+}: CreateBucketModalProps) {
   const [formData, setFormData] = useState<CreateBucketRequest>({
     bucket: '',
     history: 1,
@@ -26,10 +31,14 @@ export function CreateBucketModal({ isOpen, onClose, onSubmit, isLoading }: Crea
     if (!formData.bucket.trim()) {
       newErrors.bucket = 'Bucket name is required';
     } else if (!/^[a-zA-Z0-9_-]+$/.test(formData.bucket)) {
-      newErrors.bucket = 'Bucket name can only contain letters, numbers, hyphens, and underscores';
+      newErrors.bucket =
+        'Bucket name can only contain letters, numbers, hyphens, and underscores';
     }
 
-    if (formData.history !== undefined && (formData.history < 1 || formData.history > 64)) {
+    if (
+      formData.history !== undefined &&
+      (formData.history < 1 || formData.history > 64)
+    ) {
       newErrors.history = 'History must be between 1 and 64';
     }
 
@@ -37,7 +46,8 @@ export function CreateBucketModal({ isOpen, onClose, onSubmit, isLoading }: Crea
       // Basic TTL format validation (Go duration format)
       const ttlRegex = /^(\d+(?:\.\d+)?)(ns|us|µs|ms|s|m|h)$/;
       if (!ttlRegex.test(formData.ttl.trim())) {
-        newErrors.ttl = 'Invalid TTL format. Use Go duration format (e.g., 60s, 5m, 1h30m)';
+        newErrors.ttl =
+          'Invalid TTL format. Use Go duration format (e.g., 60s, 5m, 1h30m)';
       }
     }
 
@@ -76,7 +86,9 @@ export function CreateBucketModal({ isOpen, onClose, onSubmit, isLoading }: Crea
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
       <div className="bg-white rounded-lg shadow-lg w-full max-w-md mx-4">
         <div className="flex items-center justify-between p-6 border-b border-gray-200">
-          <h2 className="text-lg font-semibold text-gray-900">Create KV Bucket</h2>
+          <h2 className="text-lg font-semibold text-gray-900">
+            Create KV Bucket
+          </h2>
           <button
             onClick={handleClose}
             className="text-gray-400 hover:text-gray-600"
@@ -94,7 +106,9 @@ export function CreateBucketModal({ isOpen, onClose, onSubmit, isLoading }: Crea
             <Input
               type="text"
               value={formData.bucket}
-              onChange={(e) => setFormData(prev => ({ ...prev, bucket: e.target.value }))}
+              onChange={(e) =>
+                setFormData((prev) => ({ ...prev, bucket: e.target.value }))
+              }
               placeholder="my-bucket"
               className={errors.bucket ? 'border-red-300' : ''}
               disabled={isLoading}
@@ -113,7 +127,12 @@ export function CreateBucketModal({ isOpen, onClose, onSubmit, isLoading }: Crea
               min="1"
               max="64"
               value={formData.history}
-              onChange={(e) => setFormData(prev => ({ ...prev, history: parseInt(e.target.value) || 1 }))}
+              onChange={(e) =>
+                setFormData((prev) => ({
+                  ...prev,
+                  history: Number.parseInt(e.target.value) || 1,
+                }))
+              }
               className={errors.history ? 'border-red-300' : ''}
               disabled={isLoading}
             />
@@ -132,7 +151,9 @@ export function CreateBucketModal({ isOpen, onClose, onSubmit, isLoading }: Crea
             <Input
               type="text"
               value={formData.ttl}
-              onChange={(e) => setFormData(prev => ({ ...prev, ttl: e.target.value }))}
+              onChange={(e) =>
+                setFormData((prev) => ({ ...prev, ttl: e.target.value }))
+              }
               placeholder="60s, 5m, 1h30m (optional)"
               className={errors.ttl ? 'border-red-300' : ''}
               disabled={isLoading}

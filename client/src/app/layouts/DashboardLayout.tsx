@@ -1,7 +1,11 @@
 import { Outlet, useNavigate } from 'react-router-dom';
-import { Sidebar } from './Sidebar';
 import { Button } from '@/components/ui/button';
-import { useConnectionStatus, useAccountInfo, useDisconnectFromNATS } from '@/features/connection/useNATS';
+import {
+  useAccountInfo,
+  useConnectionStatus,
+  useDisconnectFromNATS,
+} from '@/features/connection/useNATS';
+import { Sidebar } from './Sidebar';
 
 export function DashboardLayout() {
   const navigate = useNavigate();
@@ -23,36 +27,38 @@ export function DashboardLayout() {
     <div className="h-screen bg-gray-50 flex overflow-hidden">
       {/* Sidebar */}
       <Sidebar />
-      
+
       {/* Main Content */}
       <div className="flex-1 flex flex-col">
         {/* Header */}
         <header className="bg-white border-b flex-shrink-0 p-4 py-3 mb-0">
-            <div className="flex justify-between items-center">
-              <div className="">
-                <h1 className="text-xl font-bold text-gray-900">Dashboard</h1>
-                <p className="text-xs text-gray-500 mt-0.5">
-                  {accountInfo?.account_information ? (
-                    <>
-                      Connected as{' '}
-                      <span className="font-medium">{accountInfo.account_information.user}</span>{' '}
-                      • Account: {accountInfo.account_information.account}
-                    </>
-                  ) : (
-                    'Managing NATS server connections and monitoring'
-                  )}
-                </p>
-              </div>
-              <Button
-                onClick={handleDisconnect}
-                variant="outline"
-                size="sm"
-                disabled={disconnectMutation.isPending}
-                className="border-red-300 text-red-700 hover:bg-red-50"
-              >
-                {disconnectMutation.isPending ? 'Disconnecting...' : 'Disconnect'}
-              </Button>
+          <div className="flex justify-between items-center">
+            <div className="">
+              <h1 className="text-xl font-bold text-gray-900">Dashboard</h1>
+              <p className="text-xs text-gray-500 mt-0.5">
+                {accountInfo?.account_information ? (
+                  <>
+                    Connected as{' '}
+                    <span className="font-medium">
+                      {accountInfo.account_information.user}
+                    </span>{' '}
+                    • Account: {accountInfo.account_information.account}
+                  </>
+                ) : (
+                  'Managing NATS server connections and monitoring'
+                )}
+              </p>
             </div>
+            <Button
+              onClick={handleDisconnect}
+              variant="outline"
+              size="sm"
+              disabled={disconnectMutation.isPending}
+              className="border-red-300 text-red-700 hover:bg-red-50"
+            >
+              {disconnectMutation.isPending ? 'Disconnecting...' : 'Disconnect'}
+            </Button>
+          </div>
         </header>
 
         {/* Page Content */}

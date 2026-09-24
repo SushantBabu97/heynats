@@ -1,39 +1,37 @@
-import { useState, useEffect, useRef } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
-import { useConnectionStatus } from '@/features/connection/useNATS';
-import { 
-  useKVBucket, 
-  useKVBucketKeys, 
-  useSetKVKey, 
-  useDeleteKVKey, 
-  useDeleteKVBucket 
-} from './useKV';
+import {
+  Archive,
+  ArrowLeft,
+  Clock,
+  Copy,
+  Edit3,
+  Eye,
+  EyeOff,
+  HardDrive,
+  Hash,
+  Key,
+  Plus,
+  Search,
+  Trash2,
+} from 'lucide-react';
+import { useEffect, useRef, useState } from 'react';
+import { useNavigate, useParams } from 'react-router-dom';
+import { StatsCard } from '@/components/StatsCard';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
-import { StatsCard } from '@/components/StatsCard';
-import { 
-  ArrowLeft, 
-  Plus, 
-  Search, 
-  Key, 
-  Edit3, 
-  Trash2, 
-  Eye, 
-  EyeOff,
-  Copy,
-  Clock,
-  Archive,
-  HardDrive,
-  Hash 
-} from 'lucide-react';
-
-
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { useConnectionStatus } from '@/features/connection/useNATS';
+import {
+  useDeleteKVBucket,
+  useDeleteKVKey,
+  useKVBucket,
+  useKVBucketKeys,
+  useSetKVKey,
+} from './useKV';
 
 export function KVBucketDetailPage() {
   const { bucketName } = useParams<{ bucketName: string }>();
   const navigate = useNavigate();
-  
+
   // State management
   const [searchTerm, setSearchTerm] = useState('');
   const [newKey, setNewKey] = useState('');
@@ -43,7 +41,7 @@ export function KVBucketDetailPage() {
   const [visibleValues, setVisibleValues] = useState<Set<string>>(new Set());
   const [activeTab, setActiveTab] = useState('overview');
   const [isAddingKey, setIsAddingKey] = useState(false);
-  
+
   // Ref for focusing on the key input when add form appears
   const keyInputRef = useRef<HTMLInputElement>(null);
 
@@ -63,16 +61,16 @@ export function KVBucketDetailPage() {
   const isConnected = connectionStatus?.connected || false;
 
   // Fetch bucket data
-  const { 
-    data: bucket, 
+  const {
+    data: bucket,
     isLoading: bucketLoading,
-    error: bucketError 
+    error: bucketError,
   } = useKVBucket(bucketName!, isConnected && !!bucketName);
 
-  const { 
-    data: keysData, 
+  const {
+    data: keysData,
     isLoading: keysLoading,
-    error: keysError 
+    error: keysError,
   } = useKVBucketKeys(bucketName!, isConnected && !!bucketName);
 
   // Mutations
@@ -81,9 +79,9 @@ export function KVBucketDetailPage() {
   const deleteBucketMutation = useDeleteKVBucket();
 
   const keys = keysData?.items || [];
-  
+
   // Filter keys based on search term
-  const filteredKeys = keys.filter(entry =>
+  const filteredKeys = keys.filter((entry) =>
     entry.key.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
@@ -92,7 +90,7 @@ export function KVBucketDetailPage() {
     const k = 1024;
     const sizes = ['B', 'KB', 'MB', 'GB'];
     const i = Math.floor(Math.log(bytes) / Math.log(k));
-    return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+    return Number.parseFloat((bytes / k ** i).toFixed(2)) + ' ' + sizes[i];
   };
 
   const formatTTL = (ttl: string): string => {
@@ -100,21 +98,22 @@ export function KVBucketDetailPage() {
     return ttl;
   };
 
-
-
   const handleAddKey = () => {
     if (newKey.trim() && bucketName) {
-      setKeyMutation.mutate({
-        bucketName,
-        key: newKey.trim(),
-        value: newValue
-      }, {
-        onSuccess: () => {
-          setNewKey('');
-          setNewValue('');
-          setIsAddingKey(false);
+      setKeyMutation.mutate(
+        {
+          bucketName,
+          key: newKey.trim(),
+          value: newValue,
+        },
+        {
+          onSuccess: () => {
+            setNewKey('');
+            setNewValue('');
+            setIsAddingKey(false);
+          },
         }
-      });
+      );
     }
   };
 
@@ -131,16 +130,19 @@ export function KVBucketDetailPage() {
 
   const handleSaveEdit = () => {
     if (editingKey && bucketName) {
-      setKeyMutation.mutate({
-        bucketName,
-        key: editingKey,
-        value: editValue
-      }, {
-        onSuccess: () => {
-          setEditingKey(null);
-          setEditValue('');
+      setKeyMutation.mutate(
+        {
+          bucketName,
+          key: editingKey,
+          value: editValue,
+        },
+        {
+          onSuccess: () => {
+            setEditingKey(null);
+            setEditValue('');
+          },
         }
-      });
+      );
     }
   };
 
@@ -155,7 +157,7 @@ export function KVBucketDetailPage() {
       deleteBucketMutation.mutate(bucketName, {
         onSuccess: () => {
           navigate('/dashboard/kv');
-        }
+        },
       });
     }
   };
@@ -188,13 +190,16 @@ export function KVBucketDetailPage() {
             <ArrowLeft className="w-4 h-4 mr-2" />
             Back to KV Store
           </Button>
-          
+
           <div className="bg-white rounded-lg border border-gray-200 p-8">
             <div className="text-center">
               <Key className="mx-auto h-16 w-16 text-gray-300 mb-4" />
-              <h3 className="text-lg font-medium text-gray-900 mb-2">Connection Required</h3>
+              <h3 className="text-lg font-medium text-gray-900 mb-2">
+                Connection Required
+              </h3>
               <p className="text-gray-500 mb-6">
-                Please connect to a NATS server to access Key-Value store features.
+                Please connect to a NATS server to access Key-Value store
+                features.
               </p>
               <Button onClick={() => navigate('/dashboard')}>
                 Go to Connection Settings
@@ -220,11 +225,13 @@ export function KVBucketDetailPage() {
             <ArrowLeft className="w-4 h-4 mr-2" />
             Back to KV Store
           </Button>
-          
+
           <div className="bg-white rounded-lg border border-gray-200 p-8">
             <div className="text-center">
-              <div className="animate-spin rounded-full h-16 w-16 border-b-2 border-indigo-600 mx-auto mb-4"></div>
-              <h3 className="text-lg font-medium text-gray-900 mb-2">Loading Bucket</h3>
+              <div className="animate-spin rounded-full h-16 w-16 border-b-2 border-indigo-600 mx-auto mb-4" />
+              <h3 className="text-lg font-medium text-gray-900 mb-2">
+                Loading Bucket
+              </h3>
               <p className="text-gray-500">Fetching bucket details...</p>
             </div>
           </div>
@@ -247,13 +254,25 @@ export function KVBucketDetailPage() {
             <ArrowLeft className="w-4 h-4 mr-2" />
             Back to KV Store
           </Button>
-          
+
           <div className="bg-white rounded-lg border border-gray-200 p-8">
             <div className="text-center">
-              <svg className="mx-auto h-16 w-16 text-red-300 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+              <svg
+                className="mx-auto h-16 w-16 text-red-300 mb-4"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                />
               </svg>
-              <h3 className="text-lg font-medium text-gray-900 mb-2">Error Loading Bucket</h3>
+              <h3 className="text-lg font-medium text-gray-900 mb-2">
+                Error Loading Bucket
+              </h3>
               <p className="text-gray-500 mb-6">
                 Failed to load bucket details. The bucket may not exist.
               </p>
@@ -278,11 +297,13 @@ export function KVBucketDetailPage() {
             <ArrowLeft className="w-4 h-4 mr-2" />
             Back to KV Store
           </Button>
-          
+
           <div className="flex items-center justify-between">
             <div>
               <h2 className="text-xl font-bold text-gray-900">{bucketName}</h2>
-              <p className="text-sm text-gray-600">Key-Value bucket management</p>
+              <p className="text-sm text-gray-600">
+                Key-Value bucket management
+              </p>
             </div>
             <div className="flex items-center space-x-2">
               <Button
@@ -310,7 +331,12 @@ export function KVBucketDetailPage() {
         </div>
 
         {/* Tabs */}
-        <Tabs value={activeTab} onValueChange={setActiveTab} defaultValue="overview" className="space-y-6">
+        <Tabs
+          value={activeTab}
+          onValueChange={setActiveTab}
+          defaultValue="overview"
+          className="space-y-6"
+        >
           <TabsList>
             <TabsTrigger value="overview">Overview</TabsTrigger>
             <TabsTrigger value="keys">Keys ({keys.length})</TabsTrigger>
@@ -346,23 +372,41 @@ export function KVBucketDetailPage() {
             {/* Bucket Configuration */}
             {bucket && (
               <div className="bg-white rounded-lg border border-gray-200 p-4">
-                <h3 className="text-base font-semibold text-gray-900 mb-3">Configuration</h3>
+                <h3 className="text-base font-semibold text-gray-900 mb-3">
+                  Configuration
+                </h3>
                 <dl className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 text-sm">
                   <div>
-                    <dt className="text-sm font-medium text-gray-500">Storage Type</dt>
-                    <dd className="text-sm text-gray-900 capitalize">{bucket.backing_store}</dd>
+                    <dt className="text-sm font-medium text-gray-500">
+                      Storage Type
+                    </dt>
+                    <dd className="text-sm text-gray-900 capitalize">
+                      {bucket.backing_store}
+                    </dd>
                   </div>
                   <div>
-                    <dt className="text-sm font-medium text-gray-500">Compression</dt>
-                    <dd className="text-sm text-gray-900">{bucket.is_compressed ? 'Enabled' : 'Disabled'}</dd>
+                    <dt className="text-sm font-medium text-gray-500">
+                      Compression
+                    </dt>
+                    <dd className="text-sm text-gray-900">
+                      {bucket.is_compressed ? 'Enabled' : 'Disabled'}
+                    </dd>
                   </div>
                   <div>
-                    <dt className="text-sm font-medium text-gray-500">History per Key</dt>
-                    <dd className="text-sm text-gray-900">{bucket.history} revisions</dd>
+                    <dt className="text-sm font-medium text-gray-500">
+                      History per Key
+                    </dt>
+                    <dd className="text-sm text-gray-900">
+                      {bucket.history} revisions
+                    </dd>
                   </div>
                   <div>
-                    <dt className="text-sm font-medium text-gray-500">Time to Live</dt>
-                    <dd className="text-sm text-gray-900">{formatTTL(bucket.ttl)}</dd>
+                    <dt className="text-sm font-medium text-gray-500">
+                      Time to Live
+                    </dt>
+                    <dd className="text-sm text-gray-900">
+                      {formatTTL(bucket.ttl)}
+                    </dd>
                   </div>
                 </dl>
               </div>
@@ -370,7 +414,9 @@ export function KVBucketDetailPage() {
 
             {/* Quick Actions */}
             <div className="bg-white rounded-lg border border-gray-200 p-6">
-              <h3 className="text-lg font-semibold text-gray-900 mb-4">Quick Actions</h3>
+              <h3 className="text-lg font-semibold text-gray-900 mb-4">
+                Quick Actions
+              </h3>
               <div className="flex flex-wrap gap-3">
                 <Button
                   onClick={() => {
@@ -405,7 +451,9 @@ export function KVBucketDetailPage() {
                 </h3>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">Key</label>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                      Key
+                    </label>
                     <Input
                       ref={keyInputRef}
                       value={newKey}
@@ -419,7 +467,9 @@ export function KVBucketDetailPage() {
                     />
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">Value</label>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                      Value
+                    </label>
                     <Input
                       value={newValue}
                       onChange={(e) => setNewValue(e.target.value)}
@@ -433,10 +483,7 @@ export function KVBucketDetailPage() {
                   </div>
                 </div>
                 <div className="flex justify-end space-x-3 mt-4">
-                  <Button
-                    variant="outline"
-                    onClick={handleCancelAddKey}
-                  >
+                  <Button variant="outline" onClick={handleCancelAddKey}>
                     Cancel
                   </Button>
                   <Button
@@ -464,7 +511,7 @@ export function KVBucketDetailPage() {
             {keysLoading ? (
               <div className="bg-white rounded-lg border border-gray-200 p-8">
                 <div className="text-center">
-                  <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-indigo-600 mx-auto mb-4"></div>
+                  <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-indigo-600 mx-auto mb-4" />
                   <p className="text-gray-500">Loading keys...</p>
                 </div>
               </div>
@@ -479,13 +526,14 @@ export function KVBucketDetailPage() {
                 <div className="text-center">
                   <Key className="mx-auto h-16 w-16 text-gray-300 mb-4" />
                   <h3 className="text-lg font-medium text-gray-900 mb-2">
-                    {keys.length === 0 ? 'No Keys Found' : 'No Keys Match Your Search'}
+                    {keys.length === 0
+                      ? 'No Keys Found'
+                      : 'No Keys Match Your Search'}
                   </h3>
                   <p className="text-gray-500 mb-6">
-                    {keys.length === 0 
+                    {keys.length === 0
                       ? 'Add your first key-value pair to get started.'
-                      : 'Try adjusting your search term.'
-                    }
+                      : 'Try adjusting your search term.'}
                   </p>
                   {keys.length === 0 && (
                     <Button onClick={() => setIsAddingKey(true)}>
@@ -523,7 +571,7 @@ export function KVBucketDetailPage() {
                             <Copy className="w-3 h-3" />
                           </Button>
                         </div>
-                        
+
                         <div>
                           {editingKey === entry.key ? (
                             <Input
@@ -538,7 +586,9 @@ export function KVBucketDetailPage() {
                                   {entry.value}
                                 </code>
                               ) : (
-                                <span className="text-gray-400 text-sm">••••••••</span>
+                                <span className="text-gray-400 text-sm">
+                                  ••••••••
+                                </span>
                               )}
                               <Button
                                 size="sm"
@@ -561,7 +611,7 @@ export function KVBucketDetailPage() {
                         <div className="text-sm text-gray-500">
                           #{entry.revision}
                         </div>
-                        
+
                         <div className="flex items-center space-x-2">
                           {editingKey === entry.key ? (
                             <>
@@ -585,7 +635,9 @@ export function KVBucketDetailPage() {
                               <Button
                                 size="sm"
                                 variant="ghost"
-                                onClick={() => handleEditKey(entry.key, entry.value)}
+                                onClick={() =>
+                                  handleEditKey(entry.key, entry.value)
+                                }
                                 className="h-6 w-6 p-0"
                               >
                                 <Edit3 className="w-3 h-3" />

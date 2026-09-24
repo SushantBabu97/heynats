@@ -1,19 +1,19 @@
-import { Link, useLocation } from 'react-router-dom';
+import {
+  BarChart3,
+  ChevronLeft,
+  Database,
+  Headphones,
+  LayoutDashboard,
+  Send,
+} from 'lucide-react';
 import { useState } from 'react';
+import { Link, useLocation } from 'react-router-dom';
 import {
   Tooltip,
   TooltipContent,
   TooltipProvider,
   TooltipTrigger,
 } from '@/components/ui/tooltip';
-import {
-  LayoutDashboard,
-  ChevronLeft,
-  BarChart3,
-  Database,
-  Send,
-  Headphones,
-} from 'lucide-react';
 
 interface NavItemProps {
   name: string;
@@ -55,7 +55,7 @@ const NavItem = ({ name, path, icon, small, isActive }: NavItemProps) => {
 const Sidebar = () => {
   const location = useLocation();
   const [small, setSmall] = useState(false);
-  
+
   const navItems = [
     {
       name: 'Dashboard',
@@ -89,10 +89,12 @@ const Sidebar = () => {
     },
   ];
 
-  const bottomNavItems:NavItemProps [] = [];
+  const bottomNavItems: NavItemProps[] = [];
 
   const isActive = (itemPath: string, exact = false) => {
-    return exact ? location.pathname === itemPath : location.pathname.startsWith(itemPath);
+    return exact
+      ? location.pathname === itemPath
+      : location.pathname.startsWith(itemPath);
   };
 
   return (
@@ -120,14 +122,24 @@ const Sidebar = () => {
           >
             {small ? (
               <div className="w-8 h-8 bg-indigo-600 rounded-full flex items-center justify-center">
-                <img src="/heynats.jpg" className="w-full h-full object-cover" alt="HeyNATS logo" />
+                <img
+                  src="/heynats.jpg"
+                  className="w-full h-full object-cover"
+                  alt="HeyNATS logo"
+                />
               </div>
             ) : (
               <div className="flex items-center">
                 <div className="w-8 h-8 bg-indigo-600 rounded-full flex items-center justify-center overflow-hidden mr-3">
-                  <img src="/heynats.jpg" className="w-full h-full object-cover" alt="HeyNATS logo" />
+                  <img
+                    src="/heynats.jpg"
+                    className="w-full h-full object-cover"
+                    alt="HeyNATS logo"
+                  />
                 </div>
-                <h1 className="text-xl font-semibold text-gray-900">Hey NATS</h1>
+                <h1 className="text-xl font-semibold text-gray-900">
+                  Hey NATS
+                </h1>
               </div>
             )}
           </div>
@@ -194,6 +206,5 @@ const Sidebar = () => {
     </div>
   );
 };
-
 
 export { Sidebar };

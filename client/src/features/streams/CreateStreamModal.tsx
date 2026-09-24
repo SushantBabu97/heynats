@@ -1,7 +1,7 @@
 import { useState } from 'react';
-import { StreamConfig } from '@/lib/api';
 import { Button } from '@/components/ui/button';
 import { TagInput } from '@/components/ui/tag-input';
+import type { StreamConfig } from '@/lib/api';
 
 interface CreateStreamModalProps {
   isOpen: boolean;
@@ -10,7 +10,12 @@ interface CreateStreamModalProps {
   isLoading?: boolean;
 }
 
-export function CreateStreamModal({ isOpen, onClose, onSubmit, isLoading = false }: CreateStreamModalProps) {
+export function CreateStreamModal({
+  isOpen,
+  onClose,
+  onSubmit,
+  isLoading = false,
+}: CreateStreamModalProps) {
   const [formData, setFormData] = useState({
     name: '',
     subjects: [] as string[],
@@ -31,7 +36,7 @@ export function CreateStreamModal({ isOpen, onClose, onSubmit, isLoading = false
   const handleSubjectsChange = (subjects: string[]) => {
     setFormData({
       ...formData,
-      subjects
+      subjects,
     });
     // Clear subject error if it exists
     if (errors.subjects) {
@@ -42,14 +47,15 @@ export function CreateStreamModal({ isOpen, onClose, onSubmit, isLoading = false
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     // Validation
     const newErrors: Record<string, string> = {};
-    
+
     if (!formData.name.trim()) {
       newErrors.name = 'Stream name is required';
     } else if (!/^[a-zA-Z0-9_-]+$/.test(formData.name)) {
-      newErrors.name = 'Stream name can only contain letters, numbers, underscores, and hyphens';
+      newErrors.name =
+        'Stream name can only contain letters, numbers, underscores, and hyphens';
     }
 
     if (formData.subjects.length === 0) {
@@ -75,16 +81,16 @@ export function CreateStreamModal({ isOpen, onClose, onSubmit, isLoading = false
 
     // Add limits if specified
     if (formData.max_msgs) {
-      config.max_msgs = parseInt(formData.max_msgs) || -1;
+      config.max_msgs = Number.parseInt(formData.max_msgs) || -1;
     }
     if (formData.max_bytes) {
-      config.max_bytes = parseInt(formData.max_bytes) || -1;
+      config.max_bytes = Number.parseInt(formData.max_bytes) || -1;
     }
     if (formData.max_age) {
-      config.max_age = parseInt(formData.max_age) * 1000000000 || 0; // Convert seconds to nanoseconds
+      config.max_age = Number.parseInt(formData.max_age) * 1000000000 || 0; // Convert seconds to nanoseconds
     }
     if (formData.max_consumers) {
-      config.max_consumers = parseInt(formData.max_consumers) || -1;
+      config.max_consumers = Number.parseInt(formData.max_consumers) || -1;
     }
 
     try {
@@ -122,12 +128,29 @@ export function CreateStreamModal({ isOpen, onClose, onSubmit, isLoading = false
       <div className="bg-white rounded-lg shadow-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
         <div className="flex items-center justify-between p-6 border-b border-gray-200">
           <div>
-            <h2 className="text-2xl font-bold text-gray-900">Create New Stream</h2>
+            <h2 className="text-2xl font-bold text-gray-900">
+              Create New Stream
+            </h2>
             <p className="text-gray-600">Configure a new JetStream stream</p>
           </div>
-          <Button variant="ghost" size="sm" onClick={handleClose} disabled={isLoading}>
-            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={handleClose}
+            disabled={isLoading}
+          >
+            <svg
+              className="w-5 h-5"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M6 18L18 6M6 6l12 12"
+              />
             </svg>
           </Button>
         </div>
@@ -135,8 +158,10 @@ export function CreateStreamModal({ isOpen, onClose, onSubmit, isLoading = false
         <form onSubmit={handleSubmit} className="p-6 space-y-6">
           {/* Basic Configuration */}
           <div className="space-y-4">
-            <h3 className="text-lg font-semibold text-gray-900">Basic Configuration</h3>
-            
+            <h3 className="text-lg font-semibold text-gray-900">
+              Basic Configuration
+            </h3>
+
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">
                 Stream Name *
@@ -144,14 +169,18 @@ export function CreateStreamModal({ isOpen, onClose, onSubmit, isLoading = false
               <input
                 type="text"
                 value={formData.name}
-                onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                onChange={(e) =>
+                  setFormData({ ...formData, name: e.target.value })
+                }
                 className={`w-full px-3 py-2 border rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 ${
                   errors.name ? 'border-red-300' : 'border-gray-300'
                 }`}
                 placeholder="my_stream"
                 disabled={isLoading}
               />
-              {errors.name && <p className="text-red-500 text-sm mt-1">{errors.name}</p>}
+              {errors.name && (
+                <p className="text-red-500 text-sm mt-1">{errors.name}</p>
+              )}
             </div>
 
             <div>
@@ -166,7 +195,8 @@ export function CreateStreamModal({ isOpen, onClose, onSubmit, isLoading = false
                 error={errors.subjects}
               />
               <p className="text-gray-500 text-sm mt-1">
-                Type subjects and press Enter to add them as chips. Use commas to separate multiple subjects at once.
+                Type subjects and press Enter to add them as chips. Use commas
+                to separate multiple subjects at once.
               </p>
             </div>
 
@@ -177,7 +207,12 @@ export function CreateStreamModal({ isOpen, onClose, onSubmit, isLoading = false
                 </label>
                 <select
                   value={formData.storage}
-                  onChange={(e) => setFormData({ ...formData, storage: e.target.value as 'file' | 'memory' })}
+                  onChange={(e) =>
+                    setFormData({
+                      ...formData,
+                      storage: e.target.value as 'file' | 'memory',
+                    })
+                  }
                   className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
                   disabled={isLoading}
                 >
@@ -192,7 +227,15 @@ export function CreateStreamModal({ isOpen, onClose, onSubmit, isLoading = false
                 </label>
                 <select
                   value={formData.retention}
-                  onChange={(e) => setFormData({ ...formData, retention: e.target.value as 'limits' | 'interest' | 'workqueue' })}
+                  onChange={(e) =>
+                    setFormData({
+                      ...formData,
+                      retention: e.target.value as
+                        | 'limits'
+                        | 'interest'
+                        | 'workqueue',
+                    })
+                  }
                   className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
                   disabled={isLoading}
                 >
@@ -207,7 +250,7 @@ export function CreateStreamModal({ isOpen, onClose, onSubmit, isLoading = false
           {/* Limits */}
           <div className="space-y-4">
             <h3 className="text-lg font-semibold text-gray-900">Limits</h3>
-            
+
             <div className="grid grid-cols-2 gap-4">
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">
@@ -216,7 +259,9 @@ export function CreateStreamModal({ isOpen, onClose, onSubmit, isLoading = false
                 <input
                   type="number"
                   value={formData.max_msgs}
-                  onChange={(e) => setFormData({ ...formData, max_msgs: e.target.value })}
+                  onChange={(e) =>
+                    setFormData({ ...formData, max_msgs: e.target.value })
+                  }
                   className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
                   placeholder="No limit"
                   min="-1"
@@ -231,7 +276,9 @@ export function CreateStreamModal({ isOpen, onClose, onSubmit, isLoading = false
                 <input
                   type="number"
                   value={formData.max_bytes}
-                  onChange={(e) => setFormData({ ...formData, max_bytes: e.target.value })}
+                  onChange={(e) =>
+                    setFormData({ ...formData, max_bytes: e.target.value })
+                  }
                   className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
                   placeholder="No limit"
                   min="-1"
@@ -246,7 +293,9 @@ export function CreateStreamModal({ isOpen, onClose, onSubmit, isLoading = false
                 <input
                   type="number"
                   value={formData.max_age}
-                  onChange={(e) => setFormData({ ...formData, max_age: e.target.value })}
+                  onChange={(e) =>
+                    setFormData({ ...formData, max_age: e.target.value })
+                  }
                   className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
                   placeholder="No limit"
                   min="-1"
@@ -261,7 +310,9 @@ export function CreateStreamModal({ isOpen, onClose, onSubmit, isLoading = false
                 <input
                   type="number"
                   value={formData.max_consumers}
-                  onChange={(e) => setFormData({ ...formData, max_consumers: e.target.value })}
+                  onChange={(e) =>
+                    setFormData({ ...formData, max_consumers: e.target.value })
+                  }
                   className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
                   placeholder="No limit"
                   min="-1"
@@ -273,8 +324,10 @@ export function CreateStreamModal({ isOpen, onClose, onSubmit, isLoading = false
 
           {/* Advanced Options */}
           <div className="space-y-4">
-            <h3 className="text-lg font-semibold text-gray-900">Advanced Options</h3>
-            
+            <h3 className="text-lg font-semibold text-gray-900">
+              Advanced Options
+            </h3>
+
             <div className="grid grid-cols-2 gap-4">
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">
@@ -283,7 +336,12 @@ export function CreateStreamModal({ isOpen, onClose, onSubmit, isLoading = false
                 <input
                   type="number"
                   value={formData.num_replicas}
-                  onChange={(e) => setFormData({ ...formData, num_replicas: parseInt(e.target.value) || 1 })}
+                  onChange={(e) =>
+                    setFormData({
+                      ...formData,
+                      num_replicas: Number.parseInt(e.target.value) || 1,
+                    })
+                  }
                   className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
                   min="1"
                   max="5"
@@ -297,7 +355,12 @@ export function CreateStreamModal({ isOpen, onClose, onSubmit, isLoading = false
                 </label>
                 <select
                   value={formData.discard}
-                  onChange={(e) => setFormData({ ...formData, discard: e.target.value as 'old' | 'new' })}
+                  onChange={(e) =>
+                    setFormData({
+                      ...formData,
+                      discard: e.target.value as 'old' | 'new',
+                    })
+                  }
                   className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
                   disabled={isLoading}
                 >
@@ -312,29 +375,45 @@ export function CreateStreamModal({ isOpen, onClose, onSubmit, isLoading = false
                 <input
                   type="checkbox"
                   checked={formData.allow_direct}
-                  onChange={(e) => setFormData({ ...formData, allow_direct: e.target.checked })}
+                  onChange={(e) =>
+                    setFormData({ ...formData, allow_direct: e.target.checked })
+                  }
                   className="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
                   disabled={isLoading}
                 />
-                <span className="ml-2 text-sm text-gray-700">Allow Direct Access</span>
+                <span className="ml-2 text-sm text-gray-700">
+                  Allow Direct Access
+                </span>
               </label>
 
               <label className="flex items-center">
                 <input
                   type="checkbox"
                   checked={formData.allow_msg_ttl}
-                  onChange={(e) => setFormData({ ...formData, allow_msg_ttl: e.target.checked })}
+                  onChange={(e) =>
+                    setFormData({
+                      ...formData,
+                      allow_msg_ttl: e.target.checked,
+                    })
+                  }
                   className="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
                   disabled={isLoading}
                 />
-                <span className="ml-2 text-sm text-gray-700">Allow Message TTL</span>
+                <span className="ml-2 text-sm text-gray-700">
+                  Allow Message TTL
+                </span>
               </label>
             </div>
           </div>
 
           {/* Actions */}
           <div className="flex justify-end gap-3 pt-6 border-t border-gray-200">
-            <Button type="button" variant="outline" onClick={handleClose} disabled={isLoading}>
+            <Button
+              type="button"
+              variant="outline"
+              onClick={handleClose}
+              disabled={isLoading}
+            >
               Cancel
             </Button>
             <Button type="submit" disabled={isLoading}>

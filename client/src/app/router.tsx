@@ -1,17 +1,17 @@
 import { createBrowserRouter } from 'react-router-dom';
-import { RootLayout } from '@/app/layouts/RootLayout';
 import { DashboardLayout } from '@/app/layouts/DashboardLayout';
+import { RootLayout } from '@/app/layouts/RootLayout';
+import { ErrorBoundary } from '@/components/ErrorBoundary';
 import { LoginPage } from '@/features/connection/LoginPage';
+import { AccountPage } from '@/features/dashboard/AccountPage';
 import { DashboardPage } from '@/features/dashboard/DashboardPage';
-import { StreamsPage } from '@/features/streams/StreamsPage';
-import { StreamDetailPage } from '@/features/streams/StreamDetailPage';
 import { KeyValuePage } from '@/features/kv/KeyValuePage';
 import { KVBucketDetailPage } from '@/features/kv/KVBucketDetailPage';
 import { PublishPage } from '@/features/messaging/PublishPage';
 import { SubscribePage } from '@/features/messaging/SubscribePage';
-import { AccountPage } from '@/features/dashboard/AccountPage';
+import { StreamDetailPage } from '@/features/streams/StreamDetailPage';
+import { StreamsPage } from '@/features/streams/StreamsPage';
 import { ProtectedRoute } from './ProtectedRoute';
-import { ErrorBoundary } from '@/components/ErrorBoundary';
 
 export const router = createBrowserRouter([
   {

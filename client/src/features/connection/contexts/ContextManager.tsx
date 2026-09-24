@@ -1,21 +1,32 @@
-import { useState } from "react";
-import { Plus, Trash2, Star, Edit2 } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { useNATSContexts } from "./useNATSContexts";
-import type { NATSContext } from "./types";
-import { ContextForm } from "./ContextForm";
+import { Edit2, Plus, Star, Trash2 } from 'lucide-react';
+import { useState } from 'react';
+import { Button } from '@/components/ui/button';
+import { ContextForm } from './ContextForm';
+import type { NATSContext } from './types';
+import { useNATSContexts } from './useNATSContexts';
 
 interface ContextManagerProps {
   onSelectContext?: (context: NATSContext) => void;
   onClose?: () => void;
 }
 
-export function ContextManager({ onSelectContext, onClose }: ContextManagerProps) {
+export function ContextManager({
+  onSelectContext,
+  onClose,
+}: ContextManagerProps) {
   const [showForm, setShowForm] = useState(false);
   const [editingId, setEditingId] = useState<string | null>(null);
-  const [showDeleteConfirm, setShowDeleteConfirm] = useState<string | null>(null);
-  const { contexts, isLoading, error, deleteContext, setDefaultContext, refreshContexts } =
-    useNATSContexts();
+  const [showDeleteConfirm, setShowDeleteConfirm] = useState<string | null>(
+    null
+  );
+  const {
+    contexts,
+    isLoading,
+    error,
+    deleteContext,
+    setDefaultContext,
+    refreshContexts,
+  } = useNATSContexts();
 
   const handleDeleteClick = (id: string) => {
     setShowDeleteConfirm(id);
@@ -74,7 +85,9 @@ export function ContextManager({ onSelectContext, onClose }: ContextManagerProps
       ) : (
         <>
           <div className="flex justify-between items-center">
-            <h3 className="text-lg font-semibold text-gray-900">Saved Contexts</h3>
+            <h3 className="text-lg font-semibold text-gray-900">
+              Saved Contexts
+            </h3>
             <Button
               onClick={() => {
                 setEditingId(null);
@@ -112,7 +125,9 @@ export function ContextManager({ onSelectContext, onClose }: ContextManagerProps
                     type="button"
                   >
                     <div className="flex items-center gap-2">
-                      <h4 className="font-medium text-gray-900">{context.name}</h4>
+                      <h4 className="font-medium text-gray-900">
+                        {context.name}
+                      </h4>
                       {context.isDefault && (
                         <span className="text-xs bg-indigo-100 text-indigo-800 px-2 py-1 rounded">
                           Default
@@ -120,13 +135,18 @@ export function ContextManager({ onSelectContext, onClose }: ContextManagerProps
                       )}
                     </div>
                     {context.description && (
-                      <p className="text-sm text-gray-600 mt-1">{context.description}</p>
+                      <p className="text-sm text-gray-600 mt-1">
+                        {context.description}
+                      </p>
                     )}
                     <p className="text-xs text-gray-500 mt-2">
                       {context.host}:{context.port}
                       {context.username && ` (${context.username})`}
                     </p>
-                    <div className="flex items-center gap-2" onClick={(e) => e.stopPropagation()}>
+                    <div
+                      className="flex items-center gap-2"
+                      onClick={(e) => e.stopPropagation()}
+                    >
                       {!context.isDefault && (
                         <button
                           onClick={(e) => {
@@ -177,8 +197,9 @@ export function ContextManager({ onSelectContext, onClose }: ContextManagerProps
                           Delete Context?
                         </h3>
                         <p className="text-gray-600 mb-6">
-                          Are you sure you want to delete <strong>{context.name}</strong>? This
-                          action cannot be undone.
+                          Are you sure you want to delete{' '}
+                          <strong>{context.name}</strong>? This action cannot be
+                          undone.
                         </p>
                         <div className="flex gap-3 justify-end">
                           <Button
@@ -206,7 +227,9 @@ export function ContextManager({ onSelectContext, onClose }: ContextManagerProps
         </>
       )}
 
-      {editingId && !showForm && <ContextForm editingId={editingId} onClose={handleFormClose} />}
+      {editingId && !showForm && (
+        <ContextForm editingId={editingId} onClose={handleFormClose} />
+      )}
     </div>
   );
 }
