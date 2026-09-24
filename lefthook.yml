@@ -11,7 +11,7 @@ pre-commit:
     frontend-biome:
       root: "client/"
       glob: "client/**/*.{js,ts,jsx,tsx,json,jsonc}"
-      run: npx @biomejs/biome@2.2.2 check --write --diagnostic-level=error {staged_files}
+      run: npx @biomejs/biome@2.5.14 check --write --diagnostic-level=error {staged_files}
       stage_fixed: true
     
     # Go formatting
