@@ -16,6 +16,7 @@ COPY go.mod go.sum ./
 RUN go mod download
 
 COPY . .
+COPY --from=client-builder /app/client/dist ./client/dist
 
 RUN GOOS=$TARGETOS GOARCH=$TARGETARCH CGO_ENABLED=0 go build -ldflags "-s -w" -o bin/server main.go
 
@@ -24,9 +25,6 @@ RUN apk --no-cache add ca-certificates
 WORKDIR /app
 
 COPY --from=server-builder /app/bin/server .
-
-COPY --from=client-builder /app/client/dist ./client/dist
-COPY --from=client-builder /app/client/public ./client/public
 
 EXPOSE 5000
 

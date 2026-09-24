@@ -6,7 +6,6 @@ toolchain go1.24.7
 
 require (
 	github.com/dustin/go-humanize v1.0.1
-	github.com/gin-gonic/contrib v0.0.0-20250521004450-2b1292699c15
 	github.com/gin-gonic/gin v1.11.0
 	github.com/google/uuid v1.6.0
 	github.com/nats-io/nats.go v1.46.0
