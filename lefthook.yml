@@ -9,8 +9,9 @@ pre-commit:
   commands:
     # Frontend linting and formatting with Biome
     frontend-biome:
+      root: "client/"
       glob: "client/**/*.{js,ts,jsx,tsx,json,jsonc}"
-      run: cd client && npx biome@2.2.2 check --write --diagnostic-level=error {staged_files} && git add {staged_files}
+      run: npx @biomejs/biome@2.2.2 check --write --diagnostic-level=error {staged_files}
       stage_fixed: true
     
     # Go formatting

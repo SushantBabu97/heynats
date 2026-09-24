@@ -6,9 +6,9 @@
   "scripts": {
     "dev": "vite",
     "build": "tsc -b && vite build",
-    "lint": "npx biome@2.2.2 check .",
-    "lint:fix": "npx biome@2.2.2 check --write .",
-    "format": "npx biome@2.2.2 format --write .",
+    "lint": "npx @biomejs/biome@2.2.2 check .",
+    "lint:fix": "npx @biomejs/biome@2.2.2 check --write .",
+    "format": "npx @biomejs/biome@2.2.2 format --write .",
     "typecheck": "tsc --noEmit",
     "preview": "vite preview"
   },
