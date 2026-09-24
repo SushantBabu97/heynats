@@ -92,8 +92,8 @@ Documentation improvements are always appreciated:
 
 ```bash
 # Required tools
-go version    # 1.24.0+
-node --version # 18+
+go version    # 1.26+
+node --version # 22+
 pnpm --version
 
 # Required for development (enforces code quality)

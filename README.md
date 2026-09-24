@@ -7,8 +7,8 @@
 **A modern, web-based administration interface for NATS Server**
 
 [![Built with React](https://img.shields.io/badge/React-19-blue.svg)](https://reactjs.org/)
-[![Go Version](https://img.shields.io/badge/Go-1.24.0+-00ADD8.svg)](https://golang.org/)
-[![TypeScript](https://img.shields.io/badge/TypeScript-5.7+-3178C6.svg)](https://www.typescriptlang.org/)
+[![Go Version](https://img.shields.io/badge/Go-1.26+-00ADD8.svg)](https://golang.org/)
+[![TypeScript](https://img.shields.io/badge/TypeScript-7+-3178C6.svg)](https://www.typescriptlang.org/)
 [![License](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE.md)
 
 [Demo](#-demo) •
@@ -99,7 +99,7 @@ Authentication: None required
 - **shadcn/ui** - Beautiful, accessible component library
 
 ### Backend
-- **Go 1.24.0+** - High-performance backend
+- **Go 1.26+** - High-performance backend
 - **Gin Framework** - Fast HTTP web framework
 - **NATS Go Client** - Official NATS client library
 - **Graceful Shutdown** - Proper resource cleanup
@@ -156,8 +156,8 @@ That's it! HeyNATS will be running and ready to connect to your NATS server.
 ### Prerequisites
 
 #### System Requirements
-- **Go 1.24.0 or later** - [Download Go](https://golang.org/dl/)
-- **Node.js 18+ and pnpm** - [Install Node.js](https://nodejs.org/) and [Install pnpm](https://pnpm.io/installation)
+- **Go 1.26 or later** - [Download Go](https://golang.org/dl/)
+- **Node.js 22+ and pnpm** - [Install Node.js](https://nodejs.org/) and [Install pnpm](https://pnpm.io/installation)
 - **NATS Server** - [Install NATS Server](https://docs.nats.io/running-a-nats-service/introduction/installation)
 
 ```bash
@@ -165,8 +165,8 @@ That's it! HeyNATS will be running and ready to connect to your NATS server.
 npm install -g pnpm
 
 # Verify installations
-go version    # Should be 1.24.0+
-node --version # Should be 18+
+go version    # Should be 1.26+
+node --version # Should be 22+
 pnpm --version
 ```
 

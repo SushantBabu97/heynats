@@ -1,12 +1,12 @@
 FROM node:24.11.0-trixie AS client-builder
 WORKDIR /app/client
 RUN corepack enable
-COPY client/package.json client/pnpm-lock.yaml ./
+COPY client/package.json client/pnpm-lock.yaml client/pnpm-workspace.yaml ./
 RUN pnpm install
 COPY client/ ./
 RUN pnpm build
 
-FROM golang:1.24.7-alpine3.22 AS server-builder
+FROM golang:1.27-alpine AS server-builder
 WORKDIR /app
 ARG TARGETOS=linux
 ARG TARGETARCH
