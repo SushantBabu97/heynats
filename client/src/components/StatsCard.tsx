@@ -1,4 +1,4 @@
-import { formatBytes } from '../lib/utils';
+import { formatBytes } from '@/lib/utils';
 
 interface StatsCardProps {
   title: string;

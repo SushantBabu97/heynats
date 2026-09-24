@@ -44,10 +44,12 @@ The SPA is embedded into the Go binary (`//go:embed all:client/dist` in `main.go
 - All NATS operations live as methods on `pkg.NATSCredential` (`internal/pkg/nats_client.go`, KV in `internal/pkg/kv.go`); API handlers are thin wrappers.
 - Subscriptions (`internal/api/subscribe.go`) stream messages to the browser over SSE (`text/event-stream`).
 
-**Frontend** (`client/src`):
-- `lib/api.ts`: typed fetch client for `/api` (cookie-based, `ApiError` class). `hooks/` (`useNATS`, `useKV`, `useNATSContexts`) wrap it in TanStack Query hooks with query-key factories and polling refetch.
-- `router/index.tsx`: React Router v7; `ProtectedRoute` gates dashboard routes on connection status, redirecting to login (`/`).
-- "Contexts" (saved connection profiles) are stored client-side only, in IndexedDB with localStorage fallback (`services/contextStorage.ts`).
-- UI: Tailwind 4 + shadcn/ui components in `components/ui`; `@/` aliases `client/src`.
+**Frontend** (`client/src`), organised by feature:
+- `app/`: router, `QueryProvider`, `ProtectedRoute` (gates `/dashboard/*` on connection status, redirects to `/`), layouts + `Sidebar`.
+- `features/<name>/` (`connection`, `dashboard`, `streams`, `kv`, `messaging`): each holds its pages, components and hooks flat in one folder. `features/connection/useNATS.ts` is the connection-status hook used app-wide.
+- `components/`: cross-feature pieces (`ErrorBoundary`, `StatsCard`); `components/ui/` is shadcn only.
+- `lib/api.ts`: typed fetch client for `/api` (cookie-based, `ApiError`); hooks wrap it in TanStack Query with polling refetch.
+- Saved connection profiles ("contexts") live client-side only, in IndexedDB with localStorage fallback (`features/connection/contexts/contextStorage.ts`).
+- Imports: `./x` within the same folder, `@/…` (aliases `client/src`) everywhere else. Tailwind 4.
 
 More detail: `docs/ARCHITECTURE.md`, `docs/CONNECTION_MANAGEMENT.md`, `client/ERROR_HANDLING.md`, `client/STREAMS_README.md`.
