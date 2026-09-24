@@ -11,7 +11,7 @@ export function AccountPage() {
           </p>
         </div>
 
-        <div className="bg-white rounded-lg border border-gray-200 p-6">
+        <div className="bg-card rounded-lg border border-gray-200 p-6">
           <div className="text-center">
             <svg
               className="mx-auto h-16 w-16 text-gray-300 mb-4"

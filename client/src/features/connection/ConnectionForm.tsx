@@ -248,7 +248,7 @@ export function ConnectionForm({ onConnect, isLoading }: ConnectionFormProps) {
                 type="button"
                 onClick={() => setShowContextManager(true)}
                 disabled={isLoading}
-                className="group relative w-full flex justify-center items-center gap-2 py-2 px-4 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 disabled:opacity-50"
+                className="group relative w-full flex justify-center items-center gap-2 py-2 px-4 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-card hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 disabled:opacity-50"
                 aria-label="Manage saved contexts"
               >
                 <History size={18} />

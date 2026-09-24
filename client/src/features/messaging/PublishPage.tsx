@@ -199,7 +199,7 @@ export function PublishPage() {
 
           {/* Single Message Tab */}
           <TabsContent value="single" className="space-y-4">
-            <div className="bg-white rounded-lg border border-gray-200 p-6">
+            <div className="bg-card rounded-lg border border-gray-200 p-6">
               <h3 className="text-lg font-medium text-gray-900 mb-4">
                 Publish Single Message
               </h3>
@@ -324,7 +324,7 @@ export function PublishPage() {
 
           {/* Batch Messages Tab */}
           <TabsContent value="batch" className="space-y-4">
-            <div className="bg-white rounded-lg border border-gray-200 p-6">
+            <div className="bg-card rounded-lg border border-gray-200 p-6">
               <h3 className="text-lg font-medium text-gray-900 mb-4">
                 Publish Batch Messages
               </h3>
@@ -443,7 +443,7 @@ export function PublishPage() {
 
           {/* Request-Reply Tab */}
           <TabsContent value="request-reply" className="space-y-4">
-            <div className="bg-white rounded-lg border border-gray-200 p-6">
+            <div className="bg-card rounded-lg border border-gray-200 p-6">
               <h3 className="text-lg font-medium text-gray-900 mb-4">
                 Request-Reply Pattern
               </h3>
@@ -602,7 +602,7 @@ export function PublishPage() {
                       <div>
                         <strong>Reply Data:</strong>
                       </div>
-                      <pre className="bg-white p-2 rounded border text-xs overflow-x-auto">
+                      <pre className="bg-card p-2 rounded border text-xs overflow-x-auto">
                         {requestReplyMutation.data.reply_data}
                       </pre>
                     </div>

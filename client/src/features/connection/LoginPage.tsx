@@ -1,5 +1,6 @@
 import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { ThemeToggle } from '@/components/ThemeToggle';
 import type { ConnectionCredentials } from '@/lib/api';
 import { ConnectionForm } from './ConnectionForm';
 import { useConnectionStatus, useConnectToNATS } from './useNATS';
@@ -28,6 +29,7 @@ export function LoginPage() {
 
   return (
     <div>
+      <ThemeToggle className="fixed top-4 right-4 z-10" />
       <ConnectionForm
         onConnect={handleConnect}
         isLoading={connectMutation.isPending}

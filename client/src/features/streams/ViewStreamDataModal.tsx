@@ -278,7 +278,7 @@ function MessageDetailModal({
         className="flex max-h-[90vh] flex-col gap-0 overflow-hidden p-0 sm:max-w-4xl"
       >
         {/* Header */}
-        <div className="flex items-center justify-between p-6 border-b border-gray-200 sticky top-0 bg-white z-10">
+        <div className="flex items-center justify-between p-6 border-b border-gray-200 sticky top-0 bg-card z-10">
           <div>
             <DialogTitle className="text-2xl font-bold text-gray-900">
               Message Details - Sequence #{message.sequence}
@@ -608,7 +608,7 @@ export function ViewStreamDataModal({
                 <input
                   type="text"
                   id="stream-search"
-                  className="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md leading-5 bg-white placeholder-gray-500 focus:outline-none focus:placeholder-gray-400 focus:ring-1 focus:ring-blue-500 focus:border-blue-500"
+                  className="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md leading-5 bg-card placeholder-gray-500 focus:outline-none focus:placeholder-gray-400 focus:ring-1 focus:ring-blue-500 focus:border-blue-500"
                   placeholder="Search by subject or data..."
                   value={searchTerm}
                   onChange={(e) => handleSearchChange(e.target.value)}

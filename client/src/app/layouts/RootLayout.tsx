@@ -10,6 +10,12 @@ export function RootLayout() {
         <Outlet />
         <DevTools />
         <Toaster
+          // ponytail: read once per render; a manual theme toggle updates toasts on next reload
+          theme={
+            document.documentElement.classList.contains('dark')
+              ? 'dark'
+              : 'light'
+          }
           richColors
           position="top-right"
           expand={true}

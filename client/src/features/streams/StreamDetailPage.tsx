@@ -393,7 +393,7 @@ export function StreamDetailPage() {
             </div>
 
             {/* Stream Configuration */}
-            <div className="bg-white rounded-lg border border-gray-200 p-4 mb-4 shrink-0">
+            <div className="bg-card rounded-lg border border-gray-200 p-4 mb-4 shrink-0">
               <h2 className="text-base font-semibold mb-3">
                 Stream Configuration
               </h2>
@@ -429,7 +429,7 @@ export function StreamDetailPage() {
             </div>
 
             {/* Virtualized Subjects List */}
-            <div className="bg-white rounded-lg border border-gray-200 p-4 flex-1 flex flex-col min-h-0">
+            <div className="bg-card rounded-lg border border-gray-200 p-4 flex-1 flex flex-col min-h-0">
               <div className="flex items-center justify-between mb-3 shrink-0">
                 <div className="flex items-center gap-4 w-full">
                   <h2 className="text-base font-semibold">
@@ -638,7 +638,7 @@ export function StreamDetailPage() {
             })()}
 
             {/* Live Messages Panel - Tabbed Interface */}
-            <div className="bg-white rounded-lg border border-gray-200 flex-1 flex flex-col overflow-y-auto">
+            <div className="bg-card rounded-lg border border-gray-200 flex-1 flex flex-col overflow-y-auto">
               <div className="px-3 py-2 bg-gray-50 shrink-0">
                 <div className="flex items-center justify-between mb-2">
                   {(() => {
@@ -902,7 +902,7 @@ export function StreamDetailPage() {
                       <h3 className="font-semibold text-gray-900 mb-2 text-sm">
                         Subject
                       </h3>
-                      <p className="text-xs font-mono bg-white p-2 rounded border">
+                      <p className="text-xs font-mono bg-card p-2 rounded border">
                         {selectedMessage.subject}
                       </p>
                     </div>
@@ -910,7 +910,7 @@ export function StreamDetailPage() {
                       <h3 className="font-semibold text-gray-900 mb-2 text-sm">
                         Timestamp
                       </h3>
-                      <p className="text-xs font-mono bg-white p-2 rounded border">
+                      <p className="text-xs font-mono bg-card p-2 rounded border">
                         {new Date(selectedMessage.timestamp).toLocaleString()}
                       </p>
                     </div>

@@ -1,4 +1,5 @@
 import { Outlet, useNavigate } from 'react-router-dom';
+import { ThemeToggle } from '@/components/ThemeToggle';
 import { Button } from '@/components/ui/button';
 import {
   useAccountInfo,
@@ -31,7 +32,7 @@ export function DashboardLayout() {
       {/* Main Content */}
       <div className="flex-1 flex flex-col">
         {/* Header */}
-        <header className="bg-white border-b shrink-0 p-4 py-3 mb-0">
+        <header className="bg-card border-b shrink-0 p-4 py-3 mb-0">
           <div className="flex justify-between items-center">
             <div className="">
               <h1 className="text-xl font-bold text-gray-900">Dashboard</h1>
@@ -49,15 +50,20 @@ export function DashboardLayout() {
                 )}
               </p>
             </div>
-            <Button
-              onClick={handleDisconnect}
-              variant="outline"
-              size="sm"
-              disabled={disconnectMutation.isPending}
-              className="border-red-300 text-red-700 hover:bg-red-50"
-            >
-              {disconnectMutation.isPending ? 'Disconnecting...' : 'Disconnect'}
-            </Button>
+            <div className="flex items-center gap-2">
+              <ThemeToggle />
+              <Button
+                onClick={handleDisconnect}
+                variant="outline"
+                size="sm"
+                disabled={disconnectMutation.isPending}
+                className="border-red-300 text-red-700 hover:bg-red-50"
+              >
+                {disconnectMutation.isPending
+                  ? 'Disconnecting...'
+                  : 'Disconnect'}
+              </Button>
+            </div>
           </div>
         </header>
 

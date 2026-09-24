@@ -8,7 +8,7 @@
     --radius: 0.6rem;
   --background: oklch(0.98 0.01 300);
   --foreground: oklch(0.145 0 0);
-  --card: oklch(0.99 0.02 300 / 0.8);
+  --card: oklch(1 0 0);
   --card-foreground: oklch(0.145 0 0);
   --popover: oklch(1 0 0);
   --popover-foreground: oklch(0.145 0 0);
@@ -87,4 +87,98 @@
   body {
     @apply bg-background text-foreground;
   }
+}
+
+/* Dark theme. Semantic tokens for shadcn components, plus a palette flip:
+   ponytail: pages still use raw gray/blue/red... palette utilities, so in dark mode the gray scale is
+   mirrored (50<->950 ...) and chromatic tints (50-300) swap with their shades (700-950), while
+   400-600 stay as accents for buttons/text. Ceiling: in dark mode `gray-900` is light; new code
+   should prefer tokens (bg-card, text-muted-foreground, border-border) over raw grays. */
+.dark {
+  --background: oklch(13% 0.028 261.692);
+  --foreground: oklch(98.5% 0.002 247.839);
+  --card: oklch(21% 0.034 264.665);
+  --card-foreground: oklch(98.5% 0.002 247.839);
+  --popover: oklch(21% 0.034 264.665);
+  --popover-foreground: oklch(98.5% 0.002 247.839);
+  --primary: oklch(0.68 0.19 300);
+  --primary-foreground: oklch(0.985 0 0);
+  --secondary: oklch(27.8% 0.033 256.848);
+  --secondary-foreground: oklch(98.5% 0.002 247.839);
+  --muted: oklch(27.8% 0.033 256.848);
+  --muted-foreground: oklch(70.7% 0.022 261.325);
+  --accent: oklch(27.8% 0.033 256.848);
+  --accent-foreground: oklch(98.5% 0.002 247.839);
+  --destructive: oklch(0.704 0.191 22.216);
+  --border: oklch(1 0 0 / 10%);
+  --input: oklch(1 0 0 / 15%);
+  --ring: oklch(55.1% 0.027 264.364);
+  color-scheme: dark;
+
+  --color-gray-50: oklch(13% 0.028 261.692);
+  --color-gray-950: oklch(98.5% 0.002 247.839);
+  --color-gray-100: oklch(21% 0.034 264.665);
+  --color-gray-900: oklch(96.7% 0.003 264.542);
+  --color-gray-200: oklch(27.8% 0.033 256.848);
+  --color-gray-800: oklch(92.8% 0.006 264.531);
+  --color-gray-300: oklch(37.3% 0.034 259.733);
+  --color-gray-700: oklch(87.2% 0.01 258.338);
+  --color-gray-400: oklch(44.6% 0.03 256.802);
+  --color-gray-600: oklch(70.7% 0.022 261.325);
+  --color-blue-50: oklch(28.2% 0.091 267.935);
+  --color-blue-950: oklch(97% 0.014 254.604);
+  --color-blue-100: oklch(37.9% 0.146 265.522);
+  --color-blue-900: oklch(93.2% 0.032 255.585);
+  --color-blue-200: oklch(42.4% 0.199 265.638);
+  --color-blue-800: oklch(88.2% 0.059 254.128);
+  --color-blue-300: oklch(48.8% 0.243 264.376);
+  --color-blue-700: oklch(80.9% 0.105 251.813);
+  --color-red-50: oklch(25.8% 0.092 26.042);
+  --color-red-950: oklch(97.1% 0.013 17.38);
+  --color-red-100: oklch(39.6% 0.141 25.723);
+  --color-red-900: oklch(93.6% 0.032 17.717);
+  --color-red-200: oklch(44.4% 0.177 26.899);
+  --color-red-800: oklch(88.5% 0.062 18.334);
+  --color-red-300: oklch(50.5% 0.213 27.518);
+  --color-red-700: oklch(80.8% 0.114 19.571);
+  --color-indigo-50: oklch(25.7% 0.09 281.288);
+  --color-indigo-950: oklch(96.2% 0.018 272.314);
+  --color-indigo-100: oklch(35.9% 0.144 278.697);
+  --color-indigo-900: oklch(93% 0.034 272.788);
+  --color-indigo-200: oklch(39.8% 0.195 277.366);
+  --color-indigo-800: oklch(87% 0.065 274.039);
+  --color-indigo-300: oklch(45.7% 0.24 277.023);
+  --color-indigo-700: oklch(78.5% 0.115 274.713);
+  --color-green-50: oklch(26.6% 0.065 152.934);
+  --color-green-950: oklch(98.2% 0.018 155.826);
+  --color-green-100: oklch(39.3% 0.095 152.535);
+  --color-green-900: oklch(96.2% 0.044 156.743);
+  --color-green-200: oklch(44.8% 0.119 151.328);
+  --color-green-800: oklch(92.5% 0.084 155.995);
+  --color-green-300: oklch(52.7% 0.154 150.069);
+  --color-green-700: oklch(87.1% 0.15 154.449);
+  --color-yellow-50: oklch(28.6% 0.066 53.813);
+  --color-yellow-950: oklch(98.7% 0.026 102.212);
+  --color-yellow-100: oklch(42.1% 0.095 57.708);
+  --color-yellow-900: oklch(97.3% 0.071 103.193);
+  --color-yellow-200: oklch(47.6% 0.114 61.907);
+  --color-yellow-800: oklch(94.5% 0.129 101.54);
+  --color-yellow-300: oklch(55.4% 0.135 66.442);
+  --color-yellow-700: oklch(90.5% 0.182 98.111);
+  --color-orange-50: oklch(26.6% 0.079 36.259);
+  --color-orange-950: oklch(98% 0.016 73.684);
+  --color-orange-100: oklch(40.8% 0.123 38.172);
+  --color-orange-900: oklch(95.4% 0.038 75.164);
+  --color-orange-200: oklch(47% 0.157 37.304);
+  --color-orange-800: oklch(90.1% 0.076 70.697);
+  --color-orange-300: oklch(55.3% 0.195 38.402);
+  --color-orange-700: oklch(83.7% 0.128 66.29);
+  --color-purple-50: oklch(29.1% 0.149 302.717);
+  --color-purple-950: oklch(97.7% 0.014 308.299);
+  --color-purple-100: oklch(38.1% 0.176 304.987);
+  --color-purple-900: oklch(94.6% 0.033 307.174);
+  --color-purple-200: oklch(43.8% 0.218 303.724);
+  --color-purple-800: oklch(90.2% 0.063 306.703);
+  --color-purple-300: oklch(49.6% 0.265 301.924);
+  --color-purple-700: oklch(82.7% 0.119 306.383);
 }

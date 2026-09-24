@@ -12,7 +12,7 @@ interface ConnectionCardProps {
 
 export function ConnectionCard({ connection }: ConnectionCardProps) {
   return (
-    <div className="bg-white border border-gray-200 rounded-lg p-3 hover:shadow-md transition-shadow">
+    <div className="bg-card border border-gray-200 rounded-lg p-3 hover:shadow-md transition-shadow">
       <div className="flex items-center justify-between mb-2">
         <div className="flex items-center space-x-2">
           <div className="w-1.5 h-1.5 bg-green-400 rounded-full animate-pulse" />

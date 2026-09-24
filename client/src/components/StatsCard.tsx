@@ -27,7 +27,7 @@ export function StatsCard({
         : 'text-gray-600';
 
   return (
-    <div className="bg-white rounded-lg border border-gray-200 p-4 hover:shadow-md transition-all duration-200 hover:border-gray-300">
+    <div className="bg-card rounded-lg border border-gray-200 p-4 hover:shadow-md transition-all duration-200 hover:border-gray-300">
       <div className="flex items-start justify-between mb-2">
         <div className="w-8 h-8 bg-gradient-to-br from-indigo-50 to-indigo-100 rounded-lg flex items-center justify-center">
           {icon}

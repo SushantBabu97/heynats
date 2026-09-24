@@ -50,6 +50,7 @@ The SPA is embedded into the Go binary (`//go:embed all:client/dist` in `main.go
 - `components/`: cross-feature pieces (`ErrorBoundary`, `StatsCard`); `components/ui/` is shadcn only.
 - `lib/api.ts`: typed fetch client for `/api` (cookie-based, `ApiError`); hooks wrap it in TanStack Query with polling refetch.
 - Saved connection profiles ("contexts") live client-side only, in IndexedDB with localStorage fallback (`features/connection/contexts/contextStorage.ts`).
+- Theming: class-based dark mode (`.dark` on `<html>`, set pre-paint by an inline script in `client/index.html`, toggled by `components/ThemeToggle`). `index.css` defines semantic tokens (`bg-card`, `text-muted-foreground`, `border-border`, `bg-primary`…) for both themes **and** flips the Tailwind palette under `.dark` (gray 50↔950…, other colours' 50–300↔700–950) so legacy raw `gray-*`/`blue-*` classes adapt. Consequence: in dark mode `gray-900` is light — don't add `dark:` variants for palette colours; use tokens in new code.
 - Imports: `./x` within the same folder, `@/…` (aliases `client/src`) everywhere else. Tailwind 4.
 
 More detail: `docs/ARCHITECTURE.md`, `docs/CONNECTION_MANAGEMENT.md`, `client/ERROR_HANDLING.md`, `client/STREAMS_README.md`.

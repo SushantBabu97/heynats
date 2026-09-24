@@ -372,7 +372,7 @@ export function SubscribePage() {
       </div>
 
       {/* Subscription Form */}
-      <div className="bg-white rounded-lg border border-gray-200 p-4 mb-4">
+      <div className="bg-card rounded-lg border border-gray-200 p-4 mb-4">
         <Tabs defaultValue="regular" className="w-full">
           <TabsList className="grid w-full grid-cols-3">
             <TabsTrigger value="regular">Regular/Queue</TabsTrigger>
@@ -617,7 +617,7 @@ export function SubscribePage() {
 
       {/* Active Subscriptions */}
       {activeSubscriptions.length > 0 && (
-        <div className="bg-white rounded-lg border border-gray-200 flex-1 flex flex-col min-h-0">
+        <div className="bg-card rounded-lg border border-gray-200 flex-1 flex flex-col min-h-0">
           {/* Subscription Tabs */}
           <div className="border-b border-gray-200 px-4">
             <div className="flex space-x-1 overflow-x-auto py-2">
@@ -815,7 +815,7 @@ export function SubscribePage() {
 
                       {message.data && (
                         <div className="mb-2">
-                          <pre className="text-sm text-gray-800 whitespace-pre-wrap break-words font-mono bg-white p-2 rounded border">
+                          <pre className="text-sm text-gray-800 whitespace-pre-wrap break-words font-mono bg-card p-2 rounded border">
                             {message.data}
                           </pre>
                         </div>
@@ -918,7 +918,7 @@ export function SubscribePage() {
 
       {/* Empty State */}
       {activeSubscriptions.length === 0 && (
-        <div className="bg-white rounded-lg border border-gray-200 p-8 text-center">
+        <div className="bg-card rounded-lg border border-gray-200 p-8 text-center">
           <div className="text-gray-400 mb-4">
             <svg
               className="mx-auto h-16 w-16"

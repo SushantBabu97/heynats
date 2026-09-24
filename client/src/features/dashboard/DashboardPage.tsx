@@ -89,7 +89,7 @@ export function DashboardPage() {
           <div>
             {/* Server Information */}
             <div>
-              <div className="bg-white rounded-lg border border-gray-200 p-4">
+              <div className="bg-card rounded-lg border border-gray-200 p-4">
                 <div className="flex items-center justify-between mb-3">
                   <h3 className="text-base font-semibold text-gray-900">
                     Server Information
@@ -177,7 +177,7 @@ export function DashboardPage() {
             {/* Connections List */}
             <div className="mt-4">
               <div
-                className="bg-white rounded-lg border border-gray-200 p-4 overflow-y-auto"
+                className="bg-card rounded-lg border border-gray-200 p-4 overflow-y-auto"
                 style={{ maxHeight: 'calc(100vh - 320px)' }}
               >
                 <div className="flex items-center justify-between mb-3">

@@ -37,7 +37,7 @@ export function BucketCard({ bucket, onView, onDelete }: BucketCardProps) {
   };
 
   return (
-    <div className="bg-white rounded-lg border border-gray-200 hover:border-gray-300 transition-colors">
+    <div className="bg-card rounded-lg border border-gray-200 hover:border-gray-300 transition-colors">
       <div className="p-6">
         {/* Header */}
         <div className="flex items-start justify-between mb-4">

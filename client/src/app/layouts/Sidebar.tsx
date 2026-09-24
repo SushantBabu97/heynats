@@ -99,14 +99,14 @@ const Sidebar = () => {
 
   return (
     <div
-      className={`h-screen bg-white flex-none relative transition-all duration-300 ease-in-out border-r border-gray-200 ${
+      className={`h-screen bg-card flex-none relative transition-all duration-300 ease-in-out border-r border-gray-200 ${
         small ? 'w-[70px]' : 'w-[250px]'
       }`}
     >
       <button
         type="button"
         onClick={() => setSmall(!small)}
-        className={`absolute -right-3 z-10 top-[90px] bg-white rounded-full p-1.5 border shadow-md cursor-pointer hover:bg-gray-50 transition-all duration-300 ease-in-out ${
+        className={`absolute -right-3 z-10 top-[90px] bg-card rounded-full p-1.5 border shadow-md cursor-pointer hover:bg-gray-50 transition-all duration-300 ease-in-out ${
           small ? 'rotate-180' : ''
         }`}
       >

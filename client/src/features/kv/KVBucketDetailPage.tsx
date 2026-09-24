@@ -191,7 +191,7 @@ export function KVBucketDetailPage() {
             Back to KV Store
           </Button>
 
-          <div className="bg-white rounded-lg border border-gray-200 p-8">
+          <div className="bg-card rounded-lg border border-gray-200 p-8">
             <div className="text-center">
               <Key className="mx-auto h-16 w-16 text-gray-300 mb-4" />
               <h3 className="text-lg font-medium text-gray-900 mb-2">
@@ -226,7 +226,7 @@ export function KVBucketDetailPage() {
             Back to KV Store
           </Button>
 
-          <div className="bg-white rounded-lg border border-gray-200 p-8">
+          <div className="bg-card rounded-lg border border-gray-200 p-8">
             <div className="text-center">
               <div className="animate-spin rounded-full h-16 w-16 border-b-2 border-indigo-600 mx-auto mb-4" />
               <h3 className="text-lg font-medium text-gray-900 mb-2">
@@ -255,7 +255,7 @@ export function KVBucketDetailPage() {
             Back to KV Store
           </Button>
 
-          <div className="bg-white rounded-lg border border-gray-200 p-8">
+          <div className="bg-card rounded-lg border border-gray-200 p-8">
             <div className="text-center">
               <svg
                 className="mx-auto h-16 w-16 text-red-300 mb-4"
@@ -371,7 +371,7 @@ export function KVBucketDetailPage() {
 
             {/* Bucket Configuration */}
             {bucket && (
-              <div className="bg-white rounded-lg border border-gray-200 p-4">
+              <div className="bg-card rounded-lg border border-gray-200 p-4">
                 <h3 className="text-base font-semibold text-gray-900 mb-3">
                   Configuration
                 </h3>
@@ -413,7 +413,7 @@ export function KVBucketDetailPage() {
             )}
 
             {/* Quick Actions */}
-            <div className="bg-white rounded-lg border border-gray-200 p-6">
+            <div className="bg-card rounded-lg border border-gray-200 p-6">
               <h3 className="text-lg font-semibold text-gray-900 mb-4">
                 Quick Actions
               </h3>
@@ -444,7 +444,7 @@ export function KVBucketDetailPage() {
           <TabsContent value="keys" className="space-y-6">
             {/* Add Key Form */}
             {isAddingKey && (
-              <div className="bg-white rounded-lg border-2 border-indigo-200 shadow-md p-6 transition-all duration-300 ease-in-out">
+              <div className="bg-card rounded-lg border-2 border-indigo-200 shadow-md p-6 transition-all duration-300 ease-in-out">
                 <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center">
                   <Plus className="w-5 h-5 mr-2 text-indigo-600" />
                   Add New Key
@@ -517,20 +517,20 @@ export function KVBucketDetailPage() {
 
             {/* Keys List */}
             {keysLoading ? (
-              <div className="bg-white rounded-lg border border-gray-200 p-8">
+              <div className="bg-card rounded-lg border border-gray-200 p-8">
                 <div className="text-center">
                   <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-indigo-600 mx-auto mb-4" />
                   <p className="text-gray-500">Loading keys...</p>
                 </div>
               </div>
             ) : keysError ? (
-              <div className="bg-white rounded-lg border border-gray-200 p-8">
+              <div className="bg-card rounded-lg border border-gray-200 p-8">
                 <div className="text-center">
                   <p className="text-red-600">Error loading keys</p>
                 </div>
               </div>
             ) : filteredKeys.length === 0 ? (
-              <div className="bg-white rounded-lg border border-gray-200 p-8">
+              <div className="bg-card rounded-lg border border-gray-200 p-8">
                 <div className="text-center">
                   <Key className="mx-auto h-16 w-16 text-gray-300 mb-4" />
                   <h3 className="text-lg font-medium text-gray-900 mb-2">
@@ -552,7 +552,7 @@ export function KVBucketDetailPage() {
                 </div>
               </div>
             ) : (
-              <div className="bg-white rounded-lg border border-gray-200 overflow-hidden">
+              <div className="bg-card rounded-lg border border-gray-200 overflow-hidden">
                 <div className="px-6 py-3 border-b border-gray-200 bg-gray-50">
                   <div className="grid grid-cols-5 gap-4 text-sm font-medium text-gray-500">
                     <div>Key</div>
