@@ -1,5 +1,6 @@
 import { Edit2, Plus, Star, Trash2 } from 'lucide-react';
 import { useState } from 'react';
+import { ConfirmDialog } from '@/components/ConfirmDialog';
 import { Button } from '@/components/ui/button';
 import { ContextForm } from './ContextForm';
 import type { NATSContext } from './types';
@@ -143,89 +144,65 @@ export function ContextManager({
                       {context.host}:{context.port}
                       {context.username && ` (${context.username})`}
                     </p>
-                    <div
-                      className="flex items-center gap-2"
-                      onClick={(e) => e.stopPropagation()}
-                    >
-                      {!context.isDefault && (
-                        <button
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            handleSetDefault(context.id);
-                          }}
-                          className="p-2 text-gray-600 hover:text-yellow-600 rounded"
-                          title="Set as default"
-                          aria-label="Set as default context"
-                          type="button"
-                        >
-                          <Star className="w-4 h-4" />
-                        </button>
-                      )}
-
-                      <button
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          handleEditClick(context.id);
-                        }}
-                        className="p-2 text-gray-600 hover:text-blue-600 rounded"
-                        title="Edit context"
-                        aria-label="Edit context"
-                        type="button"
-                      >
-                        <Edit2 className="w-4 h-4" />
-                      </button>
-
-                      <button
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          handleDeleteClick(context.id);
-                        }}
-                        className="p-2 text-gray-600 hover:text-red-600 rounded"
-                        title="Delete context"
-                        aria-label="Delete context"
-                        type="button"
-                      >
-                        <Trash2 className="w-4 h-4" />
-                      </button>
-                    </div>
                   </button>
+                  <div className="flex items-center gap-2">
+                    {!context.isDefault && (
+                      <button
+                        onClick={() => handleSetDefault(context.id)}
+                        className="p-2 text-gray-600 hover:text-yellow-600 rounded"
+                        title="Set as default"
+                        aria-label="Set as default context"
+                        type="button"
+                      >
+                        <Star className="w-4 h-4" />
+                      </button>
+                    )}
 
-                  {showDeleteConfirm === context.id && (
-                    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-                      <div className="bg-white rounded-lg p-6 max-w-sm mx-4">
-                        <h3 className="text-lg font-semibold text-gray-900 mb-4">
-                          Delete Context?
-                        </h3>
-                        <p className="text-gray-600 mb-6">
-                          Are you sure you want to delete{' '}
-                          <strong>{context.name}</strong>? This action cannot be
-                          undone.
-                        </p>
-                        <div className="flex gap-3 justify-end">
-                          <Button
-                            onClick={() => setShowDeleteConfirm(null)}
-                            className="text-gray-700 border-gray-300 hover:bg-gray-50"
-                            type="button"
-                          >
-                            Cancel
-                          </Button>
-                          <Button
-                            onClick={() => handleConfirmDelete(context.id)}
-                            className="bg-red-600 hover:bg-red-700 text-white"
-                            type="button"
-                          >
-                            Delete
-                          </Button>
-                        </div>
-                      </div>
-                    </div>
-                  )}
+                    <button
+                      onClick={() => handleEditClick(context.id)}
+                      className="p-2 text-gray-600 hover:text-blue-600 rounded"
+                      title="Edit context"
+                      aria-label="Edit context"
+                      type="button"
+                    >
+                      <Edit2 className="w-4 h-4" />
+                    </button>
+
+                    <button
+                      onClick={() => handleDeleteClick(context.id)}
+                      className="p-2 text-gray-600 hover:text-red-600 rounded"
+                      title="Delete context"
+                      aria-label="Delete context"
+                      type="button"
+                    >
+                      <Trash2 className="w-4 h-4" />
+                    </button>
+                  </div>
                 </div>
               ))}
             </div>
           )}
         </>
       )}
+
+      <ConfirmDialog
+        open={showDeleteConfirm !== null}
+        onOpenChange={(open) => !open && setShowDeleteConfirm(null)}
+        title="Delete context?"
+        description={
+          <>
+            <strong>
+              {contexts.find((c) => c.id === showDeleteConfirm)?.name}
+            </strong>{' '}
+            will be removed from this browser. This cannot be undone.
+          </>
+        }
+        confirmLabel="Delete"
+        destructive
+        onConfirm={() =>
+          showDeleteConfirm && handleConfirmDelete(showDeleteConfirm)
+        }
+      />
 
       {editingId && !showForm && (
         <ContextForm editingId={editingId} onClose={handleFormClose} />

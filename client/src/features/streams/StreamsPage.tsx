@@ -1,6 +1,7 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { ConfirmDialog } from '@/components/ConfirmDialog';
 import { StatsCard } from '@/components/StatsCard';
 import { Button } from '@/components/ui/button';
 import { type Stream, type StreamConfig, streamsApi } from '@/lib/api';
@@ -16,6 +17,7 @@ export function StreamsPage() {
     string | null
   >(null);
   const [searchTerm, setSearchTerm] = useState('');
+  const [streamToDelete, setStreamToDelete] = useState<string | null>(null);
   const navigate = useNavigate();
 
   const queryClient = useQueryClient();
@@ -119,14 +121,8 @@ export function StreamsPage() {
     await createStreamMutation.mutateAsync(config);
   };
 
-  const handleDeleteStream = async (streamName: string) => {
-    if (
-      window.confirm(
-        `Are you sure you want to delete stream "${streamName}"? This action cannot be undone.`
-      )
-    ) {
-      await deleteStreamMutation.mutateAsync(streamName);
-    }
+  const handleDeleteStream = (streamName: string) => {
+    setStreamToDelete(streamName);
   };
 
   if (error) {
@@ -135,7 +131,7 @@ export function StreamsPage() {
         <div className="max-w-full">
           <div className="bg-red-50 border border-red-200 rounded-lg p-4">
             <div className="flex">
-              <div className="flex-shrink-0">
+              <div className="shrink-0">
                 <svg
                   className="h-5 w-5 text-red-400"
                   viewBox="0 0 20 20"
@@ -460,6 +456,22 @@ export function StreamsPage() {
             onClose={handleCloseViewDataModal}
           />
         )}
+        <ConfirmDialog
+          open={streamToDelete !== null}
+          onOpenChange={(open) => !open && setStreamToDelete(null)}
+          title="Delete stream?"
+          description={
+            <>
+              Stream <strong>{streamToDelete}</strong> and all its messages and
+              consumers will be permanently deleted.
+            </>
+          }
+          confirmLabel="Delete"
+          destructive
+          onConfirm={() =>
+            streamToDelete && deleteStreamMutation.mutate(streamToDelete)
+          }
+        />
       </div>
     </div>
   );

@@ -1,6 +1,12 @@
 import { History } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { Button } from '@/components/ui/button';
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from '@/components/ui/dialog';
 import { ContextManager } from '@/features/connection/contexts/ContextManager';
 import type { NATSContext } from '@/features/connection/contexts/types';
 import { useNATSContexts } from '@/features/connection/contexts/useNATSContexts';
@@ -253,31 +259,20 @@ export function ConnectionForm({ onConnect, isLoading }: ConnectionFormProps) {
         </div>
       </div>
 
-      {showContextManager && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-lg shadow-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
-            <div className="sticky top-0 bg-white border-b border-gray-200 px-6 py-4 flex justify-between items-center">
-              <h2 className="text-2xl font-bold text-gray-900">
-                NATS Contexts
-              </h2>
-              <button
-                onClick={() => setShowContextManager(false)}
-                className="text-gray-500 hover:text-gray-700 transition-colors"
-                aria-label="Close context manager"
-                type="button"
-              >
-                ✕
-              </button>
-            </div>
-            <div className="p-6">
-              <ContextManager
-                onSelectContext={handleSelectContext}
-                onClose={() => setShowContextManager(false)}
-              />
-            </div>
-          </div>
-        </div>
-      )}
+      <Dialog open={showContextManager} onOpenChange={setShowContextManager}>
+        <DialogContent
+          aria-describedby={undefined}
+          className="max-h-[90vh] overflow-y-auto sm:max-w-2xl"
+        >
+          <DialogHeader>
+            <DialogTitle className="text-2xl">NATS Contexts</DialogTitle>
+          </DialogHeader>
+          <ContextManager
+            onSelectContext={handleSelectContext}
+            onClose={() => setShowContextManager(false)}
+          />
+        </DialogContent>
+      </Dialog>
     </>
   );
 }

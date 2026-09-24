@@ -1,5 +1,6 @@
 import { useMutation, useQuery } from '@tanstack/react-query';
 import { useEffect, useMemo, useRef, useState } from 'react';
+import { ConfirmDialog } from '@/components/ConfirmDialog';
 import { AutocompleteInput } from '@/components/ui/autocomplete-input';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -383,10 +384,14 @@ export function SubscribePage() {
           <TabsContent value="regular" className="space-y-4">
             <div className="grid grid-cols-1 md:grid-cols-4 gap-4 items-end">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
+                <label
+                  htmlFor="sub-subject"
+                  className="block text-sm font-medium text-gray-700 mb-1"
+                >
                   Subject *
                 </label>
                 <AutocompleteInput
+                  id="sub-subject"
                   value={subject}
                   onChange={setSubject}
                   placeholder="e.g., events.*, user.login"
@@ -396,10 +401,14 @@ export function SubscribePage() {
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
+                <label
+                  htmlFor="sub-queue-group"
+                  className="block text-sm font-medium text-gray-700 mb-1"
+                >
                   Queue Group
                 </label>
                 <Input
+                  id="sub-queue-group"
                   value={queueGroup}
                   onChange={(e) => setQueueGroup(e.target.value)}
                   placeholder="optional"
@@ -408,10 +417,14 @@ export function SubscribePage() {
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
+                <label
+                  htmlFor="sub-max-messages"
+                  className="block text-sm font-medium text-gray-700 mb-1"
+                >
                   Max Messages
                 </label>
                 <Input
+                  id="sub-max-messages"
                   type="number"
                   value={maxMessages}
                   onChange={(e) =>
@@ -450,10 +463,14 @@ export function SubscribePage() {
 
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4 items-end">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                  <label
+                    htmlFor="sub-reply-subject-pattern"
+                    className="block text-sm font-medium text-gray-700 mb-1"
+                  >
                     Reply Subject Pattern *
                   </label>
                   <AutocompleteInput
+                    id="sub-reply-subject-pattern"
                     value={replySubject}
                     onChange={setReplySubject}
                     placeholder="e.g., _INBOX.>, reply.*"
@@ -468,10 +485,14 @@ export function SubscribePage() {
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                  <label
+                    htmlFor="sub-max-messages-2"
+                    className="block text-sm font-medium text-gray-700 mb-1"
+                  >
                     Max Messages
                   </label>
                   <Input
+                    id="sub-max-messages-2"
                     type="number"
                     value={replyMaxMessages}
                     onChange={(e) =>
@@ -511,10 +532,14 @@ export function SubscribePage() {
 
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                  <label
+                    htmlFor="sub-request-subject"
+                    className="block text-sm font-medium text-gray-700 mb-1"
+                  >
                     Request Subject *
                   </label>
                   <AutocompleteInput
+                    id="sub-request-subject"
                     value={requestSubject}
                     onChange={setRequestSubject}
                     placeholder="e.g., api.*, service.user.*"
@@ -524,10 +549,14 @@ export function SubscribePage() {
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                  <label
+                    htmlFor="sub-queue-group-2"
+                    className="block text-sm font-medium text-gray-700 mb-1"
+                  >
                     Queue Group
                   </label>
                   <Input
+                    id="sub-queue-group-2"
                     value={requestQueueGroup}
                     onChange={(e) => setRequestQueueGroup(e.target.value)}
                     placeholder="load balancing group"
@@ -552,10 +581,14 @@ export function SubscribePage() {
 
               {autoReply && (
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                  <label
+                    htmlFor="sub-reply-template-json"
+                    className="block text-sm font-medium text-gray-700 mb-1"
+                  >
                     Reply Template (JSON)
                   </label>
                   <Textarea
+                    id="sub-reply-template-json"
                     value={replyTemplate}
                     onChange={(e) => setReplyTemplate(e.target.value)}
                     placeholder='{"status": "received", "timestamp": "${timestamp}"}'
@@ -603,11 +636,10 @@ export function SubscribePage() {
                   : `${typePrefix} ${subscription.subject}`;
 
                 return (
-                  <button
+                  <div
                     key={key}
-                    onClick={() => setActiveTab(key)}
                     className={`
-                      px-3 py-2 text-sm font-medium rounded-md whitespace-nowrap flex-shrink-0 flex items-center gap-2
+                      px-3 py-2 text-sm font-medium rounded-md whitespace-nowrap shrink-0 flex items-center gap-2
                       ${
                         isSelected
                           ? 'bg-blue-100 text-blue-700 border border-blue-200'
@@ -615,20 +647,25 @@ export function SubscribePage() {
                       }
                     `}
                   >
-                    <div
-                      className={`w-2 h-2 rounded-full ${subscription.isActive ? 'bg-green-500' : 'bg-gray-400'}`}
-                    />
-                    <span className="truncate max-w-[200px]">
-                      {displayName}
-                    </span>
-                    <span className="text-xs bg-gray-200 px-1.5 py-0.5 rounded">
-                      {subscription.messages.length}
-                    </span>
                     <button
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        handleDisconnectClick(key);
-                      }}
+                      type="button"
+                      onClick={() => setActiveTab(key)}
+                      className="flex items-center gap-2"
+                    >
+                      <div
+                        className={`w-2 h-2 rounded-full ${subscription.isActive ? 'bg-green-500' : 'bg-gray-400'}`}
+                      />
+                      <span className="truncate max-w-[200px]">
+                        {displayName}
+                      </span>
+                      <span className="text-xs bg-gray-200 px-1.5 py-0.5 rounded">
+                        {subscription.messages.length}
+                      </span>
+                    </button>
+                    <button
+                      type="button"
+                      aria-label="Disconnect subscription"
+                      onClick={() => handleDisconnectClick(key)}
                       className="ml-1 w-5 h-5 flex items-center justify-center text-gray-400 hover:text-red-500 hover:bg-red-100 rounded-full transition-colors"
                       title="Disconnect subscription"
                     >
@@ -646,7 +683,7 @@ export function SubscribePage() {
                         />
                       </svg>
                     </button>
-                  </button>
+                  </div>
                 );
               })}
             </div>
@@ -810,10 +847,14 @@ export function SubscribePage() {
                           <div className="mt-3 pt-3 border-t border-gray-200">
                             <div className="flex gap-2 items-end">
                               <div className="flex-1">
-                                <label className="block text-xs font-medium text-gray-700 mb-1">
+                                <label
+                                  htmlFor="sub-quick-reply"
+                                  className="block text-xs font-medium text-gray-700 mb-1"
+                                >
                                   Quick Reply
                                 </label>
                                 <Textarea
+                                  id="sub-quick-reply"
                                   value={
                                     selectedReplySubject === message.reply
                                       ? replyData
@@ -928,54 +969,39 @@ export function SubscribePage() {
         </div>
       )}
 
-      {/* Disconnect Confirmation Modal */}
-      {showDisconnectConfirm && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-          <div className="bg-white rounded-lg p-6 max-w-md w-full mx-4">
-            <h3 className="text-lg font-medium text-gray-900 mb-4">
-              Confirm Disconnection
-            </h3>
-            <p className="text-sm text-gray-600 mb-4">
-              Are you sure you want to disconnect from subscription:
-            </p>
-            <div className="bg-gray-50 p-3 rounded mb-4">
-              <div className="text-sm font-medium text-gray-900">
-                {subscriptions[showDisconnectConfirm]?.subject}
-              </div>
-              {subscriptions[showDisconnectConfirm]?.queueGroup && (
-                <div className="text-xs text-gray-500">
-                  Queue: {subscriptions[showDisconnectConfirm].queueGroup}
+      <ConfirmDialog
+        open={showDisconnectConfirm !== null}
+        onOpenChange={(open) => !open && setShowDisconnectConfirm(null)}
+        title="Disconnect subscription?"
+        description={
+          showDisconnectConfirm && (
+            <>
+              <div className="mb-3 rounded bg-muted p-3">
+                <div className="font-medium text-foreground">
+                  {subscriptions[showDisconnectConfirm]?.subject}
                 </div>
-              )}
-              <div className="text-xs text-gray-500 capitalize">
-                Type:{' '}
-                {subscriptions[showDisconnectConfirm]?.subscriptionType.replace(
-                  '-',
-                  ' '
+                {subscriptions[showDisconnectConfirm]?.queueGroup && (
+                  <div className="text-xs">
+                    Queue: {subscriptions[showDisconnectConfirm].queueGroup}
+                  </div>
                 )}
+                <div className="text-xs capitalize">
+                  Type:{' '}
+                  {subscriptions[
+                    showDisconnectConfirm
+                  ]?.subscriptionType.replace('-', ' ')}
+                </div>
               </div>
-            </div>
-            <p className="text-xs text-gray-500 mb-6">
-              This will stop receiving messages and close the connection. You
-              can always subscribe again later.
-            </p>
-            <div className="flex gap-3 justify-end">
-              <Button
-                variant="outline"
-                onClick={() => setShowDisconnectConfirm(null)}
-              >
-                Cancel
-              </Button>
-              <Button
-                onClick={() => confirmDisconnect(showDisconnectConfirm)}
-                className="bg-red-600 hover:bg-red-700 text-white"
-              >
-                Disconnect
-              </Button>
-            </div>
-          </div>
-        </div>
-      )}
+              This stops receiving messages. You can subscribe again later.
+            </>
+          )
+        }
+        confirmLabel="Disconnect"
+        destructive
+        onConfirm={() =>
+          showDisconnectConfirm && confirmDisconnect(showDisconnectConfirm)
+        }
+      />
     </div>
   );
 }

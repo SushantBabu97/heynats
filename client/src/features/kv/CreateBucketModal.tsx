@@ -1,6 +1,11 @@
-import { X } from 'lucide-react';
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
 import type { CreateBucketRequest } from '@/lib/api';
 
@@ -44,7 +49,7 @@ export function CreateBucketModal({
 
     if (formData.ttl && formData.ttl.trim()) {
       // Basic TTL format validation (Go duration format)
-      const ttlRegex = /^(\d+(?:\.\d+)?)(ns|us|µs|ms|s|m|h)$/;
+      const ttlRegex = /^(\d+(\.\d+)?(ns|us|µs|ms|s|m|h))+$/;
       if (!ttlRegex.test(formData.ttl.trim())) {
         newErrors.ttl =
           'Invalid TTL format. Use Go duration format (e.g., 60s, 5m, 1h30m)';
@@ -80,30 +85,26 @@ export function CreateBucketModal({
     onClose();
   };
 
-  if (!isOpen) return null;
-
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-      <div className="bg-white rounded-lg shadow-lg w-full max-w-md mx-4">
-        <div className="flex items-center justify-between p-6 border-b border-gray-200">
-          <h2 className="text-lg font-semibold text-gray-900">
-            Create KV Bucket
-          </h2>
-          <button
-            onClick={handleClose}
-            className="text-gray-400 hover:text-gray-600"
-            disabled={isLoading}
-          >
-            <X className="w-5 h-5" />
-          </button>
-        </div>
+    <Dialog
+      open={isOpen}
+      onOpenChange={(open) => !open && !isLoading && handleClose()}
+    >
+      <DialogContent aria-describedby={undefined} className="sm:max-w-md">
+        <DialogHeader>
+          <DialogTitle>Create KV Bucket</DialogTitle>
+        </DialogHeader>
 
-        <form onSubmit={handleSubmit} className="p-6 space-y-4">
+        <form onSubmit={handleSubmit} className="space-y-4">
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
+            <label
+              htmlFor="kv-bucket"
+              className="block text-sm font-medium text-gray-700 mb-1"
+            >
               Bucket Name *
             </label>
             <Input
+              id="kv-bucket"
               type="text"
               value={formData.bucket}
               onChange={(e) =>
@@ -119,10 +120,14 @@ export function CreateBucketModal({
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
+            <label
+              htmlFor="kv-history"
+              className="block text-sm font-medium text-gray-700 mb-1"
+            >
               History (revisions per key)
             </label>
             <Input
+              id="kv-history"
               type="number"
               min="1"
               max="64"
@@ -145,10 +150,14 @@ export function CreateBucketModal({
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
+            <label
+              htmlFor="kv-ttl"
+              className="block text-sm font-medium text-gray-700 mb-1"
+            >
               TTL (Time To Live)
             </label>
             <Input
+              id="kv-ttl"
               type="text"
               value={formData.ttl}
               onChange={(e) =>
@@ -184,7 +193,7 @@ export function CreateBucketModal({
             </Button>
           </div>
         </form>
-      </div>
-    </div>
+      </DialogContent>
+    </Dialog>
   );
 }

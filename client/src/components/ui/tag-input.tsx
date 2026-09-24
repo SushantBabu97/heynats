@@ -2,6 +2,7 @@ import React, { useState, KeyboardEvent, forwardRef } from 'react';
 import { cn } from '@/lib/utils';
 
 interface TagInputProps {
+  id?: string;
   value: string[];
   onChange: (tags: string[]) => void;
   placeholder?: string;
@@ -11,7 +12,7 @@ interface TagInputProps {
 }
 
 const TagInput = forwardRef<HTMLDivElement, TagInputProps>(
-  ({ value = [], onChange, placeholder = "Add tag...", className, disabled = false, error }, ref) => {
+  ({ id, value = [], onChange, placeholder = "Add tag...", className, disabled = false, error }, ref) => {
     const [inputValue, setInputValue] = useState('');
 
     const handleKeyDown = (e: KeyboardEvent<HTMLInputElement>) => {
@@ -87,6 +88,7 @@ const TagInput = forwardRef<HTMLDivElement, TagInputProps>(
             </div>
           ))}
           <input
+            id={id}
             value={inputValue}
             onChange={handleInputChange}
             onKeyDown={handleKeyDown}

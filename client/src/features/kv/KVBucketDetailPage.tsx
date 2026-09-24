@@ -451,10 +451,14 @@ export function KVBucketDetailPage() {
                 </h3>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                    <label
+                      htmlFor="kv-key"
+                      className="block text-sm font-medium text-gray-700 mb-1"
+                    >
                       Key
                     </label>
                     <Input
+                      id="kv-key"
                       ref={keyInputRef}
                       value={newKey}
                       onChange={(e) => setNewKey(e.target.value)}
@@ -467,10 +471,14 @@ export function KVBucketDetailPage() {
                     />
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                    <label
+                      htmlFor="kv-value"
+                      className="block text-sm font-medium text-gray-700 mb-1"
+                    >
                       Value
                     </label>
                     <Input
+                      id="kv-value"
                       value={newValue}
                       onChange={(e) => setNewValue(e.target.value)}
                       placeholder="Enter value"

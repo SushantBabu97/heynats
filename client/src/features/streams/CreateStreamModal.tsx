@@ -1,5 +1,12 @@
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+} from '@/components/ui/dialog';
 import { TagInput } from '@/components/ui/tag-input';
 import type { StreamConfig } from '@/lib/api';
 
@@ -121,41 +128,20 @@ export function CreateStreamModal({
     onClose();
   };
 
-  if (!isOpen) return null;
-
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
-      <div className="bg-white rounded-lg shadow-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
-        <div className="flex items-center justify-between p-6 border-b border-gray-200">
-          <div>
-            <h2 className="text-2xl font-bold text-gray-900">
-              Create New Stream
-            </h2>
-            <p className="text-gray-600">Configure a new JetStream stream</p>
-          </div>
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={handleClose}
-            disabled={isLoading}
-          >
-            <svg
-              className="w-5 h-5"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M6 18L18 6M6 6l12 12"
-              />
-            </svg>
-          </Button>
-        </div>
+    <Dialog
+      open={isOpen}
+      onOpenChange={(open) => !open && !isLoading && handleClose()}
+    >
+      <DialogContent className="max-h-[90vh] overflow-y-auto sm:max-w-2xl">
+        <DialogHeader>
+          <DialogTitle className="text-2xl">Create New Stream</DialogTitle>
+          <DialogDescription>
+            Configure a new JetStream stream
+          </DialogDescription>
+        </DialogHeader>
 
-        <form onSubmit={handleSubmit} className="p-6 space-y-6">
+        <form onSubmit={handleSubmit} className="space-y-6">
           {/* Basic Configuration */}
           <div className="space-y-4">
             <h3 className="text-lg font-semibold text-gray-900">
@@ -163,10 +149,14 @@ export function CreateStreamModal({
             </h3>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
+              <label
+                htmlFor="stream-stream-name"
+                className="block text-sm font-medium text-gray-700 mb-2"
+              >
                 Stream Name *
               </label>
               <input
+                id="stream-stream-name"
                 type="text"
                 value={formData.name}
                 onChange={(e) =>
@@ -184,10 +174,14 @@ export function CreateStreamModal({
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
+              <label
+                htmlFor="stream-subjects"
+                className="block text-sm font-medium text-gray-700 mb-2"
+              >
                 Subjects *
               </label>
               <TagInput
+                id="stream-subjects"
                 value={formData.subjects}
                 onChange={handleSubjectsChange}
                 placeholder="Enter subject (e.g., orders.created, orders.*)"
@@ -202,10 +196,14 @@ export function CreateStreamModal({
 
             <div className="grid grid-cols-2 gap-4">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
+                <label
+                  htmlFor="stream-storage-type"
+                  className="block text-sm font-medium text-gray-700 mb-2"
+                >
                   Storage Type
                 </label>
                 <select
+                  id="stream-storage-type"
                   value={formData.storage}
                   onChange={(e) =>
                     setFormData({
@@ -222,10 +220,14 @@ export function CreateStreamModal({
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
+                <label
+                  htmlFor="stream-retention-policy"
+                  className="block text-sm font-medium text-gray-700 mb-2"
+                >
                   Retention Policy
                 </label>
                 <select
+                  id="stream-retention-policy"
                   value={formData.retention}
                   onChange={(e) =>
                     setFormData({
@@ -253,10 +255,14 @@ export function CreateStreamModal({
 
             <div className="grid grid-cols-2 gap-4">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
+                <label
+                  htmlFor="stream-max-messages"
+                  className="block text-sm font-medium text-gray-700 mb-2"
+                >
                   Max Messages
                 </label>
                 <input
+                  id="stream-max-messages"
                   type="number"
                   value={formData.max_msgs}
                   onChange={(e) =>
@@ -270,10 +276,14 @@ export function CreateStreamModal({
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
+                <label
+                  htmlFor="stream-max-bytes"
+                  className="block text-sm font-medium text-gray-700 mb-2"
+                >
                   Max Bytes
                 </label>
                 <input
+                  id="stream-max-bytes"
                   type="number"
                   value={formData.max_bytes}
                   onChange={(e) =>
@@ -287,10 +297,14 @@ export function CreateStreamModal({
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
+                <label
+                  htmlFor="stream-max-age-seconds"
+                  className="block text-sm font-medium text-gray-700 mb-2"
+                >
                   Max Age (seconds)
                 </label>
                 <input
+                  id="stream-max-age-seconds"
                   type="number"
                   value={formData.max_age}
                   onChange={(e) =>
@@ -304,10 +318,14 @@ export function CreateStreamModal({
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
+                <label
+                  htmlFor="stream-max-consumers"
+                  className="block text-sm font-medium text-gray-700 mb-2"
+                >
                   Max Consumers
                 </label>
                 <input
+                  id="stream-max-consumers"
                   type="number"
                   value={formData.max_consumers}
                   onChange={(e) =>
@@ -330,10 +348,14 @@ export function CreateStreamModal({
 
             <div className="grid grid-cols-2 gap-4">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
+                <label
+                  htmlFor="stream-replicas"
+                  className="block text-sm font-medium text-gray-700 mb-2"
+                >
                   Replicas
                 </label>
                 <input
+                  id="stream-replicas"
                   type="number"
                   value={formData.num_replicas}
                   onChange={(e) =>
@@ -350,10 +372,14 @@ export function CreateStreamModal({
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
+                <label
+                  htmlFor="stream-discard-policy"
+                  className="block text-sm font-medium text-gray-700 mb-2"
+                >
                   Discard Policy
                 </label>
                 <select
+                  id="stream-discard-policy"
                   value={formData.discard}
                   onChange={(e) =>
                     setFormData({
@@ -421,7 +447,7 @@ export function CreateStreamModal({
             </Button>
           </div>
         </form>
-      </div>
-    </div>
+      </DialogContent>
+    </Dialog>
   );
 }

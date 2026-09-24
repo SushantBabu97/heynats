@@ -2,6 +2,7 @@ import React, { useState, useRef, useEffect } from 'react';
 import { Input } from './input';
 
 interface AutocompleteInputProps {
+  id?: string;
   value: string;
   onChange: (value: string) => void;
   suggestions?: string[];
@@ -14,6 +15,7 @@ interface AutocompleteInputProps {
 }
 
 export function AutocompleteInput({
+  id,
   value,
   onChange,
   suggestions = [],
@@ -147,6 +149,7 @@ export function AutocompleteInput({
   return (
     <div className="relative">
       <Input
+        id={id}
         ref={inputRef}
         type="text"
         value={value}

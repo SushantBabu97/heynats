@@ -207,10 +207,14 @@ export function PublishPage() {
               <div className="space-y-4">
                 {/* Subject */}
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                  <label
+                    htmlFor="pub-subject"
+                    className="block text-sm font-medium text-gray-700 mb-1"
+                  >
                     Subject *
                   </label>
                   <AutocompleteInput
+                    id="pub-subject"
                     value={subject}
                     onChange={setSubject}
                     suggestions={subjectsData?.subjects || []}
@@ -220,10 +224,14 @@ export function PublishPage() {
 
                 {/* Message Data */}
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                  <label
+                    htmlFor="pub-message-data"
+                    className="block text-sm font-medium text-gray-700 mb-1"
+                  >
                     Message Data *
                   </label>
                   <Textarea
+                    id="pub-message-data"
                     value={data}
                     onChange={(e) => setData(e.target.value)}
                     placeholder='{"message": "Hello, World!", "timestamp": "2024-01-01T00:00:00Z"}'
@@ -233,9 +241,9 @@ export function PublishPage() {
 
                 {/* Headers */}
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                  <p className="block text-sm font-medium text-gray-700 mb-1">
                     Headers (Optional)
-                  </label>
+                  </p>
                   <div className="space-y-2">
                     {headers.map((header, index) => (
                       <div key={index} className="flex gap-2">
@@ -345,10 +353,14 @@ export function PublishPage() {
 
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                       <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-1">
+                        <label
+                          htmlFor="pub-subject-2"
+                          className="block text-sm font-medium text-gray-700 mb-1"
+                        >
                           Subject *
                         </label>
                         <AutocompleteInput
+                          id="pub-subject-2"
                           value={message.subject}
                           onChange={(value) =>
                             updateBatchMessage(index, 'subject', value)
@@ -358,10 +370,14 @@ export function PublishPage() {
                         />
                       </div>
                       <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-1">
+                        <label
+                          htmlFor="pub-message-data-2"
+                          className="block text-sm font-medium text-gray-700 mb-1"
+                        >
                           Message Data *
                         </label>
                         <Textarea
+                          id="pub-message-data-2"
                           value={message.data}
                           onChange={(e) =>
                             updateBatchMessage(index, 'data', e.target.value)
@@ -435,10 +451,14 @@ export function PublishPage() {
               <div className="space-y-4">
                 {/* Subject */}
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                  <label
+                    htmlFor="pub-subject-3"
+                    className="block text-sm font-medium text-gray-700 mb-1"
+                  >
                     Subject *
                   </label>
                   <AutocompleteInput
+                    id="pub-subject-3"
                     value={requestSubject}
                     onChange={setRequestSubject}
                     suggestions={subjectsData?.subjects || []}
@@ -448,10 +468,14 @@ export function PublishPage() {
 
                 {/* Request Data */}
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                  <label
+                    htmlFor="pub-request-data"
+                    className="block text-sm font-medium text-gray-700 mb-1"
+                  >
                     Request Data *
                   </label>
                   <Textarea
+                    id="pub-request-data"
                     value={requestData}
                     onChange={(e) => setRequestData(e.target.value)}
                     placeholder='{"user_id": "12345"}'
@@ -462,10 +486,14 @@ export function PublishPage() {
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   {/* Timeout */}
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                    <label
+                      htmlFor="pub-timeout-seconds"
+                      className="block text-sm font-medium text-gray-700 mb-1"
+                    >
                       Timeout (seconds)
                     </label>
                     <Input
+                      id="pub-timeout-seconds"
                       type="number"
                       value={timeout}
                       onChange={(e) =>
@@ -478,10 +506,14 @@ export function PublishPage() {
 
                   {/* Reply Subject */}
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                    <label
+                      htmlFor="pub-reply-subject-optional"
+                      className="block text-sm font-medium text-gray-700 mb-1"
+                    >
                       Reply Subject (Optional)
                     </label>
                     <Input
+                      id="pub-reply-subject-optional"
                       type="text"
                       value={replySubject}
                       onChange={(e) => setReplySubject(e.target.value)}
@@ -492,9 +524,9 @@ export function PublishPage() {
 
                 {/* Headers */}
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                  <p className="block text-sm font-medium text-gray-700 mb-1">
                     Headers (Optional)
-                  </label>
+                  </p>
                   <div className="space-y-2">
                     {requestHeaders.map((header, index) => (
                       <div key={index} className="flex gap-2">

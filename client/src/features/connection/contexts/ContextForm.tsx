@@ -13,6 +13,7 @@ interface ContextFormProps {
 export function ContextForm({ editingId, onClose }: ContextFormProps) {
   const { contexts, addContext, updateContext } = useNATSContexts();
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [formError, setFormError] = useState<string | null>(null);
   const [formData, setFormData] = useState<Partial<NATSContext>>({
     name: '',
     description: '',
@@ -47,9 +48,10 @@ export function ContextForm({ editingId, onClose }: ContextFormProps) {
       !formData.host?.trim() ||
       !formData.port?.trim()
     ) {
-      alert('Please fill in all required fields (Name, Host, Port)');
+      setFormError('Name, host and port cannot be blank.');
       return;
     }
+    setFormError(null);
 
     setIsSubmitting(true);
 
@@ -217,6 +219,12 @@ export function ContextForm({ editingId, onClose }: ContextFormProps) {
           />
         </div>
       </div>
+
+      {formError && (
+        <p role="alert" className="mt-4 text-sm text-destructive">
+          {formError}
+        </p>
+      )}
 
       <div className="flex gap-3 justify-end mt-6">
         <Button

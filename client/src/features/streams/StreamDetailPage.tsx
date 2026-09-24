@@ -15,6 +15,7 @@ import { useEffect, useMemo, useRef, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { StatsCard } from '@/components/StatsCard';
 import { Button } from '@/components/ui/button';
+import { Dialog, DialogContent, DialogTitle } from '@/components/ui/dialog';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { streamsApi } from '@/lib/api';
 
@@ -113,18 +114,6 @@ export function StreamDetailPage() {
   };
 
   // Initial scroll to bottom is handled by the auto-scroll effect
-
-  // Handle escape key to close modal
-  useEffect(() => {
-    const handleEscape = (event: KeyboardEvent) => {
-      if (event.key === 'Escape' && isModalOpen) {
-        closeMessageModal();
-      }
-    };
-
-    document.addEventListener('keydown', handleEscape);
-    return () => document.removeEventListener('keydown', handleEscape);
-  }, [isModalOpen]);
 
   const handleSubjectToggle = (subject: string) => {
     setSelectedSubjects((prev) => {
@@ -341,7 +330,7 @@ export function StreamDetailPage() {
           {/* Left Side - Main Content */}
           <div className="flex-1 lg:w-1/2 flex flex-col h-full overflow-hidden">
             {/* Header */}
-            <div className="flex items-center justify-between mb-4 flex-shrink-0">
+            <div className="flex items-center justify-between mb-4 shrink-0">
               <div className="flex items-center">
                 <Button
                   variant="outline"
@@ -380,7 +369,7 @@ export function StreamDetailPage() {
             </div>
 
             {/* Stream Stats */}
-            <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 mb-4 flex-shrink-0">
+            <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 mb-4 shrink-0">
               <StatsCard
                 title="Messages"
                 value={(stream.state?.messages || 0).toLocaleString()}
@@ -404,7 +393,7 @@ export function StreamDetailPage() {
             </div>
 
             {/* Stream Configuration */}
-            <div className="bg-white rounded-lg border border-gray-200 p-4 mb-4 flex-shrink-0">
+            <div className="bg-white rounded-lg border border-gray-200 p-4 mb-4 shrink-0">
               <h2 className="text-base font-semibold mb-3">
                 Stream Configuration
               </h2>
@@ -441,7 +430,7 @@ export function StreamDetailPage() {
 
             {/* Virtualized Subjects List */}
             <div className="bg-white rounded-lg border border-gray-200 p-4 flex-1 flex flex-col min-h-0">
-              <div className="flex items-center justify-between mb-3 flex-shrink-0">
+              <div className="flex items-center justify-between mb-3 shrink-0">
                 <div className="flex items-center gap-4 w-full">
                   <h2 className="text-base font-semibold">
                     Subjects ({subjects.length})
@@ -469,7 +458,7 @@ export function StreamDetailPage() {
               </div>
 
               {subjects.length === 0 ? (
-                <p className="text-gray-500 flex-shrink-0">
+                <p className="text-gray-500 shrink-0">
                   No subjects configured for this stream
                 </p>
               ) : (
@@ -558,7 +547,7 @@ export function StreamDetailPage() {
                                 )}
                               </div>
                             </div>
-                            <div className="flex items-center gap-2 flex-shrink-0">
+                            <div className="flex items-center gap-2 shrink-0">
                               {messageCount > 0 && (
                                 <Button
                                   size="sm"
@@ -650,7 +639,7 @@ export function StreamDetailPage() {
 
             {/* Live Messages Panel - Tabbed Interface */}
             <div className="bg-white rounded-lg border border-gray-200 flex-1 flex flex-col overflow-y-auto">
-              <div className="px-3 py-2 bg-gray-50 flex-shrink-0">
+              <div className="px-3 py-2 bg-gray-50 shrink-0">
                 <div className="flex items-center justify-between mb-2">
                   {(() => {
                     const hasMessages = Object.values(subscriptions).some(
@@ -741,15 +730,16 @@ export function StreamDetailPage() {
                                       : dataStr;
 
                                     return (
-                                      <div
+                                      <button
+                                        type="button"
                                         key={`message-${activeTab}-${index}-${message.timestamp}`}
                                         onClick={() =>
                                           openMessageModal(message)
                                         }
-                                        className="px-4 py-2 hover:bg-blue-50 transition-all duration-200 cursor-pointer border-l-4 border-transparent hover:border-blue-400 hover:shadow-sm group border-b border-gray-100 last:border-b-0"
+                                        className="block w-full text-left px-4 py-2 hover:bg-blue-50 transition-all duration-200 cursor-pointer border-l-4 border-transparent hover:border-blue-400 hover:shadow-sm group border-b border-gray-100 last:border-b-0"
                                       >
                                         <div className="flex items-center gap-3">
-                                          <span className="text-xs font-mono text-gray-500 bg-gray-100 px-2 py-1 rounded flex-shrink-0">
+                                          <span className="text-xs font-mono text-gray-500 bg-gray-100 px-2 py-1 rounded shrink-0">
                                             {new Date(
                                               message.timestamp
                                             ).toLocaleTimeString()}
@@ -761,7 +751,7 @@ export function StreamDetailPage() {
                                             </div>
                                           </div>
 
-                                          <div className="flex items-center gap-2 flex-shrink-0">
+                                          <div className="flex items-center gap-2 shrink-0">
                                             {message.headers &&
                                               Object.keys(message.headers)
                                                 .length > 0 && (
@@ -793,7 +783,7 @@ export function StreamDetailPage() {
                                             </svg>
                                           </div>
                                         </div>
-                                      </div>
+                                      </button>
                                     );
                                   })}
                               </div>
@@ -812,6 +802,7 @@ export function StreamDetailPage() {
                               <div>
                                 {showJumpToLatest && (
                                   <button
+                                    type="button"
                                     onClick={scrollToBottom}
                                     className="fixed bottom-8 right-8 bg-blue-600 hover:bg-blue-700 text-white px-4 py-3 rounded-full shadow-xl transition-all duration-200 flex items-center gap-2 text-sm font-medium z-50 border-2 border-white"
                                   >
@@ -890,40 +881,17 @@ export function StreamDetailPage() {
           </div>
 
           {/* Message Detail Modal */}
-          {isModalOpen && selectedMessage && (
-            <div
-              className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4"
-              onClick={closeMessageModal}
-            >
-              <div
-                className="bg-white rounded-lg shadow-xl max-w-4xl w-full max-h-[90vh] overflow-hidden"
-                onClick={(e) => e.stopPropagation()}
+          <Dialog
+            open={isModalOpen && selectedMessage !== null}
+            onOpenChange={(open) => !open && closeMessageModal()}
+          >
+            {selectedMessage && (
+              <DialogContent
+                aria-describedby={undefined}
+                className="flex max-h-[90vh] flex-col gap-0 overflow-hidden p-0 sm:max-w-4xl"
               >
-                {/* Modal Header */}
                 <div className="px-4 py-3 border-b bg-gray-50">
-                  <div className="flex items-center justify-between">
-                    <h2 className="text-lg font-semibold text-gray-900">
-                      Message Details
-                    </h2>
-                    <button
-                      onClick={closeMessageModal}
-                      className="text-gray-400 hover:text-gray-600 transition-colors"
-                    >
-                      <svg
-                        className="w-5 h-5"
-                        fill="none"
-                        stroke="currentColor"
-                        viewBox="0 0 24 24"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth={2}
-                          d="M6 18L18 6M6 6l12 12"
-                        />
-                      </svg>
-                    </button>
-                  </div>
+                  <DialogTitle>Message Details</DialogTitle>
                 </div>
 
                 {/* Modal Content */}
@@ -1009,9 +977,9 @@ export function StreamDetailPage() {
                     Close
                   </Button>
                 </div>
-              </div>
-            </div>
-          )}
+              </DialogContent>
+            )}
+          </Dialog>
         </div>
       </div>
     </div>

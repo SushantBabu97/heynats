@@ -2,6 +2,12 @@ import { useQuery } from '@tanstack/react-query';
 import { ChevronDown, ChevronRight, Copy } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { Button } from '@/components/ui/button';
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogTitle,
+} from '@/components/ui/dialog';
 import type { StreamMessage } from '@/lib/api';
 import { streamsApi } from '@/lib/api';
 import { formatTimestamp } from '@/lib/utils';
@@ -261,20 +267,25 @@ function MessageDetailModal({
 }: MessageDetailModalProps) {
   const [viewMode, setViewMode] = useState<'formatted' | 'raw'>('formatted');
 
-  if (!isOpen || !message) return null;
+  if (!message) return null;
 
   const isMessageJSON = isValidJSON(message.data);
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
-      <div className="bg-white rounded-lg shadow-xl max-w-4xl w-full max-h-[90vh] overflow-hidden flex flex-col">
+    <Dialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
+      <DialogContent
+        showCloseButton={false}
+        className="flex max-h-[90vh] flex-col gap-0 overflow-hidden p-0 sm:max-w-4xl"
+      >
         {/* Header */}
         <div className="flex items-center justify-between p-6 border-b border-gray-200 sticky top-0 bg-white z-10">
           <div>
-            <h2 className="text-2xl font-bold text-gray-900">
+            <DialogTitle className="text-2xl font-bold text-gray-900">
               Message Details - Sequence #{message.sequence}
-            </h2>
-            <p className="text-sm text-gray-600 mt-1">{message.subject}</p>
+            </DialogTitle>
+            <DialogDescription className="mt-1">
+              {message.subject}
+            </DialogDescription>
           </div>
           <button
             type="button"
@@ -455,8 +466,8 @@ function MessageDetailModal({
             Close
           </Button>
         </div>
-      </div>
-    </div>
+      </DialogContent>
+    </Dialog>
   );
 }
 
@@ -502,8 +513,6 @@ export function ViewStreamDataModal({
     setOffset(0); // Reset pagination on search
   };
 
-  if (!isOpen) return null;
-
   const messages = messagesData?.messages || [];
   const total = messagesData?.total || 0;
   const totalPages = Math.ceil(total / limit);
@@ -535,17 +544,20 @@ export function ViewStreamDataModal({
   };
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-40">
-      <div className="bg-white rounded-lg shadow-xl max-w-6xl w-full max-h-[90vh] overflow-hidden flex flex-col">
+    <Dialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
+      <DialogContent
+        showCloseButton={false}
+        className="flex max-h-[90vh] flex-col gap-0 overflow-hidden p-0 sm:max-w-6xl"
+      >
         {/* Header */}
         <div className="flex items-center justify-between p-6 border-b border-gray-200">
           <div>
-            <h2 className="text-2xl font-bold text-gray-900">
+            <DialogTitle className="text-2xl font-bold text-gray-900">
               Stream Data: {streamName}
-            </h2>
-            <p className="text-sm text-gray-600">
+            </DialogTitle>
+            <DialogDescription>
               Total Messages: {total.toLocaleString()}
-            </p>
+            </DialogDescription>
           </div>
           <button
             type="button"
@@ -695,7 +707,7 @@ export function ViewStreamDataModal({
             <div className="p-4">
               <div className="bg-red-50 border border-red-200 rounded-lg p-4">
                 <div className="flex">
-                  <div className="flex-shrink-0">
+                  <div className="shrink-0">
                     <svg
                       className="h-5 w-5 text-red-400"
                       viewBox="0 0 20 20"
@@ -782,7 +794,7 @@ export function ViewStreamDataModal({
                       </div>
                     </div>
                     <svg
-                      className="w-5 h-5 text-gray-400 flex-shrink-0"
+                      className="w-5 h-5 text-gray-400 shrink-0"
                       fill="none"
                       stroke="currentColor"
                       viewBox="0 0 24 24"
@@ -862,14 +874,14 @@ export function ViewStreamDataModal({
             </div>
           </div>
         )}
-      </div>
 
-      {/* Message Detail Modal */}
-      <MessageDetailModal
-        message={selectedMessage}
-        isOpen={isDetailModalOpen}
-        onClose={() => setIsDetailModalOpen(false)}
-      />
-    </div>
+        {/* Message Detail Modal (nested so Esc closes only the top dialog) */}
+        <MessageDetailModal
+          message={selectedMessage}
+          isOpen={isDetailModalOpen}
+          onClose={() => setIsDetailModalOpen(false)}
+        />
+      </DialogContent>
+    </Dialog>
   );
 }
