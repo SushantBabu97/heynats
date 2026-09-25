@@ -1,13 +1,12 @@
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { ConfirmDialog } from '@/components/ConfirmDialog';
 import { StatsCard } from '@/components/StatsCard';
 import { Button } from '@/components/ui/button';
-import { type Stream, type StreamConfig, streamsApi } from '@/lib/api';
-import { showErrorToast, showSuccessToast } from '@/lib/error-utils';
+import type { Stream, StreamConfig } from '@/lib/api';
 import { CreateStreamModal } from './CreateStreamModal';
 import { StreamCard } from './StreamCard';
+import { useCreateStream, useDeleteStream, useStreams } from './useStreams';
 import { ViewStreamDataModal } from './ViewStreamDataModal';
 
 export function StreamsPage() {
@@ -20,60 +19,9 @@ export function StreamsPage() {
   const [streamToDelete, setStreamToDelete] = useState<string | null>(null);
   const navigate = useNavigate();
 
-  const queryClient = useQueryClient();
-
-  // Fetch streams
-  const {
-    data: streamsData,
-    isLoading,
-    error,
-    refetch,
-  } = useQuery({
-    queryKey: ['streams'],
-    queryFn: streamsApi.getStreams,
-    refetchInterval: 30000, // Refetch every 30 seconds
-  });
-
-  // Create stream mutation
-  const createStreamMutation = useMutation({
-    mutationFn: streamsApi.createStream,
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['streams'] });
-      setIsCreateModalOpen(false);
-      showSuccessToast(
-        'Stream created successfully!',
-        'The new stream is now available for publishing messages'
-      );
-    },
-    onError: (error) => {
-      console.error('Failed to create stream:', error);
-      showErrorToast(
-        'create stream',
-        error,
-        'Failed to create stream. Please try again.'
-      );
-    },
-  });
-
-  // Delete stream mutation
-  const deleteStreamMutation = useMutation({
-    mutationFn: streamsApi.deleteStream,
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['streams'] });
-      showSuccessToast(
-        'Stream deleted successfully!',
-        'All associated messages and consumers have been removed'
-      );
-    },
-    onError: (error) => {
-      console.error('Failed to delete stream:', error);
-      showErrorToast(
-        'delete stream',
-        error,
-        'Failed to delete stream. Please try again.'
-      );
-    },
-  });
+  const { data: streamsData, isLoading, error, refetch } = useStreams();
+  const createStreamMutation = useCreateStream();
+  const deleteStreamMutation = useDeleteStream();
 
   const streams = streamsData?.streams || [];
   const filteredStreams = streams.filter(
@@ -118,7 +66,12 @@ export function StreamsPage() {
   };
 
   const handleCreateStream = async (config: Partial<StreamConfig>) => {
-    await createStreamMutation.mutateAsync(config);
+    try {
+      await createStreamMutation.mutateAsync(config);
+      setIsCreateModalOpen(false);
+    } catch {
+      // error toast shown by useCreateStream; keep the form open to fix input
+    }
   };
 
   const handleDeleteStream = (streamName: string) => {

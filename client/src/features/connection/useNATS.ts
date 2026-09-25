@@ -1,4 +1,9 @@
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import {
+  type QueryClient,
+  useMutation,
+  useQuery,
+  useQueryClient,
+} from '@tanstack/react-query';
 import { type ConnectionCredentials, natsApi } from '@/lib/api';
 import { showErrorToast, showSuccessToast } from '@/lib/error-utils';
 
@@ -47,6 +52,12 @@ export function useAccountInfo(enabled = true) {
   });
 }
 
+// Streams/KV/etc. belong to the previous server; drop them when the connection changes.
+const dropServerData = (queryClient: QueryClient) =>
+  queryClient.removeQueries({
+    predicate: (query) => query.queryKey[0] !== queryKeys.nats.all[0],
+  });
+
 // Connection mutation
 export function useConnectToNATS() {
   const queryClient = useQueryClient();
@@ -55,6 +66,7 @@ export function useConnectToNATS() {
     mutationFn: (credentials: ConnectionCredentials) =>
       natsApi.connect(credentials),
     onSuccess: () => {
+      dropServerData(queryClient);
       // Invalidate and refetch connection status
       queryClient.invalidateQueries({ queryKey: queryKeys.nats.status() });
       // Invalidate other NATS queries to trigger refetch when enabled
@@ -84,6 +96,7 @@ export function useDisconnectFromNATS() {
     onSuccess: () => {
       // Update connection status immediately
       queryClient.setQueryData(queryKeys.nats.status(), { connected: false });
+      dropServerData(queryClient);
       // Invalidate all NATS-related queries
       queryClient.invalidateQueries({ queryKey: queryKeys.nats.all });
       showSuccessToast(
@@ -100,6 +113,7 @@ export function useDisconnectFromNATS() {
       );
       // Even if disconnect API fails, update local state
       queryClient.setQueryData(queryKeys.nats.status(), { connected: false });
+      dropServerData(queryClient);
     },
   });
 }

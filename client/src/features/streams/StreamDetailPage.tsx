@@ -1,4 +1,3 @@
-import { useQuery } from '@tanstack/react-query';
 import { useVirtualizer } from '@tanstack/react-virtual';
 import {
   ArrowLeft,
@@ -17,13 +16,13 @@ import { StatsCard } from '@/components/StatsCard';
 import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogTitle } from '@/components/ui/dialog';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { streamsApi } from '@/lib/api';
+import { appendCapped, useEventSources } from '@/lib/useEventSources';
+import { useStream } from './useStreams';
 
 interface SubjectSubscription {
   subject: string;
   isActive: boolean;
   messages: any[]; // Only data messages
-  eventSource: EventSource | null;
   connectionStatus?: 'connected' | 'disconnected' | 'connecting';
   lastStatusUpdate?: string;
 }
@@ -40,6 +39,7 @@ interface MessageEvent {
 export function StreamDetailPage() {
   const { streamName } = useParams<{ streamName: string }>();
   const navigate = useNavigate();
+  const { open: openSource, close: closeSource } = useEventSources();
   const [subscriptions, setSubscriptions] = useState<
     Record<string, SubjectSubscription>
   >({});
@@ -61,15 +61,7 @@ export function StreamDetailPage() {
   const subjectsContainerRef = useRef<HTMLDivElement>(null);
 
   // Fetch stream details
-  const {
-    data: stream,
-    isLoading,
-    error,
-  } = useQuery({
-    queryKey: ['stream', streamName],
-    queryFn: () => streamsApi.getStream(streamName!),
-    enabled: !!streamName,
-  });
+  const { data: stream, isLoading, error } = useStream(streamName);
 
   // Get subjects and active messages for virtualization (must be called before any early returns)
   const subjects = stream?.config?.subjects || [];
@@ -130,33 +122,23 @@ export function StreamDetailPage() {
   const startSubscription = (subject: string) => {
     if (subscriptions[subject]?.isActive) return;
 
-    const eventSource = new EventSource(
-      `/api/nats/streams/${streamName}/subjects/${encodeURIComponent(subject)}/subscribe`
-    );
-
-    eventSource.onopen = () => {
-      console.log(`Subscription started for subject: ${subject}`);
-      setSubscriptions((prev) => ({
-        ...prev,
-        [subject]: {
-          subject,
-          isActive: true,
-          messages: prev[subject]?.messages || [],
-          eventSource,
-        },
-      }));
-    };
-
-    eventSource.onmessage = (event) => {
-      try {
-        const messageData: MessageEvent = JSON.parse(event.data);
-
+    const url = `/api/nats/streams/${encodeURIComponent(streamName ?? '')}/subjects/${encodeURIComponent(subject)}/subscribe`;
+    openSource(subject, url, {
+      onOpen: () =>
+        setSubscriptions((prev) => ({
+          ...prev,
+          [subject]: {
+            subject,
+            isActive: true,
+            messages: prev[subject]?.messages || [],
+          },
+        })),
+      onMessage: (messageData: MessageEvent) =>
         setSubscriptions((prev) => {
           const currentSub = prev[subject] || {
             subject,
             isActive: true,
             messages: [],
-            eventSource,
           };
 
           // Handle connection/status messages (messages with 'type' field)
@@ -180,39 +162,30 @@ export function StreamDetailPage() {
               ...prev,
               [subject]: {
                 ...currentSub,
-                messages: [...currentSub.messages, messageData],
+                messages: appendCapped(currentSub.messages, messageData),
               },
             };
           }
 
           // If neither type nor data, just update the subscription without adding to messages
           return prev;
-        });
-      } catch (error) {
-        console.error('Error parsing SSE message:', error);
-      }
-    };
-
-    eventSource.onerror = (error) => {
-      console.error('SSE error for subject:', subject, error);
-      stopSubscription(subject);
-    };
+        }),
+      onError: () => {
+        console.error('SSE error for subject:', subject);
+        markStopped(subject);
+      },
+    });
   };
 
-  const stopSubscription = (subject: string) => {
-    const subscription = subscriptions[subject];
-    if (subscription?.eventSource) {
-      subscription.eventSource.close();
-    }
-
+  const markStopped = (subject: string) =>
     setSubscriptions((prev) => ({
       ...prev,
-      [subject]: {
-        ...prev[subject],
-        isActive: false,
-        eventSource: null,
-      },
+      [subject]: { ...prev[subject], isActive: false },
     }));
+
+  const stopSubscription = (subject: string) => {
+    closeSource(subject);
+    markStopped(subject);
   };
 
   const startSelectedSubscriptions = () => {
@@ -287,17 +260,6 @@ export function StreamDetailPage() {
       return () => clearTimeout(timeoutId);
     }
   }, [subscriptions, activeTab]);
-
-  // Cleanup on unmount
-  useEffect(() => {
-    return () => {
-      Object.values(subscriptions).forEach((sub) => {
-        if (sub.eventSource) {
-          sub.eventSource.close();
-        }
-      });
-    };
-  }, []);
 
   if (isLoading) {
     return (

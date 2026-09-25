@@ -7,6 +7,7 @@ import { Input } from '@/components/ui/input';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Textarea } from '@/components/ui/textarea';
 import { subscribeApi } from '@/lib/api';
+import { appendCapped, useEventSources } from '@/lib/useEventSources';
 
 interface Message {
   subject: string;
@@ -24,7 +25,6 @@ interface Subscription {
   subscriptionType: 'regular' | 'queue' | 'reply' | 'request-handler';
   isActive: boolean;
   messages: Message[];
-  eventSource: EventSource | null;
   connectionStatus?: 'connected' | 'disconnected' | 'connecting';
   lastStatusUpdate?: string;
   autoReply?: boolean; // For request handlers
@@ -50,6 +50,7 @@ export function SubscribePage() {
   );
 
   // Common state
+  const { open: openSource, close: closeSource } = useEventSources();
   const [subscriptions, setSubscriptions] = useState<
     Record<string, Subscription>
   >({});
@@ -166,30 +167,23 @@ export function SubscribePage() {
       url += `?${params.toString()}`;
     }
 
-    const eventSource = new EventSource(url);
-
-    eventSource.onopen = () => {
-      setSubscriptions((prev) => ({
-        ...prev,
-        [key]: {
-          ...prev[key],
-          subject: subscriptionSubject,
-          queueGroup: subscriptionQueueGroup,
-          maxMessages: subscriptionMaxMessages,
-          subscriptionType,
-          isActive: true,
-          messages: prev[key]?.messages || [],
-          eventSource,
-          autoReply: subscriptionAutoReply,
-          replyTemplate: subscriptionReplyTemplate,
-        },
-      }));
-    };
-
-    eventSource.onmessage = (event) => {
-      try {
-        const messageData = JSON.parse(event.data);
-
+    openSource(key, url, {
+      onOpen: () =>
+        setSubscriptions((prev) => ({
+          ...prev,
+          [key]: {
+            ...prev[key],
+            subject: subscriptionSubject,
+            queueGroup: subscriptionQueueGroup,
+            maxMessages: subscriptionMaxMessages,
+            subscriptionType,
+            isActive: true,
+            messages: prev[key]?.messages || [],
+            autoReply: subscriptionAutoReply,
+            replyTemplate: subscriptionReplyTemplate,
+          },
+        })),
+      onMessage: (messageData) =>
         setSubscriptions((prev) => {
           const currentSub = prev[key] || {
             subject: subscriptionSubject,
@@ -198,7 +192,6 @@ export function SubscribePage() {
             subscriptionType,
             isActive: true,
             messages: [],
-            eventSource,
             autoReply: subscriptionAutoReply,
             replyTemplate: subscriptionReplyTemplate,
           };
@@ -224,45 +217,29 @@ export function SubscribePage() {
               ...prev,
               [key]: {
                 ...currentSub,
-                messages: [...currentSub.messages, messageData],
+                messages: appendCapped(currentSub.messages, messageData),
               },
             };
           }
 
           return prev;
-        });
-      } catch (error) {
-        console.error('Error parsing SSE message:', error);
-      }
-    };
-
-    eventSource.onerror = (error) => {
-      console.error('SSE error for subject:', subscriptionSubject, error);
-      stopSubscription(key);
-    };
+        }),
+      onError: () => {
+        console.error('SSE error for subject:', subscriptionSubject);
+        markStopped(key);
+      },
+    });
   };
 
-  const stopSubscription = (key: string) => {
-    const subscription = subscriptions[key];
-    if (subscription?.eventSource) {
-      subscription.eventSource.close();
-    }
-
+  const markStopped = (key: string) =>
     setSubscriptions((prev) => ({
       ...prev,
-      [key]: {
-        ...prev[key],
-        isActive: false,
-        eventSource: null,
-      },
+      [key]: { ...prev[key], isActive: false },
     }));
 
-    if (activeTab === key) {
-      const remainingKeys = Object.keys(subscriptions).filter(
-        (k) => k !== key && subscriptions[k].isActive
-      );
-      setActiveTab(remainingKeys[0] || null);
-    }
+  const stopSubscription = (key: string) => {
+    closeSource(key);
+    markStopped(key);
   };
 
   const handleDisconnectClick = (key: string) => {
@@ -345,20 +322,17 @@ export function SubscribePage() {
     setReplyTemplate('{"status": "received", "timestamp": "${timestamp}"}');
   };
 
-  // Clean up subscriptions on unmount
-  useEffect(() => {
-    return () => {
-      Object.values(subscriptions).forEach((sub) => {
-        if (sub.eventSource) {
-          sub.eventSource.close();
-        }
-      });
-    };
-  }, []);
-
   const activeSubscriptions = Object.entries(subscriptions).filter(
     ([, sub]) => sub.isActive
   );
+
+  // When the shown subscription stops (manually or on SSE error), fall back to the first active one.
+  const firstActiveKey = activeSubscriptions[0]?.[0] ?? null;
+  useEffect(() => {
+    if (activeTab && !subscriptions[activeTab]?.isActive) {
+      setActiveTab(firstActiveKey);
+    }
+  }, [activeTab, subscriptions, firstActiveKey]);
 
   return (
     <div className="p-3 h-full flex flex-col">

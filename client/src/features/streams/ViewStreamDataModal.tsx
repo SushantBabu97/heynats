@@ -1,4 +1,3 @@
-import { useQuery } from '@tanstack/react-query';
 import { ChevronDown, ChevronRight, Copy } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { Button } from '@/components/ui/button';
@@ -9,8 +8,8 @@ import {
   DialogTitle,
 } from '@/components/ui/dialog';
 import type { StreamMessage } from '@/lib/api';
-import { streamsApi } from '@/lib/api';
 import { formatTimestamp } from '@/lib/utils';
+import { useStreamMessages } from './useStreams';
 
 interface ViewStreamDataModalProps {
   streamName: string;
@@ -489,17 +488,7 @@ export function ViewStreamDataModal({
     isLoading,
     error,
     refetch,
-  } = useQuery({
-    queryKey: ['streamMessages', streamName, offset, limit, searchTerm],
-    queryFn: () =>
-      streamsApi.getStreamMessages(
-        streamName,
-        offset * limit,
-        limit,
-        searchTerm
-      ),
-    enabled: isOpen,
-  });
+  } = useStreamMessages(streamName, offset, limit, searchTerm, isOpen);
 
   useEffect(() => {
     // Reset offset when modal opens
