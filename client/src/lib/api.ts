@@ -4,6 +4,9 @@ export interface ConnectionCredentials {
   port: string;
   username: string;
   password: string;
+  token?: string;
+  nkeySeed?: string;
+  creds?: string;
 }
 
 export interface ConnectionStatus {
@@ -135,6 +138,15 @@ export const natsApi = {
     credentials: ConnectionCredentials
   ): Promise<{ message: string; connected: boolean }> =>
     apiRequest('/nats/connect', {
+      method: 'POST',
+      body: JSON.stringify(credentials),
+    }),
+
+  // Try credentials without creating a session
+  test: (
+    credentials: ConnectionCredentials
+  ): Promise<{ ok: boolean; server_name: string; version: string }> =>
+    apiRequest('/nats/test', {
       method: 'POST',
       body: JSON.stringify(credentials),
     }),

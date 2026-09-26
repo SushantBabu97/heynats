@@ -2,6 +2,12 @@ import { useEffect, useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
+import {
+  AuthFields,
+  type AuthMethod,
+  authMethodOf,
+  withOnlyAuth,
+} from '../AuthFields';
 import type { NATSContext } from './types';
 import { useNATSContexts } from './useNATSContexts';
 
@@ -13,6 +19,7 @@ interface ContextFormProps {
 export function ContextForm({ editingId, onClose }: ContextFormProps) {
   const { contexts, addContext, updateContext } = useNATSContexts();
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [authMethod, setAuthMethod] = useState<AuthMethod>('user');
   const [formError, setFormError] = useState<string | null>(null);
   const [formData, setFormData] = useState<Partial<NATSContext>>({
     name: '',
@@ -28,14 +35,8 @@ export function ContextForm({ editingId, onClose }: ContextFormProps) {
     if (editingId) {
       const context = contexts.find((ctx) => ctx.id === editingId);
       if (context) {
-        setFormData({
-          name: context.name,
-          description: context.description,
-          host: context.host,
-          port: context.port,
-          username: context.username,
-          password: context.password,
-        });
+        setFormData(context);
+        setAuthMethod(authMethodOf(context));
       }
     }
   }, [editingId, contexts]);
@@ -54,6 +55,18 @@ export function ContextForm({ editingId, onClose }: ContextFormProps) {
     setFormError(null);
 
     setIsSubmitting(true);
+    const auth = withOnlyAuth(
+      {
+        host: formData.host,
+        port: formData.port,
+        username: formData.username ?? '',
+        password: formData.password ?? '',
+        token: formData.token,
+        nkeySeed: formData.nkeySeed,
+        creds: formData.creds,
+      },
+      authMethod
+    );
 
     try {
       if (editingId) {
@@ -61,10 +74,7 @@ export function ContextForm({ editingId, onClose }: ContextFormProps) {
         const result = await updateContext(editingId, {
           name: formData.name,
           description: formData.description,
-          host: formData.host,
-          port: formData.port,
-          username: formData.username || '',
-          password: formData.password || '',
+          ...auth,
         });
 
         if (result.success) {
@@ -76,10 +86,7 @@ export function ContextForm({ editingId, onClose }: ContextFormProps) {
           id: `ctx-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
           name: formData.name!,
           description: formData.description,
-          host: formData.host!,
-          port: formData.port!,
-          username: formData.username || '',
-          password: formData.password || '',
+          ...auth,
           createdAt: Date.now(),
           updatedAt: Date.now(),
           isDefault: contexts.length === 0,
@@ -180,45 +187,15 @@ export function ContextForm({ editingId, onClose }: ContextFormProps) {
         </div>
       </div>
 
-      <div className="grid grid-cols-2 gap-4">
-        <div>
-          <label
-            htmlFor="username"
-            className="block text-sm font-medium text-foreground/80 mb-2"
-          >
-            Username
-          </label>
-          <Input
-            id="username"
-            type="text"
-            placeholder="Optional"
-            value={formData.username || ''}
-            onChange={(e) =>
-              setFormData({ ...formData, username: e.target.value })
-            }
-            disabled={isSubmitting}
-          />
-        </div>
-
-        <div>
-          <label
-            htmlFor="password"
-            className="block text-sm font-medium text-foreground/80 mb-2"
-          >
-            Password
-          </label>
-          <Input
-            id="password"
-            type="password"
-            placeholder="Optional"
-            value={formData.password || ''}
-            onChange={(e) =>
-              setFormData({ ...formData, password: e.target.value })
-            }
-            disabled={isSubmitting}
-          />
-        </div>
-      </div>
+      <AuthFields
+        value={formData}
+        method={authMethod}
+        onMethodChange={setAuthMethod}
+        onChange={(field, value) =>
+          setFormData({ ...formData, [field]: value })
+        }
+        disabled={isSubmitting}
+      />
 
       {formError && (
         <p role="alert" className="mt-4 text-sm text-destructive">
