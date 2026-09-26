@@ -87,9 +87,11 @@ interface TabsContentProps {
   value: string;
   children: React.ReactNode;
   className?: string;
+  /** Keep children mounted (hidden) while inactive, preserving their state. */
+  forceMount?: boolean;
 }
 
-export function TabsContent({ value, children, className }: TabsContentProps) {
+export function TabsContent({ value, children, className, forceMount }: TabsContentProps) {
   const context = useContext(TabsContext);
   if (!context) {
     throw new Error('TabsContent must be used within a Tabs component');
@@ -97,12 +99,12 @@ export function TabsContent({ value, children, className }: TabsContentProps) {
   
   const { activeTab } = context;
   
-  if (activeTab !== value) {
+  if (activeTab !== value && !forceMount) {
     return null;
   }
   
   return (
-    <div className={cn(
+    <div hidden={activeTab !== value} className={cn(
       "mt-2 ring-offset-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-400 focus-visible:ring-offset-2",
       className
     )}>

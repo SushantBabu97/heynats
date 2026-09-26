@@ -1,40 +1,22 @@
-import { useVirtualizer } from '@tanstack/react-virtual';
 import {
   ArrowLeft,
   BarChart3,
-  ChevronDown,
-  Download,
   HardDrive,
   Hash,
   Play,
   Square,
   Users,
 } from 'lucide-react';
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { StatsCard } from '@/components/StatsCard';
 import { Button } from '@/components/ui/button';
-import { Dialog, DialogContent, DialogTitle } from '@/components/ui/dialog';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { appendCapped, useEventSources } from '@/lib/useEventSources';
+import { LiveMessageDialog } from './LiveMessageDialog';
+import { LiveMessagesPanel } from './LiveMessagesPanel';
+import { SubjectList } from './SubjectList';
+import type { MessageEvent, SubjectSubscription } from './types';
 import { useStream } from './useStreams';
-
-interface SubjectSubscription {
-  subject: string;
-  isActive: boolean;
-  messages: any[]; // Only data messages
-  connectionStatus?: 'connected' | 'disconnected' | 'connecting';
-  lastStatusUpdate?: string;
-}
-
-interface MessageEvent {
-  subject: string;
-  data?: any;
-  timestamp: string;
-  headers?: Record<string, string>;
-  type?: string; // For connection/status messages
-  stream?: string; // For connection/status messages
-}
 
 export function StreamDetailPage() {
   const { streamName } = useParams<{ streamName: string }>();
@@ -50,15 +32,9 @@ export function StreamDetailPage() {
     null
   );
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const messagesEndRef = useRef<HTMLDivElement>(null);
-  const messagesContainerRef = useRef<HTMLDivElement>(null);
 
   // New state for improved UX
   const [activeTab, setActiveTab] = useState<string>('');
-  const [showJumpToLatest, setShowJumpToLatest] = useState(false);
-
-  // Virtualization refs
-  const subjectsContainerRef = useRef<HTMLDivElement>(null);
 
   // Fetch stream details
   const { data: stream, isLoading, error } = useStream(streamName);
@@ -66,44 +42,8 @@ export function StreamDetailPage() {
   // Get subjects and active messages for virtualization (must be called before any early returns)
   const subjects = stream?.config?.subjects || [];
 
-  // Get visible messages for active tab
-  const activeMessages = useMemo(() => {
-    if (!activeTab || !subscriptions[activeTab]) return [];
-    return subscriptions[activeTab].messages.slice(-200); // Show last 200 messages
-  }, [subscriptions, activeTab]);
-
-  // Virtualization constants
-  const SUBJECT_ITEM_HEIGHT = 50; // Approximate height of each subject item
-
-  // Virtualize subjects list - MUST be called before any early returns
-  const subjectsVirtualizer = useVirtualizer({
-    count: subjects.length,
-    getScrollElement: () => subjectsContainerRef.current,
-    estimateSize: () => SUBJECT_ITEM_HEIGHT,
-  });
-
   // Note: Removed message virtualization to fix scrolling issues
   // For better UX, we'll render the last 200 messages directly
-
-  const scrollToBottom = () => {
-    const container = messagesContainerRef.current;
-    if (container) {
-      container.scrollTo({
-        top: container.scrollHeight,
-        behavior: 'smooth',
-      });
-    }
-    setShowJumpToLatest(false);
-  };
-
-  const handleScroll = (e: React.UIEvent<HTMLDivElement>) => {
-    const container = e.currentTarget;
-    const { scrollTop, scrollHeight, clientHeight } = container;
-    const distanceFromBottom = scrollHeight - scrollTop - clientHeight;
-    const shouldShowButton = distanceFromBottom > 100; // Show button if more than 100px from bottom
-
-    setShowJumpToLatest(shouldShowButton);
-  };
 
   // Initial scroll to bottom is handled by the auto-scroll effect
 
@@ -230,34 +170,6 @@ export function StreamDetailPage() {
 
     if (activeSubjects.length > 0 && !activeTab) {
       setActiveTab(activeSubjects[0]); // Set first subject as active tab
-    }
-  }, [subscriptions, activeTab]);
-
-  // Auto-scroll to bottom when new messages arrive (only if user is near bottom)
-  useEffect(() => {
-    if (activeTab && subscriptions[activeTab]?.messages.length > 0) {
-      // Small delay to ensure DOM has updated
-      const timeoutId = setTimeout(() => {
-        const container = messagesContainerRef.current;
-        if (container) {
-          const { scrollTop, scrollHeight, clientHeight } = container;
-          const distanceFromBottom = scrollHeight - scrollTop - clientHeight;
-
-          if (distanceFromBottom <= 100) {
-            // User is near bottom, auto-scroll and hide button
-            container.scrollTo({
-              top: scrollHeight,
-              behavior: 'smooth',
-            });
-            setShowJumpToLatest(false);
-          } else {
-            // User is not at bottom, show the jump button
-            setShowJumpToLatest(true);
-          }
-        }
-      }, 100);
-
-      return () => clearTimeout(timeoutId);
     }
   }, [subscriptions, activeTab]);
 
@@ -390,558 +302,29 @@ export function StreamDetailPage() {
               </div>
             </div>
 
-            {/* Virtualized Subjects List */}
-            <div className="bg-card rounded-lg border border-gray-200 p-4 flex-1 flex flex-col min-h-0">
-              <div className="flex items-center justify-between mb-3 shrink-0">
-                <div className="flex items-center gap-4 w-full">
-                  <h2 className="text-base font-semibold">
-                    Subjects ({subjects.length})
-                  </h2>
-                  {subjects.length > 0 && (
-                    <span className="text-sm text-gray-500 ml-auto">
-                      Showing {subjectsVirtualizer.getVirtualItems().length} of{' '}
-                      {subjects.length}
-                    </span>
-                  )}
-                </div>
-                {hasActiveSubscriptions && (
-                  <div className="flex items-center gap-2 text-sm">
-                    <div className="w-2 h-2 bg-green-700 rounded-full animate-pulse" />
-                    <span className="text-green-600">
-                      {
-                        Object.values(subscriptions).filter(
-                          (sub) => sub.isActive
-                        ).length
-                      }{' '}
-                      active subscriptions
-                    </span>
-                  </div>
-                )}
-              </div>
-
-              {subjects.length === 0 ? (
-                <p className="text-gray-500 shrink-0">
-                  No subjects configured for this stream
-                </p>
-              ) : (
-                <div
-                  ref={subjectsContainerRef}
-                  className="relative overflow-auto border border-gray-200 rounded-lg flex-1 min-h-0"
-                >
-                  <div style={{ height: subjectsVirtualizer.getTotalSize() }}>
-                    {subjectsVirtualizer
-                      .getVirtualItems()
-                      .map((virtualItem) => {
-                        const subject = subjects[virtualItem.index];
-                        const subscription = subscriptions[subject];
-                        const isSelected = selectedSubjects.has(subject);
-                        const isActive = subscription?.isActive || false;
-                        const messageCount =
-                          subscription?.messages?.length || 0;
-
-                        return (
-                          <div
-                            key={virtualItem.key}
-                            className={`absolute top-0 left-0 w-full flex items-center justify-between p-4 border-b transition-colors ${
-                              isActive
-                                ? 'bg-green-50 border-green-200'
-                                : isSelected
-                                  ? 'bg-blue-50 border-blue-200'
-                                  : 'bg-gray-50 border-gray-200 hover:bg-gray-100'
-                            }`}
-                            style={{
-                              height: virtualItem.size,
-                              transform: `translateY(${virtualItem.start}px)`,
-                            }}
-                          >
-                            <div className="flex items-center">
-                              <input
-                                type="checkbox"
-                                checked={isSelected}
-                                onChange={() => handleSubjectToggle(subject)}
-                                disabled={isActive}
-                                className="mr-3 h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
-                              />
-                              <div>
-                                <span className="font-medium text-gray-900 truncate max-w-xs block">
-                                  {subject}
-                                </span>
-                                {isActive && (
-                                  <div className="flex items-center gap-3 mt-1">
-                                    {/* Connection Status */}
-                                    <div className="flex items-center">
-                                      {subscription?.connectionStatus ===
-                                      'connected' ? (
-                                        <>
-                                          <div className="w-2 h-2 bg-green-500 rounded-full mr-2 animate-pulse" />
-                                          <span className="text-sm text-green-600">
-                                            Connected
-                                          </span>
-                                        </>
-                                      ) : subscription?.connectionStatus ===
-                                        'connecting' ? (
-                                        <>
-                                          <div className="w-2 h-2 bg-yellow-500 rounded-full mr-2 animate-pulse" />
-                                          <span className="text-sm text-yellow-600">
-                                            Connecting
-                                          </span>
-                                        </>
-                                      ) : (
-                                        <>
-                                          <div className="w-2 h-2 bg-blue-500 rounded-full mr-2 animate-pulse" />
-                                          <span className="text-sm text-blue-600">
-                                            Subscribing
-                                          </span>
-                                        </>
-                                      )}
-                                    </div>
-
-                                    {/* Message Count */}
-                                    {messageCount > 0 && (
-                                      <div className="flex items-center">
-                                        <span className="text-sm text-gray-600">
-                                          {messageCount} message
-                                          {messageCount !== 1 ? 's' : ''}
-                                        </span>
-                                      </div>
-                                    )}
-                                  </div>
-                                )}
-                              </div>
-                            </div>
-                            <div className="flex items-center gap-2 shrink-0">
-                              {messageCount > 0 && (
-                                <Button
-                                  size="sm"
-                                  variant="outline"
-                                  onClick={() => exportMessages(subject)}
-                                >
-                                  <Download className="w-4 h-4 mr-1" />
-                                  Export
-                                </Button>
-                              )}
-                              {isActive ? (
-                                <Button
-                                  size="sm"
-                                  variant="outline"
-                                  onClick={() => stopSubscription(subject)}
-                                  className="border-red-300 text-red-600 hover:bg-red-50"
-                                >
-                                  <Square className="w-4 h-4 mr-1" />
-                                  Stop
-                                </Button>
-                              ) : (
-                                <Button
-                                  size="sm"
-                                  onClick={() => startSubscription(subject)}
-                                  className="bg-green-600 hover:bg-green-700"
-                                >
-                                  <Play className="w-4 h-4 mr-1" />
-                                  Subscribe
-                                </Button>
-                              )}
-                            </div>
-                          </div>
-                        );
-                      })}
-                  </div>
-                </div>
-              )}
-            </div>
+            <SubjectList
+              subjects={subjects}
+              subscriptions={subscriptions}
+              selectedSubjects={selectedSubjects}
+              handleSubjectToggle={handleSubjectToggle}
+              startSubscription={startSubscription}
+              stopSubscription={stopSubscription}
+              exportMessages={exportMessages}
+            />
           </div>
 
-          {/* Right Side - Live Messages */}
-          <div className="w-full lg:w-1/2 flex flex-col min-h-[300px] lg:min-h-0">
-            {/* Active Subscriptions Status - Show when subscriptions are active but no data messages yet */}
-            {(() => {
-              const activeSubscriptions = Object.entries(subscriptions).filter(
-                ([_, sub]) => sub.isActive
-              );
-              const hasDataMessages = Object.values(subscriptions).some(
-                (sub) => sub.messages.length > 0
-              );
+          <LiveMessagesPanel
+            subscriptions={subscriptions}
+            activeTab={activeTab}
+            setActiveTab={setActiveTab}
+            openMessageModal={openMessageModal}
+          />
 
-              if (activeSubscriptions.length === 0 || hasDataMessages)
-                return null;
-
-              return (
-                <div className="bg-blue-50 border border-blue-200 rounded-lg p-3 mb-3">
-                  <div className="flex items-start gap-3">
-                    <div className="w-2 h-2 bg-blue-500 rounded-full animate-pulse mt-2" />
-                    <div className="flex-1">
-                      <h3 className="font-medium text-blue-900 mb-1 text-sm">
-                        Waiting for Data Messages
-                      </h3>
-                      <p className="text-blue-700 text-xs mb-2">
-                        You have {activeSubscriptions.length} active
-                        subscription{activeSubscriptions.length > 1 ? 's' : ''},
-                        but no data messages have been received yet. Only
-                        messages with data content will appear here.
-                      </p>
-                      <div className="space-y-1">
-                        <p className="text-xs text-blue-600 font-medium">
-                          Active subscriptions:
-                        </p>
-                        <div className="flex flex-wrap gap-1">
-                          {activeSubscriptions.map(([subject]) => (
-                            <span
-                              key={subject}
-                              className="text-xs bg-blue-100 text-blue-800 px-2 py-0.5 rounded-full"
-                            >
-                              {subject}
-                            </span>
-                          ))}
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              );
-            })()}
-
-            {/* Live Messages Panel - Tabbed Interface */}
-            <div className="bg-card rounded-lg border border-gray-200 flex-1 flex flex-col overflow-y-auto">
-              <div className="px-3 py-2 bg-gray-50 shrink-0">
-                <div className="flex items-center justify-between mb-2">
-                  {(() => {
-                    const hasMessages = Object.values(subscriptions).some(
-                      (sub) => sub.messages.length > 0
-                    );
-                    const totalMessages = Object.values(subscriptions).reduce(
-                      (sum, sub) => sum + sub.messages.length,
-                      0
-                    );
-
-                    return (
-                      <>
-                        <h2 className="text-base font-semibold text-gray-900">
-                          Live Messages{' '}
-                          {hasMessages ? `(${totalMessages})` : ''}
-                        </h2>
-                      </>
-                    );
-                  })()}
-                </div>
-              </div>
-
-              <div className="flex-1 overflow-hidden">
-                {Object.values(subscriptions).some(
-                  (sub) => sub.messages.length > 0
-                ) ? (
-                  <Tabs
-                    value={activeTab}
-                    onValueChange={setActiveTab}
-                    defaultValue=""
-                    className="h-full flex flex-col"
-                  >
-                    <div className="px-3 py-1 border-b bg-gray-50">
-                      <TabsList className="h-auto p-0.5 bg-gray-100">
-                        {Object.entries(subscriptions)
-                          .filter(
-                            ([_, sub]) =>
-                              sub.isActive && sub.messages.length > 0
-                          )
-                          .map(([subject, subscription]) => (
-                            <TabsTrigger
-                              key={subject}
-                              value={subject}
-                              className="flex items-center gap-2 px-3 py-2"
-                            >
-                              <span className="truncate max-w-32">
-                                {subject}
-                              </span>
-                              <span className="bg-blue-600 text-white text-xs px-1.5 py-0.5 rounded-full min-w-[20px]">
-                                {subscription.messages.length}
-                              </span>
-                              <div className="w-1.5 h-1.5 bg-green-500 rounded-full animate-pulse" />
-                            </TabsTrigger>
-                          ))}
-                      </TabsList>
-                    </div>
-
-                    <div className="flex-1 overflow-hidden">
-                      {Object.entries(subscriptions)
-                        .filter(
-                          ([_, sub]) => sub.isActive && sub.messages.length > 0
-                        )
-                        .map(([subject]) => (
-                          <TabsContent
-                            key={subject}
-                            value={subject}
-                            className="h-full mt-0 p-0 relative"
-                          >
-                            <div
-                              ref={
-                                subject === activeTab
-                                  ? messagesContainerRef
-                                  : null
-                              }
-                              className="h-full overflow-y-auto"
-                              onScroll={handleScroll}
-                            >
-                              <div className="space-y-1 p-2">
-                                {subject === activeTab &&
-                                  activeMessages.map((message, index) => {
-                                    const dataStr =
-                                      typeof message.data === 'string'
-                                        ? message.data
-                                        : JSON.stringify(message.data);
-                                    const isLongData = dataStr?.length > 100;
-                                    const previewData = isLongData
-                                      ? `${dataStr.substring(0, 100)}...`
-                                      : dataStr;
-
-                                    return (
-                                      <button
-                                        type="button"
-                                        key={`message-${activeTab}-${index}-${message.timestamp}`}
-                                        onClick={() =>
-                                          openMessageModal(message)
-                                        }
-                                        className="block w-full text-left px-4 py-2 hover:bg-blue-50 transition-all duration-200 cursor-pointer border-l-4 border-transparent hover:border-blue-400 hover:shadow-sm group border-b border-gray-100 last:border-b-0"
-                                      >
-                                        <div className="flex items-center gap-3">
-                                          <span className="text-xs font-mono text-gray-500 bg-gray-100 px-2 py-1 rounded shrink-0">
-                                            {new Date(
-                                              message.timestamp
-                                            ).toLocaleTimeString()}
-                                          </span>
-
-                                          <div className="flex-1 bg-gray-900 text-gray-100 p-2 rounded text-xs font-mono overflow-hidden">
-                                            <div className="break-words whitespace-pre-wrap">
-                                              {previewData}
-                                            </div>
-                                          </div>
-
-                                          <div className="flex items-center gap-2 shrink-0">
-                                            {message.headers &&
-                                              Object.keys(message.headers)
-                                                .length > 0 && (
-                                                <span className="text-xs text-orange-600 bg-orange-100 px-1 py-0.5 rounded">
-                                                  {
-                                                    Object.keys(message.headers)
-                                                      .length
-                                                  }{' '}
-                                                  headers
-                                                </span>
-                                              )}
-                                            {isLongData && (
-                                              <span className="text-xs text-blue-600 bg-blue-100 px-1 py-0.5 rounded group-hover:bg-blue-200 transition-colors">
-                                                Click to expand
-                                              </span>
-                                            )}
-                                            <svg
-                                              className="w-4 h-4 text-gray-400 group-hover:text-blue-500 transition-colors"
-                                              fill="none"
-                                              stroke="currentColor"
-                                              viewBox="0 0 24 24"
-                                            >
-                                              <path
-                                                strokeLinecap="round"
-                                                strokeLinejoin="round"
-                                                strokeWidth={2}
-                                                d="M9 5l7 7-7 7"
-                                              />
-                                            </svg>
-                                          </div>
-                                        </div>
-                                      </button>
-                                    );
-                                  })}
-                              </div>
-
-                              {/* Scroll indicator for messages */}
-                              {activeMessages.length > 50 && (
-                                <div className="sticky bottom-2 right-2 ml-auto w-fit bg-gray-800 text-white text-xs px-2 py-1 rounded mb-2 mr-2">
-                                  Showing {activeMessages.length} messages
-                                </div>
-                              )}
-
-                              <div ref={messagesEndRef} />
-                            </div>
-                            {/* Jump to Latest Button - Show for active tab */}
-                            {activeTab === subject && (
-                              <div>
-                                {showJumpToLatest && (
-                                  <button
-                                    type="button"
-                                    onClick={scrollToBottom}
-                                    className="fixed bottom-8 right-8 bg-blue-600 hover:bg-blue-700 text-white px-4 py-3 rounded-full shadow-xl transition-all duration-200 flex items-center gap-2 text-sm font-medium z-50 border-2 border-white"
-                                  >
-                                    <ChevronDown className="w-4 h-4" />
-                                    Jump to Latest
-                                  </button>
-                                )}
-                              </div>
-                            )}
-                          </TabsContent>
-                        ))}
-                    </div>
-                  </Tabs>
-                ) : (
-                  <div className="flex flex-col items-center justify-center h-full text-gray-500 p-6">
-                    <div className="text-center">
-                      {Object.entries(subscriptions).filter(
-                        ([_, sub]) => sub.isActive
-                      ).length === 0 ? (
-                        <>
-                          <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mb-4 mx-auto">
-                            <svg
-                              className="w-8 h-8 text-gray-400"
-                              fill="none"
-                              stroke="currentColor"
-                              viewBox="0 0 24 24"
-                            >
-                              <path
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                                strokeWidth={2}
-                                d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-3.582 8-8 8a8.955 8.955 0 01-4.126-.98L3 20l1.98-5.874A8.955 8.955 0 73 12c0-4.418 3.582-8 8-8s8 3.582 8 8z"
-                              />
-                            </svg>
-                          </div>
-                          <h3 className="text-lg font-medium text-gray-900 mb-2">
-                            No Active Subscriptions
-                          </h3>
-                          <p className="text-sm text-gray-500 max-w-md">
-                            Start subscribing to subjects to see live messages
-                            appear here. Each subject will appear as a separate
-                            tab when messages arrive.
-                          </p>
-                        </>
-                      ) : (
-                        <>
-                          <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mb-4 mx-auto">
-                            <div className="w-2 h-2 bg-blue-500 rounded-full animate-pulse" />
-                          </div>
-                          <h3 className="text-lg font-medium text-blue-900 mb-2">
-                            Waiting for Messages
-                          </h3>
-                          <p className="text-sm text-blue-600 max-w-md mb-4">
-                            You have active subscriptions. Messages will appear
-                            as tabs when they arrive.
-                          </p>
-                          <div className="flex flex-wrap gap-1 justify-center max-w-md">
-                            {Object.entries(subscriptions)
-                              .filter(([_, sub]) => sub.isActive)
-                              .map(([subject]) => (
-                                <span
-                                  key={subject}
-                                  className="text-xs bg-blue-100 text-blue-800 px-2 py-1 rounded-full"
-                                >
-                                  {subject}
-                                </span>
-                              ))}
-                          </div>
-                        </>
-                      )}
-                    </div>
-                  </div>
-                )}
-              </div>
-            </div>
-          </div>
-
-          {/* Message Detail Modal */}
-          <Dialog
-            open={isModalOpen && selectedMessage !== null}
-            onOpenChange={(open) => !open && closeMessageModal()}
-          >
-            {selectedMessage && (
-              <DialogContent
-                aria-describedby={undefined}
-                className="flex max-h-[90vh] flex-col gap-0 overflow-hidden p-0 sm:max-w-4xl"
-              >
-                <div className="px-4 py-3 border-b bg-gray-50">
-                  <DialogTitle>Message Details</DialogTitle>
-                </div>
-
-                {/* Modal Content */}
-                <div className="p-4 overflow-y-auto max-h-[calc(90vh-7rem)]">
-                  {/* Message Metadata */}
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-3 mb-4">
-                    <div className="bg-gray-50 p-3 rounded-lg">
-                      <h3 className="font-semibold text-gray-900 mb-2 text-sm">
-                        Subject
-                      </h3>
-                      <p className="text-xs font-mono bg-card p-2 rounded border">
-                        {selectedMessage.subject}
-                      </p>
-                    </div>
-                    <div className="bg-gray-50 p-3 rounded-lg">
-                      <h3 className="font-semibold text-gray-900 mb-2 text-sm">
-                        Timestamp
-                      </h3>
-                      <p className="text-xs font-mono bg-card p-2 rounded border">
-                        {new Date(selectedMessage.timestamp).toLocaleString()}
-                      </p>
-                    </div>
-                  </div>
-
-                  {/* Message Data */}
-                  <div className="mb-4">
-                    <h3 className="font-semibold text-gray-900 mb-2 text-sm">
-                      Data
-                    </h3>
-                    <div className="bg-gray-900 text-gray-100 p-3 rounded-lg overflow-x-auto">
-                      <pre className="text-sm font-mono whitespace-pre-wrap">
-                        {typeof selectedMessage.data === 'string'
-                          ? selectedMessage.data
-                          : JSON.stringify(selectedMessage.data, null, 2)}
-                      </pre>
-                    </div>
-                  </div>
-
-                  {/* Headers */}
-                  {selectedMessage.headers &&
-                    Object.keys(selectedMessage.headers).length > 0 && (
-                      <div className="mb-6">
-                        <h3 className="font-semibold text-gray-900 mb-2">
-                          Headers
-                        </h3>
-                        <div className="bg-orange-50 border border-orange-200 p-4 rounded-lg">
-                          <pre className="text-sm font-mono whitespace-pre-wrap">
-                            {JSON.stringify(selectedMessage.headers, null, 2)}
-                          </pre>
-                        </div>
-                      </div>
-                    )}
-
-                  {/* Raw JSON */}
-                  <div>
-                    <h3 className="font-semibold text-gray-900 mb-2">
-                      Raw JSON
-                    </h3>
-                    <div className="bg-blue-50 border border-blue-200 p-4 rounded-lg">
-                      <pre className="text-sm font-mono whitespace-pre-wrap">
-                        {JSON.stringify(selectedMessage, null, 2)}
-                      </pre>
-                    </div>
-                  </div>
-                </div>
-
-                {/* Modal Footer */}
-                <div className="px-6 py-4 border-t bg-gray-50 flex justify-end gap-2">
-                  <Button
-                    variant="outline"
-                    onClick={() => {
-                      navigator.clipboard.writeText(
-                        JSON.stringify(selectedMessage, null, 2)
-                      );
-                    }}
-                  >
-                    Copy JSON
-                  </Button>
-                  <Button
-                    onClick={closeMessageModal}
-                    className="bg-blue-600 hover:bg-blue-700"
-                  >
-                    Close
-                  </Button>
-                </div>
-              </DialogContent>
-            )}
-          </Dialog>
+          <LiveMessageDialog
+            message={selectedMessage}
+            open={isModalOpen}
+            onClose={closeMessageModal}
+          />
         </div>
       </div>
     </div>

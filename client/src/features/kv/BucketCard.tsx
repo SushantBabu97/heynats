@@ -1,7 +1,10 @@
 import { Archive, Clock, Eye, HardDrive, Hash, Trash2 } from 'lucide-react';
 import { useState } from 'react';
+import { ConfirmDialog } from '@/components/ConfirmDialog';
 import { Button } from '@/components/ui/button';
+
 import type { KVBucket } from '@/lib/api';
+import { formatBytes, formatTTL } from '@/lib/utils';
 
 interface BucketCardProps {
   bucket: KVBucket;
@@ -10,42 +13,21 @@ interface BucketCardProps {
 }
 
 export function BucketCard({ bucket, onView, onDelete }: BucketCardProps) {
-  const [isDeleteConfirming, setIsDeleteConfirming] = useState(false);
-
-  const formatBytes = (bytes: number): string => {
-    if (bytes === 0) return '0 B';
-    const k = 1024;
-    const sizes = ['B', 'KB', 'MB', 'GB'];
-    const i = Math.floor(Math.log(bytes) / Math.log(k));
-    return Number.parseFloat((bytes / k ** i).toFixed(2)) + ' ' + sizes[i];
-  };
-
-  const formatTTL = (ttl: string): string => {
-    if (ttl === '0s' || ttl === '0') return 'No TTL';
-    return ttl;
-  };
-
-  const handleDeleteClick = () => {
-    if (isDeleteConfirming) {
-      onDelete(bucket.bucket);
-      setIsDeleteConfirming(false);
-    } else {
-      setIsDeleteConfirming(true);
-      // Reset confirmation after 3 seconds
-      setTimeout(() => setIsDeleteConfirming(false), 3000);
-    }
-  };
+  const [confirmingDelete, setConfirmingDelete] = useState(false);
 
   return (
     <div className="bg-card rounded-lg border border-gray-200 hover:border-gray-300 transition-colors">
       <div className="p-6">
         {/* Header */}
-        <div className="flex items-start justify-between mb-4">
-          <div className="flex-1">
-            <h3 className="text-lg font-semibold text-gray-900 mb-1">
+        <div className="flex flex-wrap items-start justify-between gap-3 mb-4">
+          <div className="min-w-48 flex-1">
+            <h3
+              className="truncate text-lg font-semibold text-gray-900 mb-1"
+              title={bucket.bucket}
+            >
               {bucket.bucket}
             </h3>
-            <div className="flex items-center space-x-4 text-sm text-gray-500">
+            <div className="flex items-center space-x-4 text-sm text-gray-500 whitespace-nowrap">
               <div className="flex items-center space-x-1">
                 <Hash className="w-3 h-3" />
                 <span>{bucket.values.toLocaleString()} entries</span>
@@ -56,7 +38,7 @@ export function BucketCard({ bucket, onView, onDelete }: BucketCardProps) {
               </div>
             </div>
           </div>
-          <div className="flex items-center space-x-2">
+          <div className="flex shrink-0 items-center space-x-2">
             <Button
               onClick={() => onView(bucket.bucket)}
               size="sm"
@@ -67,17 +49,13 @@ export function BucketCard({ bucket, onView, onDelete }: BucketCardProps) {
               View
             </Button>
             <Button
-              onClick={handleDeleteClick}
+              onClick={() => setConfirmingDelete(true)}
               size="sm"
               variant="outline"
-              className={`${
-                isDeleteConfirming
-                  ? 'text-red-600 border-red-300 hover:bg-red-50'
-                  : 'text-gray-600 hover:text-red-600'
-              }`}
+              className="text-gray-600 hover:text-red-600"
             >
               <Trash2 className="w-3 h-3 mr-1" />
-              {isDeleteConfirming ? 'Confirm' : 'Delete'}
+              Delete
             </Button>
           </div>
         </div>
@@ -118,6 +96,20 @@ export function BucketCard({ bucket, onView, onDelete }: BucketCardProps) {
           </div>
         </div>
       </div>
+      <ConfirmDialog
+        open={confirmingDelete}
+        onOpenChange={setConfirmingDelete}
+        title="Delete bucket?"
+        description={
+          <>
+            Bucket <strong>{bucket.bucket}</strong> and all its keys will be
+            permanently deleted.
+          </>
+        }
+        confirmLabel="Delete bucket"
+        destructive
+        onConfirm={() => onDelete(bucket.bucket)}
+      />
     </div>
   );
 }
