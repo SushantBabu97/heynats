@@ -45,7 +45,7 @@ The SPA is embedded into the Go binary (`//go:embed all:client/dist` in `main.go
 - Subscriptions (`internal/api/subscribe.go`) stream messages to the browser over SSE (`text/event-stream`).
 
 **Frontend** (`client/src`), organised by feature:
-- `app/`: router, `QueryProvider`, `ProtectedRoute` (gates `/dashboard/*` on connection status, redirects to `/`), layouts + `Sidebar`.
+- `app/`: router, `QueryProvider`, `ProtectedRoute` (gates `/dashboard/*` on connection status, redirects to `/`, toasts "connection lost" unless the user disconnected), layouts + `Sidebar`. New pages: add a route in `app/router.tsx` using the `page()` lazy helper and a `handle: { title, parent? }` — `DashboardLayout` renders the header title/breadcrumb and `document.title` from it. List-page search text lives in `?q=` via `lib/useSearchQuery`.
 - `features/<name>/` (`connection`, `dashboard`, `streams`, `kv`, `messaging`): each holds its pages, components and hooks flat in one folder. `features/connection/useNATS.ts` is the connection-status hook used app-wide.
 - `components/`: cross-feature pieces (`ErrorBoundary`, `StatsCard`); `components/ui/` is shadcn only.
 - `lib/api.ts`: typed fetch client for `/api` (cookie-based, `ApiError`). Server state goes through per-feature TanStack Query hooks with their own key factory (`useNATS` → `queryKeys`, `useKV` → `kvQueryKeys`, `useStreams` → `streamKeys`); connect/disconnect removes every non-`nats` query so data from a previous server never shows.

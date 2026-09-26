@@ -5,6 +5,7 @@ import { StatsCard } from '@/components/StatsCard';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { useConnectionStatus } from '@/features/connection/useNATS';
+import { useSearchQuery } from '@/lib/useSearchQuery';
 import { formatBytes } from '@/lib/utils';
 import { BucketCard } from './BucketCard';
 import { CreateBucketModal } from './CreateBucketModal';
@@ -12,7 +13,7 @@ import { useCreateKVBucket, useDeleteKVBucket, useKVBuckets } from './useKV';
 
 export function KeyValuePage() {
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
-  const [searchTerm, setSearchTerm] = useState('');
+  const [searchTerm, setSearchTerm] = useSearchQuery();
   const navigate = useNavigate();
 
   // Check connection status

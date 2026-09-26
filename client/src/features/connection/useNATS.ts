@@ -95,7 +95,10 @@ export function useDisconnectFromNATS() {
     mutationFn: natsApi.disconnect,
     onSuccess: () => {
       // Update connection status immediately
-      queryClient.setQueryData(queryKeys.nats.status(), { connected: false });
+      queryClient.setQueryData(queryKeys.nats.status(), {
+        connected: false,
+        userInitiated: true,
+      });
       dropServerData(queryClient);
       // Invalidate all NATS-related queries
       queryClient.invalidateQueries({ queryKey: queryKeys.nats.all });
@@ -112,7 +115,10 @@ export function useDisconnectFromNATS() {
         'Failed to disconnect from NATS server'
       );
       // Even if disconnect API fails, update local state
-      queryClient.setQueryData(queryKeys.nats.status(), { connected: false });
+      queryClient.setQueryData(queryKeys.nats.status(), {
+        connected: false,
+        userInitiated: true,
+      });
       dropServerData(queryClient);
     },
   });

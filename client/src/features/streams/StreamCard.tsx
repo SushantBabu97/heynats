@@ -130,7 +130,7 @@ export function StreamCard({
           </div>
         </div>
 
-        <div className="flex shrink-0 gap-2">
+        <div className="flex flex-wrap gap-2">
           {onViewStreamData && config?.name && (
             <Button
               variant="outline"

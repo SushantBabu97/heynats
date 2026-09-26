@@ -121,7 +121,7 @@ export function DashboardPage() {
                       <h4 className="text-sm font-medium text-gray-500">
                         Connection
                       </h4>
-                      <div className="text-sm text-gray-900 font-mono">
+                      <div className="text-sm text-gray-900 font-mono break-all">
                         {accountInfo.account_information.connected_url}
                       </div>
                     </div>

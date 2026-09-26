@@ -12,7 +12,7 @@ export function DevTools() {
   const { data: natsStatus } = useConnectionStatus();
 
   return (
-    <div className="fixed bottom-4 left-4 z-50 space-y-1">
+    <div className="fixed bottom-4 left-4 z-50 hidden space-y-1 sm:block">
       <div className="border bg-popover text-popover-foreground px-3 py-2 rounded text-xs font-mono shadow-lg">
         <div className="flex items-center space-x-3">
           <div className="flex items-center space-x-1">

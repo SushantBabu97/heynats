@@ -4,6 +4,7 @@ import { ConfirmDialog } from '@/components/ConfirmDialog';
 import { StatsCard } from '@/components/StatsCard';
 import { Button } from '@/components/ui/button';
 import type { Stream, StreamConfig } from '@/lib/api';
+import { useSearchQuery } from '@/lib/useSearchQuery';
 import { CreateStreamModal } from './CreateStreamModal';
 import { StreamCard } from './StreamCard';
 import { useCreateStream, useDeleteStream, useStreams } from './useStreams';
@@ -15,7 +16,7 @@ export function StreamsPage() {
   const [selectedStreamForData, setSelectedStreamForData] = useState<
     string | null
   >(null);
-  const [searchTerm, setSearchTerm] = useState('');
+  const [searchTerm, setSearchTerm] = useSearchQuery();
   const [streamToDelete, setStreamToDelete] = useState<string | null>(null);
   const navigate = useNavigate();
 

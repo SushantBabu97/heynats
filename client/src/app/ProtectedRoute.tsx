@@ -1,5 +1,6 @@
-import type { ReactNode } from 'react';
+import { type ReactNode, useEffect, useRef } from 'react';
 import { Navigate } from 'react-router-dom';
+import { toast } from 'sonner';
 import { useConnectionStatus } from '@/features/connection/useNATS';
 
 interface ProtectedRouteProps {
@@ -8,6 +9,22 @@ interface ProtectedRouteProps {
 
 export function ProtectedRoute({ children }: ProtectedRouteProps) {
   const { data: status, isLoading } = useConnectionStatus();
+  const wasConnected = useRef(false);
+  const connected = !!status?.connected;
+  // Set by useDisconnectFromNATS so a deliberate disconnect isn't reported as a loss.
+  const userInitiated = !!(status as { userInitiated?: boolean } | undefined)
+    ?.userInitiated;
+
+  useEffect(() => {
+    if (connected) {
+      wasConnected.current = true;
+    } else if (wasConnected.current && !userInitiated) {
+      toast.error('Connection to NATS lost', {
+        description:
+          'The server closed the session. Connect again to continue.',
+      });
+    }
+  }, [connected, userInitiated]);
 
   // Show loading state while checking connection
   if (isLoading) {
@@ -19,7 +36,7 @@ export function ProtectedRoute({ children }: ProtectedRouteProps) {
   }
 
   // Redirect to login if not connected
-  if (!status?.connected) {
+  if (!connected) {
     return <Navigate to="/" replace />;
   }
 

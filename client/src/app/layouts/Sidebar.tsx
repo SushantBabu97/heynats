@@ -54,7 +54,10 @@ const NavItem = ({ name, path, icon, small, isActive }: NavItemProps) => {
 
 const Sidebar = () => {
   const location = useLocation();
-  const [small, setSmall] = useState(false);
+  // Start collapsed (icons only) on phone-sized screens.
+  const [small, setSmall] = useState(
+    () => window.matchMedia('(max-width: 767px)').matches
+  );
 
   const navItems = [
     {
