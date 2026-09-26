@@ -2,6 +2,7 @@ import React, { useState, useRef, useEffect } from 'react';
 import { Input } from './input';
 
 interface AutocompleteInputProps {
+  id?: string;
   value: string;
   onChange: (value: string) => void;
   suggestions?: string[];
@@ -14,6 +15,7 @@ interface AutocompleteInputProps {
 }
 
 export function AutocompleteInput({
+  id,
   value,
   onChange,
   suggestions = [],
@@ -147,6 +149,7 @@ export function AutocompleteInput({
   return (
     <div className="relative">
       <Input
+        id={id}
         ref={inputRef}
         type="text"
         value={value}
@@ -157,23 +160,29 @@ export function AutocompleteInput({
         disabled={disabled}
         className={`pr-8 ${className}`}
         autoComplete="off"
+        // NATS subjects, not credentials: keep password managers from offering logins here.
+        // (they ignore autoComplete="off"; each honours its own opt-out attribute)
+        data-bwignore="true"
+        data-1p-ignore="true"
+        data-lpignore="true"
+        data-form-type="other"
       />
       <div className="absolute inset-y-0 right-0 flex items-center pr-2 pointer-events-none">
-        <svg className="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <svg className="w-4 h-4 text-muted-foreground" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
         </svg>
       </div>
       
       {(isOpen || isLoading) && (
-        <div className="absolute z-50 w-full mt-1 bg-white border border-gray-200 rounded-md shadow-lg max-h-60 overflow-auto">
+        <div className="absolute z-50 w-full mt-1 bg-popover text-popover-foreground border border-border rounded-md shadow-lg max-h-60 overflow-auto">
           {isLoading ? (
             <div className="px-4 py-3 text-center">
               <div className="flex items-center justify-center">
-                <svg className="animate-spin -ml-1 mr-3 h-4 w-4 text-gray-400" fill="none" viewBox="0 0 24 24">
+                <svg className="animate-spin -ml-1 mr-3 h-4 w-4 text-muted-foreground" fill="none" viewBox="0 0 24 24">
                   <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
                   <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
                 </svg>
-                <span className="text-sm text-gray-500">Loading suggestions...</span>
+                <span className="text-sm text-muted-foreground">Loading suggestions...</span>
               </div>
             </div>
           ) : filteredSuggestions.length > 0 ? (
@@ -188,7 +197,7 @@ export function AutocompleteInput({
                 
                 return parts.map((part, i) => 
                   regex.test(part) ? (
-                    <mark key={i} className="bg-yellow-200 text-yellow-800 px-0.5 rounded">{part}</mark>
+                    <mark key={i} className="bg-warning/10 text-warning px-0.5 rounded">{part}</mark>
                   ) : part
                 );
               };
@@ -198,15 +207,15 @@ export function AutocompleteInput({
                   key={suggestion}
                   className={`px-4 py-3 cursor-pointer transition-all duration-150 ${
                     index === selectedIndex
-                      ? 'bg-blue-50 text-blue-900 border-l-3 border-blue-500 shadow-sm'
-                      : 'text-gray-900 hover:bg-gray-50 hover:shadow-sm'
+                      ? 'bg-primary/5 text-primary border-l-3 border-primary shadow-sm'
+                      : 'text-foreground hover:bg-muted hover:shadow-sm'
                   }`}
                   onClick={() => handleSelect(suggestion)}
                   onMouseEnter={() => setSelectedIndex(index)}
                 >
                   <div className="flex items-center justify-between">
                     <div className="flex items-center">
-                      <svg className="w-4 h-4 mr-2 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <svg className="w-4 h-4 mr-2 text-muted-foreground" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z" />
                       </svg>
                       <span className="text-sm font-medium">
@@ -215,8 +224,8 @@ export function AutocompleteInput({
                     </div>
                     {index === selectedIndex && (
                       <div className="flex items-center ml-2">
-                        <span className="text-xs text-blue-500 mr-1">Press Enter</span>
-                        <svg className="w-4 h-4 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <span className="text-xs text-primary mr-1">Press Enter</span>
+                        <svg className="w-4 h-4 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
                         </svg>
                       </div>
@@ -227,13 +236,13 @@ export function AutocompleteInput({
             })}
             
             {suggestions.length > filteredSuggestions.length && (
-              <div className="px-4 py-2 text-xs text-gray-500 border-t border-gray-100 bg-gray-50 flex items-center justify-between">
+              <div className="px-4 py-2 text-xs text-muted-foreground border-t border-border bg-muted flex items-center justify-between">
                 <span>
                   Showing {filteredSuggestions.length} of {suggestions.filter(s => 
                     s.toLowerCase().includes(value.toLowerCase())
                   ).length} matches
                 </span>
-                <div className="flex items-center text-gray-400">
+                <div className="flex items-center text-muted-foreground">
                   <svg className="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                   </svg>
@@ -245,10 +254,10 @@ export function AutocompleteInput({
           ) : (
             <div className="px-4 py-3 text-center">
               <div className="flex flex-col items-center">
-                <svg className="w-6 h-6 text-gray-300 mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg className="w-6 h-6 text-muted-foreground/70 mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.172 16.172a4 4 0 015.656 0M9 12h6m-6-4h6m2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
                 </svg>
-                <span className="text-sm text-gray-500">{noResultsText}</span>
+                <span className="text-sm text-muted-foreground">{noResultsText}</span>
               </div>
             </div>
           )}

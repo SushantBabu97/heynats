@@ -1,6 +1,8 @@
 package main
 
 import (
+	"embed"
+	"io/fs"
 	"log"
 	"os"
 	"os/signal"
@@ -10,8 +12,15 @@ import (
 	"github.com/astergaze-solutions/heynats/internal/infrastructure"
 )
 
+//go:embed all:client/dist
+var clientDist embed.FS
+
 func main() {
-	router := infrastructure.NewRouter()
+	dist, err := fs.Sub(clientDist, "client/dist")
+	if err != nil {
+		log.Fatal(err)
+	}
+	router := infrastructure.NewRouter(dist)
 	natsConnections := api.NewNatsConnection()
 	middleware := api.NewConnectionMiddleware(natsConnections)
 

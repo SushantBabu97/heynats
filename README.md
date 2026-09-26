@@ -7,8 +7,8 @@
 **A modern, web-based administration interface for NATS Server**
 
 [![Built with React](https://img.shields.io/badge/React-19-blue.svg)](https://reactjs.org/)
-[![Go Version](https://img.shields.io/badge/Go-1.24.0+-00ADD8.svg)](https://golang.org/)
-[![TypeScript](https://img.shields.io/badge/TypeScript-5.7+-3178C6.svg)](https://www.typescriptlang.org/)
+[![Go Version](https://img.shields.io/badge/Go-1.26+-00ADD8.svg)](https://golang.org/)
+[![TypeScript](https://img.shields.io/badge/TypeScript-7+-3178C6.svg)](https://www.typescriptlang.org/)
 [![License](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE.md)
 
 [Demo](#-demo) •
@@ -35,6 +35,7 @@ Experience HeyNATS without any setup! Try our live demo using the public NATS se
 ### 🌐 Quick Demo Setup
 
 **Connection Details:**
+
 ```
 Host: demo.nats.io
 Port: 4222
@@ -58,30 +59,35 @@ Authentication: None required
 ## ✨ Features
 
 ### 🔌 **Connection Management**
+
 - Connect to multiple NATS servers simultaneously
 - Support for authentication (user/password, token, JWT)
 - Real-time connection status monitoring
 - Connection pooling and management
 
 ### 📊 **JetStream Administration**
+
 - **Stream Management**: Create, view, edit, and delete streams
 - **Consumer Management**: Monitor and manage stream consumers
 - **Message Publishing**: Send messages to streams and subjects
 - **Message Consumption**: Subscribe to streams and view real-time messages
 
 ### 🗄️ **Key-Value Store Operations**
+
 - Create and manage KV buckets
 - Browse, add, edit, and delete key-value pairs
 - Real-time KV operations monitoring
 - Bucket configuration management
 
 ### 📈 **Monitoring & Analytics**
+
 - Real-time server statistics and metrics
 - Stream and consumer performance monitoring
 - Message flow visualization
 - Connection health dashboards
 
 ### 🎨 **Modern UI/UX**
+
 - Responsive design that works on desktop, tablet, and mobile
 - Dark/light theme support
 - Intuitive navigation and user experience
@@ -90,6 +96,7 @@ Authentication: None required
 ## 🛠️ Tech Stack
 
 ### Frontend
+
 - **React 19** - Modern React with latest features
 - **TypeScript** - Type-safe development
 - **React Router v7** - Advanced routing with loaders
@@ -99,7 +106,8 @@ Authentication: None required
 - **shadcn/ui** - Beautiful, accessible component library
 
 ### Backend
-- **Go 1.24.0+** - High-performance backend
+
+- **Go 1.26+** - High-performance backend
 - **Gin Framework** - Fast HTTP web framework
 - **NATS Go Client** - Official NATS client library
 - **Graceful Shutdown** - Proper resource cleanup
@@ -133,9 +141,11 @@ heynats/
 ## 🚀 Quick Start
 
 ### Option 1: Try the Demo First! 🎮
+
 No installation needed - just try HeyNATS with our [demo setup](#-demo) using `demo.nats.io`.
 
 ### Option 2: Install Locally
+
 The fastest way to get HeyNATS running on your machine:
 
 ```bash
@@ -156,8 +166,9 @@ That's it! HeyNATS will be running and ready to connect to your NATS server.
 ### Prerequisites
 
 #### System Requirements
-- **Go 1.24.0 or later** - [Download Go](https://golang.org/dl/)
-- **Node.js 18+ and pnpm** - [Install Node.js](https://nodejs.org/) and [Install pnpm](https://pnpm.io/installation)
+
+- **Go 1.26 or later** - [Download Go](https://golang.org/dl/)
+- **Node.js 22+ and pnpm** - [Install Node.js](https://nodejs.org/) and [Install pnpm](https://pnpm.io/installation)
 - **NATS Server** - [Install NATS Server](https://docs.nats.io/running-a-nats-service/introduction/installation)
 
 ```bash
@@ -165,35 +176,38 @@ That's it! HeyNATS will be running and ready to connect to your NATS server.
 npm install -g pnpm
 
 # Verify installations
-go version    # Should be 1.24.0+
-node --version # Should be 18+
+go version    # Should be 1.26+
+node --version # Should be 22+
 pnpm --version
 ```
 
 ### Full Installation
 
 1. **Clone the repository**
+
    ```bash
    git clone https://github.com/Astergaze-Solutions/heynats.git
    cd heynats
    ```
 
 2. **Install dependencies**
+
    ```bash
    # Install all dependencies (Go + Node.js)
    make install
-   
+
    # Or manually:
    go mod tidy
    cd client && pnpm install && cd ..
    ```
 
 3. **Setup development tools** (Optional but recommended)
+
    ```bash
    # Install lefthook for Git hooks
    go install github.com/evilmartians/lefthook@latest
    lefthook install
-   
+
    # Install Go development tools
    go install golang.org/x/tools/cmd/goimports@latest
    go install github.com/air-verse/air@latest  # For hot reload
@@ -204,6 +218,7 @@ pnpm --version
 ### Starting HeyNATS
 
 #### Option 1: Production Build (Recommended)
+
 ```bash
 # Build and run in one command
 ./build-and-run.sh
@@ -213,6 +228,7 @@ make run
 ```
 
 #### Option 2: Development Mode (Hot Reload)
+
 ```bash
 # Start both frontend and backend with hot reload
 ./dev.sh
@@ -244,8 +260,9 @@ make dev-full
    - Monitor server statistics
 
 ### Available URLs
+
 - **Web Interface**: http://localhost:5000
-- **API Endpoints**: http://localhost:5000/api/*
+- **API Endpoints**: http://localhost:5000/api/\*
 - **React Dev Server** (dev mode): http://localhost:5173
 
 ## 🔧 Development
@@ -316,7 +333,7 @@ cd client && pnpm lint  # Frontend only
 We welcome contributions! Please read our [Contributing Guidelines](CONTRIBUTING.md) for detailed information on:
 
 - 🐛 Reporting bugs
-- 💡 Suggesting features  
+- 💡 Suggesting features
 - 💻 Code contributions
 - 📝 Documentation improvements
 - 🔧 Development setup
@@ -377,7 +394,15 @@ Want to see your profile here? We'd love your contributions! Check out our [Cont
 - **[@SushantBabu](https://github.com/SushantBabu97)** - Core Developer
 - **[@Astergaze-Solutions](https://github.com/Astergaze-Solutions)** - Organization & Project Sponsor
 
-*Interested in becoming a maintainer? Contribute regularly and reach out to us!*
+_Interested in becoming a maintainer? Contribute regularly and reach out to us!_
+
+## 👨‍💻 Credentials
+
+```
+# Credentials
+- **Username**: admin
+- **Password**: Lm2KZ22PCKB9GjwUYzxnXAm9IyDM8svZZUSp7tSOYcQ=
+```
 
 ## 🙏 Acknowledgments
 
