@@ -6,7 +6,7 @@ export function cn(...inputs: ClassValue[]) {
 }
 
 export function formatTTL(ttl: string): string {
-  return ttl === '0s' || ttl === '0' ? 'No TTL' : ttl;
+  return !ttl || ttl === '0s' || ttl === '0' ? 'None' : ttl;
 }
 
 export function formatBytes(bytes: number): string {
@@ -65,32 +65,21 @@ export function formatTimestamp(timestamp: string): string {
   }
 }
 
+const DURATION_MS: Record<string, number> = {
+  ns: 1e-6,
+  µs: 1e-3,
+  us: 1e-3,
+  ms: 1,
+  s: 1000,
+};
+
+/** Go duration string ("117.614791ms", "850µs") -> "117.6ms" / "850µs" / "1.20s". */
 export function formatRTT(rtt: string): string {
   if (!rtt) return 'N/A';
-
-  // Parse microseconds and convert to appropriate unit
-  if (rtt.includes('µs')) {
-    const microseconds = Number.parseFloat(rtt.replace('µs', ''));
-    if (microseconds < 1000) return `${microseconds}µs`;
-    const milliseconds = microseconds / 1000;
-    if (milliseconds < 1000) return `${milliseconds.toFixed(1)}ms`;
-    return `${(milliseconds / 1000).toFixed(2)}s`;
-  }
-
-  return rtt;
-}
-
-export function getStatusColor(status: string): string {
-  switch (status.toLowerCase()) {
-    case 'connected':
-      return 'bg-green-100 text-green-800 border-green-200';
-    case 'disconnected':
-    case 'error':
-      return 'bg-red-100 text-red-800 border-red-200';
-    case 'connecting':
-    case 'reconnecting':
-      return 'bg-yellow-100 text-yellow-800 border-yellow-200';
-    default:
-      return 'bg-gray-100 text-gray-800 border-gray-200';
-  }
+  const match = /^([\d.]+)(ns|µs|us|ms|s)$/.exec(rtt);
+  if (!match) return rtt;
+  const ms = Number.parseFloat(match[1]) * DURATION_MS[match[2]];
+  if (ms < 1) return `${Math.round(ms * 1000)}µs`;
+  if (ms < 1000) return `${ms.toFixed(1)}ms`;
+  return `${(ms / 1000).toFixed(2)}s`;
 }

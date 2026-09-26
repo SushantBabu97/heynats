@@ -88,28 +88,28 @@ export function LiveMessagesPanel({
         if (activeSubscriptions.length === 0 || hasDataMessages) return null;
 
         return (
-          <div className="bg-blue-50 border border-blue-200 rounded-lg p-3 mb-3">
+          <div className="bg-primary/5 border border-primary/30 rounded-lg p-3 mb-3">
             <div className="flex items-start gap-3">
-              <div className="w-2 h-2 bg-blue-500 rounded-full animate-pulse mt-2" />
+              <div className="w-2 h-2 bg-primary rounded-full animate-pulse mt-2" />
               <div className="flex-1">
-                <h3 className="font-medium text-blue-900 mb-1 text-sm">
+                <h3 className="font-medium text-primary mb-1 text-sm">
                   Waiting for Data Messages
                 </h3>
-                <p className="text-blue-700 text-xs mb-2">
+                <p className="text-primary text-xs mb-2">
                   You have {activeSubscriptions.length} active subscription
                   {activeSubscriptions.length > 1 ? 's' : ''}, but no data
                   messages have been received yet. Only messages with data
                   content will appear here.
                 </p>
                 <div className="space-y-1">
-                  <p className="text-xs text-blue-600 font-medium">
+                  <p className="text-xs text-primary font-medium">
                     Active subscriptions:
                   </p>
                   <div className="flex flex-wrap gap-1">
                     {activeSubscriptions.map(([subject]) => (
                       <span
                         key={subject}
-                        className="text-xs bg-blue-100 text-blue-800 px-2 py-0.5 rounded-full"
+                        className="text-xs bg-primary/10 text-primary px-2 py-0.5 rounded-full"
                       >
                         {subject}
                       </span>
@@ -123,8 +123,8 @@ export function LiveMessagesPanel({
       })()}
 
       {/* Live Messages Panel - Tabbed Interface */}
-      <div className="bg-card rounded-lg border border-gray-200 flex-1 flex flex-col overflow-y-auto">
-        <div className="px-3 py-2 bg-gray-50 shrink-0">
+      <div className="bg-card rounded-lg border border-border flex-1 flex flex-col overflow-y-auto">
+        <div className="px-3 py-2 bg-muted shrink-0">
           <div className="flex items-center justify-between mb-2">
             {(() => {
               const hasMessages = Object.values(subscriptions).some(
@@ -137,7 +137,7 @@ export function LiveMessagesPanel({
 
               return (
                 <>
-                  <h2 className="text-base font-semibold text-gray-900">
+                  <h2 className="text-base font-semibold text-foreground">
                     Live Messages {hasMessages ? `(${totalMessages})` : ''}
                   </h2>
                 </>
@@ -156,8 +156,8 @@ export function LiveMessagesPanel({
               defaultValue=""
               className="h-full flex flex-col"
             >
-              <div className="px-3 py-1 border-b bg-gray-50">
-                <TabsList className="h-auto p-0.5 bg-gray-100">
+              <div className="px-3 py-1 border-b bg-muted">
+                <TabsList className="h-auto p-0.5 bg-muted">
                   {Object.entries(subscriptions)
                     .filter(
                       ([_, sub]) => sub.isActive && sub.messages.length > 0
@@ -169,10 +169,10 @@ export function LiveMessagesPanel({
                         className="flex items-center gap-2 px-3 py-2"
                       >
                         <span className="truncate max-w-32">{subject}</span>
-                        <span className="bg-blue-600 text-white text-xs px-1.5 py-0.5 rounded-full min-w-[20px]">
+                        <span className="bg-primary text-primary-foreground text-xs px-1.5 py-0.5 rounded-full min-w-[20px]">
                           {subscription.messages.length}
                         </span>
-                        <div className="w-1.5 h-1.5 bg-green-500 rounded-full animate-pulse" />
+                        <div className="w-1.5 h-1.5 bg-success rounded-full animate-pulse" />
                       </TabsTrigger>
                     ))}
                 </TabsList>
@@ -211,16 +211,16 @@ export function LiveMessagesPanel({
                                   type="button"
                                   key={`message-${activeTab}-${index}-${message.timestamp}`}
                                   onClick={() => openMessageModal(message)}
-                                  className="block w-full text-left px-4 py-2 hover:bg-blue-50 transition-all duration-200 cursor-pointer border-l-4 border-transparent hover:border-blue-400 hover:shadow-sm group border-b border-gray-100 last:border-b-0"
+                                  className="block w-full text-left px-4 py-2 hover:bg-primary/5 transition-all duration-200 cursor-pointer border-l-4 border-transparent hover:border-primary/30 hover:shadow-sm group border-b border-border last:border-b-0"
                                 >
                                   <div className="flex items-center gap-3">
-                                    <span className="text-xs font-mono text-gray-500 bg-gray-100 px-2 py-1 rounded shrink-0">
+                                    <span className="text-xs font-mono text-muted-foreground bg-muted px-2 py-1 rounded shrink-0">
                                       {new Date(
                                         message.timestamp
                                       ).toLocaleTimeString()}
                                     </span>
 
-                                    <div className="flex-1 bg-gray-900 text-gray-100 p-2 rounded text-xs font-mono overflow-hidden">
+                                    <div className="flex-1 bg-muted text-foreground p-2 rounded text-xs font-mono overflow-hidden">
                                       <div className="break-words whitespace-pre-wrap">
                                         {previewData}
                                       </div>
@@ -230,7 +230,7 @@ export function LiveMessagesPanel({
                                       {message.headers &&
                                         Object.keys(message.headers).length >
                                           0 && (
-                                          <span className="text-xs text-orange-600 bg-orange-100 px-1 py-0.5 rounded">
+                                          <span className="text-xs text-warning bg-warning/10 px-1 py-0.5 rounded">
                                             {
                                               Object.keys(message.headers)
                                                 .length
@@ -239,12 +239,12 @@ export function LiveMessagesPanel({
                                           </span>
                                         )}
                                       {isLongData && (
-                                        <span className="text-xs text-blue-600 bg-blue-100 px-1 py-0.5 rounded group-hover:bg-blue-200 transition-colors">
+                                        <span className="text-xs text-primary bg-primary/10 px-1 py-0.5 rounded group-hover:bg-primary/10 transition-colors">
                                           Click to expand
                                         </span>
                                       )}
                                       <svg
-                                        className="w-4 h-4 text-gray-400 group-hover:text-blue-500 transition-colors"
+                                        className="w-4 h-4 text-muted-foreground group-hover:text-primary transition-colors"
                                         fill="none"
                                         stroke="currentColor"
                                         viewBox="0 0 24 24"
@@ -265,7 +265,7 @@ export function LiveMessagesPanel({
 
                         {/* Scroll indicator for messages */}
                         {activeMessages.length > 50 && (
-                          <div className="sticky bottom-2 right-2 ml-auto w-fit bg-gray-800 text-white text-xs px-2 py-1 rounded mb-2 mr-2">
+                          <div className="sticky bottom-2 right-2 ml-auto w-fit bg-foreground text-background text-xs px-2 py-1 rounded mb-2 mr-2">
                             Showing {activeMessages.length} messages
                           </div>
                         )}
@@ -279,7 +279,7 @@ export function LiveMessagesPanel({
                             <button
                               type="button"
                               onClick={scrollToBottom}
-                              className="fixed bottom-8 right-8 bg-blue-600 hover:bg-blue-700 text-white px-4 py-3 rounded-full shadow-xl transition-all duration-200 flex items-center gap-2 text-sm font-medium z-50 border-2 border-white"
+                              className="fixed bottom-8 right-8 bg-primary hover:bg-primary/90 text-primary-foreground px-4 py-3 rounded-full shadow-xl transition-all duration-200 flex items-center gap-2 text-sm font-medium z-50 border-2 border-white"
                             >
                               <ChevronDown className="w-4 h-4" />
                               Jump to Latest
@@ -292,15 +292,15 @@ export function LiveMessagesPanel({
               </div>
             </Tabs>
           ) : (
-            <div className="flex flex-col items-center justify-center h-full text-gray-500 p-6">
+            <div className="flex flex-col items-center justify-center h-full text-muted-foreground p-6">
               <div className="text-center">
                 {Object.entries(subscriptions).filter(
                   ([_, sub]) => sub.isActive
                 ).length === 0 ? (
                   <>
-                    <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mb-4 mx-auto">
+                    <div className="w-16 h-16 bg-muted rounded-full flex items-center justify-center mb-4 mx-auto">
                       <svg
-                        className="w-8 h-8 text-gray-400"
+                        className="w-8 h-8 text-muted-foreground"
                         fill="none"
                         stroke="currentColor"
                         viewBox="0 0 24 24"
@@ -313,10 +313,10 @@ export function LiveMessagesPanel({
                         />
                       </svg>
                     </div>
-                    <h3 className="text-lg font-medium text-gray-900 mb-2">
+                    <h3 className="text-lg font-medium text-foreground mb-2">
                       No Active Subscriptions
                     </h3>
-                    <p className="text-sm text-gray-500 max-w-md">
+                    <p className="text-sm text-muted-foreground max-w-md">
                       Start subscribing to subjects to see live messages appear
                       here. Each subject will appear as a separate tab when
                       messages arrive.
@@ -324,13 +324,13 @@ export function LiveMessagesPanel({
                   </>
                 ) : (
                   <>
-                    <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mb-4 mx-auto">
-                      <div className="w-2 h-2 bg-blue-500 rounded-full animate-pulse" />
+                    <div className="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mb-4 mx-auto">
+                      <div className="w-2 h-2 bg-primary rounded-full animate-pulse" />
                     </div>
-                    <h3 className="text-lg font-medium text-blue-900 mb-2">
+                    <h3 className="text-lg font-medium text-primary mb-2">
                       Waiting for Messages
                     </h3>
-                    <p className="text-sm text-blue-600 max-w-md mb-4">
+                    <p className="text-sm text-primary max-w-md mb-4">
                       You have active subscriptions. Messages will appear as
                       tabs when they arrive.
                     </p>
@@ -340,7 +340,7 @@ export function LiveMessagesPanel({
                         .map(([subject]) => (
                           <span
                             key={subject}
-                            className="text-xs bg-blue-100 text-blue-800 px-2 py-1 rounded-full"
+                            className="text-xs bg-primary/10 text-primary px-2 py-1 rounded-full"
                           >
                             {subject}
                           </span>

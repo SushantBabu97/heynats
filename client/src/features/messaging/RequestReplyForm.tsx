@@ -28,8 +28,8 @@ export function RequestReplyForm({ suggestions }: { suggestions: string[] }) {
     });
 
   return (
-    <div className="bg-card rounded-lg border border-gray-200 p-6">
-      <h3 className="text-lg font-medium text-gray-900 mb-4">
+    <div className="bg-card rounded-lg border border-border p-6">
+      <h3 className="text-lg font-medium text-foreground mb-4">
         Request-Reply Pattern
       </h3>
 
@@ -37,7 +37,7 @@ export function RequestReplyForm({ suggestions }: { suggestions: string[] }) {
         <div>
           <label
             htmlFor="req-subject"
-            className="block text-sm font-medium text-gray-700 mb-1"
+            className="block text-sm font-medium text-foreground/80 mb-1"
           >
             Subject *
           </label>
@@ -53,7 +53,7 @@ export function RequestReplyForm({ suggestions }: { suggestions: string[] }) {
         <div>
           <label
             htmlFor="req-data"
-            className="block text-sm font-medium text-gray-700 mb-1"
+            className="block text-sm font-medium text-foreground/80 mb-1"
           >
             Request Data *
           </label>
@@ -70,7 +70,7 @@ export function RequestReplyForm({ suggestions }: { suggestions: string[] }) {
           <div>
             <label
               htmlFor="req-timeout"
-              className="block text-sm font-medium text-gray-700 mb-1"
+              className="block text-sm font-medium text-foreground/80 mb-1"
             >
               Timeout (seconds)
             </label>
@@ -89,7 +89,7 @@ export function RequestReplyForm({ suggestions }: { suggestions: string[] }) {
           <div>
             <label
               htmlFor="req-reply-subject"
-              className="block text-sm font-medium text-gray-700 mb-1"
+              className="block text-sm font-medium text-foreground/80 mb-1"
             >
               Reply Subject (Optional)
             </label>
@@ -117,8 +117,8 @@ export function RequestReplyForm({ suggestions }: { suggestions: string[] }) {
         </div>
 
         {requestReplyMutation.data && (
-          <div className="p-4 bg-green-50 border border-green-200 rounded-md">
-            <h4 className="text-sm font-medium text-green-800 mb-2">
+          <div className="p-4 bg-success/5 border border-success/30 rounded-md">
+            <h4 className="text-sm font-medium text-success mb-2">
               Response Received:
             </h4>
             <div className="text-xs space-y-1">
@@ -137,8 +137,8 @@ export function RequestReplyForm({ suggestions }: { suggestions: string[] }) {
         )}
 
         {requestReplyMutation.error && (
-          <div className="p-4 bg-red-50 border border-red-200 rounded-md">
-            <p className="text-sm text-red-800">
+          <div className="p-4 bg-destructive/5 border border-destructive/30 rounded-md">
+            <p className="text-sm text-destructive">
               Error: {requestReplyMutation.error.message}
             </p>
           </div>

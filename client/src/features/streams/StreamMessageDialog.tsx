@@ -40,9 +40,9 @@ export function StreamMessageDialog({
         className="flex max-h-[90vh] flex-col gap-0 overflow-hidden p-0 sm:max-w-4xl"
       >
         {/* Header */}
-        <div className="flex items-center justify-between p-6 border-b border-gray-200 sticky top-0 bg-card z-10">
+        <div className="flex items-center justify-between p-6 border-b border-border sticky top-0 bg-card z-10">
           <div>
-            <DialogTitle className="text-2xl font-bold text-gray-900">
+            <DialogTitle className="text-2xl font-bold text-foreground">
               Message Details - Sequence #{message.sequence}
             </DialogTitle>
             <DialogDescription className="mt-1">
@@ -52,7 +52,7 @@ export function StreamMessageDialog({
           <button
             type="button"
             onClick={onClose}
-            className="text-gray-500 hover:text-gray-700 transition-colors"
+            className="text-muted-foreground hover:text-foreground/80 transition-colors"
             aria-label="Close modal"
           >
             <svg
@@ -78,13 +78,13 @@ export function StreamMessageDialog({
           <div>
             <label
               htmlFor="detail-subject"
-              className="block text-sm font-medium text-gray-700 mb-2"
+              className="block text-sm font-medium text-foreground/80 mb-2"
             >
               Subject
             </label>
             <div
               id="detail-subject"
-              className="p-3 bg-gray-50 rounded border border-gray-300 font-mono text-sm break-all"
+              className="p-3 bg-muted rounded border border-border font-mono text-sm break-all"
             >
               {message.subject}
             </div>
@@ -95,11 +95,11 @@ export function StreamMessageDialog({
             <div className="flex items-center justify-between mb-2">
               <label
                 htmlFor="detail-data"
-                className="block text-sm font-medium text-gray-700"
+                className="block text-sm font-medium text-foreground/80"
               >
                 Data Payload
                 {isMessageJSON && (
-                  <span className="ml-2 text-xs font-normal text-green-600">
+                  <span className="ml-2 text-xs font-normal text-success">
                     (JSON)
                   </span>
                 )}
@@ -110,8 +110,8 @@ export function StreamMessageDialog({
                     onClick={() => setViewMode('formatted')}
                     className={`px-3 py-1 rounded text-xs font-medium transition-colors ${
                       viewMode === 'formatted'
-                        ? 'bg-blue-100 text-blue-700'
-                        : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
+                        ? 'bg-primary/10 text-primary'
+                        : 'bg-muted text-foreground/80 hover:bg-muted'
                     }`}
                     type="button"
                   >
@@ -121,8 +121,8 @@ export function StreamMessageDialog({
                     onClick={() => setViewMode('raw')}
                     className={`px-3 py-1 rounded text-xs font-medium transition-colors ${
                       viewMode === 'raw'
-                        ? 'bg-blue-100 text-blue-700'
-                        : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
+                        ? 'bg-primary/10 text-primary'
+                        : 'bg-muted text-foreground/80 hover:bg-muted'
                     }`}
                     type="button"
                   >
@@ -134,7 +134,7 @@ export function StreamMessageDialog({
 
             <div id="detail-data">
               {viewMode === 'formatted' && isMessageJSON ? (
-                <div className="p-4 bg-gray-50 rounded border border-gray-300 overflow-auto max-h-96">
+                <div className="p-4 bg-muted rounded border border-border overflow-auto max-h-96">
                   <JsonViewer data={JSON.parse(message.data)} />
                 </div>
               ) : (
@@ -151,13 +151,13 @@ export function StreamMessageDialog({
             <div>
               <label
                 htmlFor="detail-sequence"
-                className="block text-sm font-medium text-gray-700 mb-2"
+                className="block text-sm font-medium text-foreground/80 mb-2"
               >
                 Sequence
               </label>
               <div
                 id="detail-sequence"
-                className="p-3 bg-gray-50 rounded border border-gray-300 text-sm font-mono"
+                className="p-3 bg-muted rounded border border-border text-sm font-mono"
               >
                 {message.sequence}
               </div>
@@ -165,13 +165,13 @@ export function StreamMessageDialog({
             <div>
               <label
                 htmlFor="detail-size"
-                className="block text-sm font-medium text-gray-700 mb-2"
+                className="block text-sm font-medium text-foreground/80 mb-2"
               >
                 Size
               </label>
               <div
                 id="detail-size"
-                className="p-3 bg-gray-50 rounded border border-gray-300 text-sm font-mono"
+                className="p-3 bg-muted rounded border border-border text-sm font-mono"
               >
                 {message.size} bytes
               </div>
@@ -179,13 +179,13 @@ export function StreamMessageDialog({
             <div>
               <label
                 htmlFor="detail-timestamp"
-                className="block text-sm font-medium text-gray-700 mb-2"
+                className="block text-sm font-medium text-foreground/80 mb-2"
               >
                 Timestamp
               </label>
               <div
                 id="detail-timestamp"
-                className="p-3 bg-gray-50 rounded border border-gray-300 text-sm font-mono"
+                className="p-3 bg-muted rounded border border-border text-sm font-mono"
               >
                 {formatTimestamp(message.timestamp)}
               </div>
@@ -197,22 +197,24 @@ export function StreamMessageDialog({
             <div>
               <label
                 htmlFor="detail-headers"
-                className="block text-sm font-medium text-gray-700 mb-2"
+                className="block text-sm font-medium text-foreground/80 mb-2"
               >
                 Headers ({Object.keys(message.headers).length})
               </label>
               <div
                 id="detail-headers"
-                className="p-3 bg-gray-50 rounded border border-gray-300 space-y-2 max-h-48 overflow-auto"
+                className="p-3 bg-muted rounded border border-border space-y-2 max-h-48 overflow-auto"
               >
                 {Object.entries(message.headers).map(([key, value]) => (
                   <div
                     key={key}
-                    className="text-sm border-b border-gray-200 pb-2 last:border-b-0"
+                    className="text-sm border-b border-border pb-2 last:border-b-0"
                   >
-                    <span className="font-medium text-gray-700">{key}</span>
-                    <span className="text-gray-500 mx-2">:</span>
-                    <span className="text-gray-600 break-all">
+                    <span className="font-medium text-foreground/80">
+                      {key}
+                    </span>
+                    <span className="text-muted-foreground mx-2">:</span>
+                    <span className="text-muted-foreground break-all">
                       {Array.isArray(value) ? value.join(', ') : String(value)}
                     </span>
                   </div>
@@ -223,7 +225,7 @@ export function StreamMessageDialog({
         </div>
 
         {/* Footer */}
-        <div className="border-t border-gray-200 p-4 bg-gray-50 flex justify-end">
+        <div className="border-t border-border p-4 bg-muted flex justify-end">
           <Button variant="outline" onClick={onClose}>
             Close
           </Button>

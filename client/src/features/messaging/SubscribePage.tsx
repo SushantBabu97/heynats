@@ -1,9 +1,25 @@
+import { Radio } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { ConfirmDialog } from '@/components/ConfirmDialog';
+import { EmptyState, PageIntro } from '@/components/PageStates';
 import { appendCapped, useEventSources } from '@/lib/useEventSources';
 import { type SubscribeFn, SubscribeForm } from './SubscribeForm';
 import { SubscriptionsPanel } from './SubscriptionsPanel';
-import type { Subscription, SubscriptionType } from './types';
+import {
+  type Subscription,
+  type SubscriptionType,
+  subscriptionTypeIcon,
+} from './types';
+
+function TypeIcon({ type }: { type: SubscriptionType }) {
+  const Icon = subscriptionTypeIcon[type];
+  return (
+    <Icon
+      className="size-4 shrink-0 text-muted-foreground"
+      aria-hidden="true"
+    />
+  );
+}
 
 export function SubscribePage() {
   // Common state
@@ -158,15 +174,8 @@ export function SubscribePage() {
   }, [activeTab, subscriptions, firstActiveKey]);
 
   return (
-    <div className="p-3 h-full flex flex-col">
-      <div className="mb-4">
-        <h2 className="text-xl font-bold text-gray-900">
-          Subscribe to Messages
-        </h2>
-        <p className="text-sm text-gray-600">
-          Listen to NATS subjects and view incoming messages in real-time
-        </p>
-      </div>
+    <div className="flex h-full flex-col p-4 sm:p-6">
+      <PageIntro description="Listen to subjects and watch messages arrive in real time." />
 
       <SubscribeForm subscribe={subscribe} />
 
@@ -182,57 +191,54 @@ export function SubscribePage() {
         />
       )}
 
-      {/* Empty State */}
       {activeSubscriptions.length === 0 && (
-        <div className="bg-card rounded-lg border border-gray-200 p-8 text-center">
-          <div className="text-gray-400 mb-4">
-            <svg
-              className="mx-auto h-16 w-16"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z"
-              />
-            </svg>
-          </div>
-          <h3 className="text-lg font-medium text-gray-900 mb-2">
-            No Active Subscriptions
-          </h3>
-          <p className="text-gray-500 mb-4">
-            Start subscribing to NATS subjects to monitor real-time message
-            flow.
-          </p>
-          <div className="text-sm text-gray-400">
-            <div className="mb-2">Subscription types available:</div>
-            <ul className="space-y-1">
-              <li>
-                📡 <strong>Regular</strong> - Standard NATS subscriptions
-              </li>
-              <li>
-                👥 <strong>Queue Group</strong> - Load balanced subscriptions
-              </li>
-              <li>
-                📩 <strong>Reply Subject</strong> - Monitor reply messages
-              </li>
-              <li>
-                ⚙️ <strong>Request Handler</strong> - Handle requests with
-                auto-reply
-              </li>
-            </ul>
-            <div className="mt-3 mb-2">Features:</div>
-            <ul className="space-y-1">
-              <li>• Real-time message monitoring</li>
-              <li>• Subject wildcards and pattern matching</li>
-              <li>• Header inspection</li>
-              <li>• Request-reply handling</li>
-            </ul>
-          </div>
-        </div>
+        <EmptyState
+          icon={<Radio />}
+          title="No active subscriptions"
+          description={
+            <>
+              Subscribe to a subject above to watch messages arrive live.
+              Wildcards like <code className="font-mono">orders.*</code> and{' '}
+              <code className="font-mono">events.&gt;</code> work.
+              <ul className="mt-4 space-y-1.5 text-left">
+                <li className="flex items-center gap-2">
+                  <TypeIcon type="regular" />
+                  <span>
+                    <span className="font-medium text-foreground">Regular</span>{' '}
+                    — every message on the subject
+                  </span>
+                </li>
+                <li className="flex items-center gap-2">
+                  <TypeIcon type="queue" />
+                  <span>
+                    <span className="font-medium text-foreground">
+                      Queue group
+                    </span>{' '}
+                    — load-balanced across members
+                  </span>
+                </li>
+                <li className="flex items-center gap-2">
+                  <TypeIcon type="reply" />
+                  <span>
+                    <span className="font-medium text-foreground">
+                      Reply subject
+                    </span>{' '}
+                    — watch replies to requests
+                  </span>
+                </li>
+                <li className="flex items-center gap-2">
+                  <TypeIcon type="request-handler" />
+                  <span>
+                    <span className="font-medium text-foreground">
+                      Request handler
+                    </span>{' '}
+                    — answer requests, optionally automatically
+                  </span>
+                </li>
+              </ul>
+            </>
+          }
+        />
       )}
 
       <ConfirmDialog

@@ -41,7 +41,7 @@ export function DashboardLayout() {
   };
 
   return (
-    <div className="h-screen bg-gray-50 flex overflow-hidden">
+    <div className="h-screen bg-background flex overflow-hidden">
       {/* Sidebar */}
       <Sidebar />
 
@@ -51,32 +51,29 @@ export function DashboardLayout() {
         <header className="bg-card border-b shrink-0 p-4 py-3 mb-0">
           <div className="flex items-center justify-between gap-3">
             <div className="min-w-0">
-              <h1 className="flex min-w-0 items-center gap-1 text-xl font-bold text-gray-900">
+              <h1 className="flex min-w-0 items-center gap-1 text-xl font-bold text-foreground">
                 {parent && (
                   <>
                     <Link
                       to={parent.to}
-                      className="font-medium text-gray-500 hover:text-gray-900"
+                      className="font-medium text-muted-foreground hover:text-foreground"
                     >
                       {parent.label}
                     </Link>
-                    <ChevronRight className="size-4 shrink-0 text-gray-400" />
+                    <ChevronRight className="size-4 shrink-0 text-muted-foreground" />
                   </>
                 )}
                 <span className="truncate">{title}</span>
               </h1>
-              <p className="truncate text-xs text-gray-500 mt-0.5">
-                {accountInfo?.account_information ? (
-                  <>
-                    Connected as{' '}
-                    <span className="font-medium">
-                      {accountInfo.account_information.user}
-                    </span>{' '}
-                    • Account: {accountInfo.account_information.account}
-                  </>
-                ) : (
-                  'Managing NATS server connections and monitoring'
-                )}
+              <p className="truncate text-xs text-muted-foreground mt-0.5">
+                {[
+                  status?.host && `${status.host}:${status.port}`,
+                  status?.username && `user ${status.username}`,
+                  accountInfo?.account_information?.account &&
+                    `account ${accountInfo.account_information.account}`,
+                ]
+                  .filter(Boolean)
+                  .join(' · ')}
               </p>
             </div>
             <div className="flex shrink-0 items-center gap-2">
@@ -86,7 +83,7 @@ export function DashboardLayout() {
                 variant="outline"
                 size="sm"
                 disabled={disconnectMutation.isPending}
-                className="border-red-300 text-red-700 hover:bg-red-50"
+                className="border-destructive/30 text-destructive hover:bg-destructive/5"
               >
                 {disconnectMutation.isPending
                   ? 'Disconnecting...'
@@ -97,7 +94,7 @@ export function DashboardLayout() {
         </header>
 
         {/* Page Content */}
-        <main className="flex-1 overflow-y-auto p-3 pt-3">
+        <main className="min-h-0 flex-1 overflow-y-auto">
           <Outlet />
         </main>
       </div>

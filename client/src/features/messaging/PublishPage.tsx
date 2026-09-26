@@ -1,4 +1,5 @@
 import { useQuery } from '@tanstack/react-query';
+import { PageIntro } from '@/components/PageStates';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { publishApi } from '@/lib/api';
 import { BatchPublishForm } from './BatchPublishForm';
@@ -14,14 +15,9 @@ export function PublishPage() {
   const suggestions = subjectsData?.subjects || [];
 
   return (
-    <div className="p-3">
+    <div className="p-4 sm:p-6">
       <div className="max-w-full">
-        <div className="mb-4">
-          <h2 className="text-xl font-bold text-gray-900">Publish Messages</h2>
-          <p className="text-sm text-gray-600">
-            Send messages to NATS subjects
-          </p>
-        </div>
+        <PageIntro description="Send messages to subjects, in bulk, or as a request awaiting a reply." />
 
         <Tabs defaultValue="single" className="w-full">
           <TabsList className="grid w-full grid-cols-3">

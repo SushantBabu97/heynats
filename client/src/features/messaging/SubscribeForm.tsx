@@ -87,7 +87,7 @@ export function SubscribeForm({ subscribe }: { subscribe: SubscribeFn }) {
   };
 
   return (
-    <div className="bg-card rounded-lg border border-gray-200 p-4 mb-4">
+    <div className="bg-card rounded-lg border border-border p-4 mb-4">
       <Tabs defaultValue="regular" className="w-full">
         <TabsList className="grid w-full grid-cols-3">
           <TabsTrigger value="regular">Regular/Queue</TabsTrigger>
@@ -101,7 +101,7 @@ export function SubscribeForm({ subscribe }: { subscribe: SubscribeFn }) {
             <div>
               <label
                 htmlFor="sub-subject"
-                className="block text-sm font-medium text-gray-700 mb-1"
+                className="block text-sm font-medium text-foreground/80 mb-1"
               >
                 Subject *
               </label>
@@ -118,7 +118,7 @@ export function SubscribeForm({ subscribe }: { subscribe: SubscribeFn }) {
             <div>
               <label
                 htmlFor="sub-queue-group"
-                className="block text-sm font-medium text-gray-700 mb-1"
+                className="block text-sm font-medium text-foreground/80 mb-1"
               >
                 Queue Group
               </label>
@@ -134,7 +134,7 @@ export function SubscribeForm({ subscribe }: { subscribe: SubscribeFn }) {
             <div>
               <label
                 htmlFor="sub-max-messages"
-                className="block text-sm font-medium text-gray-700 mb-1"
+                className="block text-sm font-medium text-foreground/80 mb-1"
               >
                 Max Messages
               </label>
@@ -168,8 +168,8 @@ export function SubscribeForm({ subscribe }: { subscribe: SubscribeFn }) {
         {/* Reply Subject Tab */}
         <TabsContent value="reply" className="space-y-4">
           <div className="space-y-4">
-            <div className="bg-blue-50 border border-blue-200 rounded-md p-3">
-              <p className="text-sm text-blue-800">
+            <div className="bg-primary/5 border border-primary/30 rounded-md p-3">
+              <p className="text-sm text-primary">
                 Subscribe to reply subjects to monitor responses in
                 request-reply patterns. Use wildcards like "reply.{'>'}'" or
                 specific patterns like "_INBOX.{'>'}"
@@ -180,7 +180,7 @@ export function SubscribeForm({ subscribe }: { subscribe: SubscribeFn }) {
               <div>
                 <label
                   htmlFor="sub-reply-subject-pattern"
-                  className="block text-sm font-medium text-gray-700 mb-1"
+                  className="block text-sm font-medium text-foreground/80 mb-1"
                 >
                   Reply Subject Pattern *
                 </label>
@@ -197,7 +197,7 @@ export function SubscribeForm({ subscribe }: { subscribe: SubscribeFn }) {
               <div>
                 <label
                   htmlFor="sub-max-messages-2"
-                  className="block text-sm font-medium text-gray-700 mb-1"
+                  className="block text-sm font-medium text-foreground/80 mb-1"
                 >
                   Max Messages
                 </label>
@@ -232,8 +232,8 @@ export function SubscribeForm({ subscribe }: { subscribe: SubscribeFn }) {
         {/* Request Handler Tab */}
         <TabsContent value="request-handler" className="space-y-4">
           <div className="space-y-4">
-            <div className="bg-green-50 border border-green-200 rounded-md p-3">
-              <p className="text-sm text-green-800">
+            <div className="bg-success/5 border border-success/30 rounded-md p-3">
+              <p className="text-sm text-success">
                 Subscribe to handle incoming requests and optionally send
                 automatic replies. Perfect for creating service endpoints and
                 API handlers.
@@ -244,7 +244,7 @@ export function SubscribeForm({ subscribe }: { subscribe: SubscribeFn }) {
               <div>
                 <label
                   htmlFor="sub-request-subject"
-                  className="block text-sm font-medium text-gray-700 mb-1"
+                  className="block text-sm font-medium text-foreground/80 mb-1"
                 >
                   Request Subject *
                 </label>
@@ -261,7 +261,7 @@ export function SubscribeForm({ subscribe }: { subscribe: SubscribeFn }) {
               <div>
                 <label
                   htmlFor="sub-queue-group-2"
-                  className="block text-sm font-medium text-gray-700 mb-1"
+                  className="block text-sm font-medium text-foreground/80 mb-1"
                 >
                   Queue Group
                 </label>
@@ -280,9 +280,9 @@ export function SubscribeForm({ subscribe }: { subscribe: SubscribeFn }) {
                     type="checkbox"
                     checked={autoReply}
                     onChange={(e) => setAutoReply(e.target.checked)}
-                    className="rounded border-gray-300"
+                    className="rounded border-border"
                   />
-                  <span className="text-sm font-medium text-gray-700">
+                  <span className="text-sm font-medium text-foreground/80">
                     Auto Reply
                   </span>
                 </label>
@@ -293,7 +293,7 @@ export function SubscribeForm({ subscribe }: { subscribe: SubscribeFn }) {
               <div>
                 <label
                   htmlFor="sub-reply-template-json"
-                  className="block text-sm font-medium text-gray-700 mb-1"
+                  className="block text-sm font-medium text-foreground/80 mb-1"
                 >
                   Reply Template (JSON)
                 </label>
@@ -304,7 +304,7 @@ export function SubscribeForm({ subscribe }: { subscribe: SubscribeFn }) {
                   placeholder='{"status": "received", "timestamp": "${timestamp}"}'
                   className="min-h-[80px] font-mono text-sm"
                 />
-                <p className="text-xs text-gray-500 mt-1">
+                <p className="text-xs text-muted-foreground mt-1">
                   Use ${'{timestamp}'} for current time, ${'{subject}'} for
                   request subject, ${'{data}'} for request data
                 </p>

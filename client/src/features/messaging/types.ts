@@ -1,3 +1,5 @@
+import { Cog, Radio, Reply, Users } from 'lucide-react';
+
 export interface Message {
   subject: string;
   data: string;
@@ -25,3 +27,11 @@ export interface Subscription {
   autoReply?: boolean; // For request handlers
   replyTemplate?: string; // Template for auto-replies
 }
+
+/** Icon per subscription type, used in tabs and the empty-state legend. */
+export const subscriptionTypeIcon = {
+  regular: Radio,
+  queue: Users,
+  reply: Reply,
+  'request-handler': Cog,
+} as const;

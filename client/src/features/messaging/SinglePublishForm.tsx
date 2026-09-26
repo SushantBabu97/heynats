@@ -24,8 +24,8 @@ export function SinglePublishForm({ suggestions }: { suggestions: string[] }) {
     publishMutation.mutate({ subject, data, headers: toHeaderObject(headers) });
 
   return (
-    <div className="bg-card rounded-lg border border-gray-200 p-6">
-      <h3 className="text-lg font-medium text-gray-900 mb-4">
+    <div className="bg-card rounded-lg border border-border p-6">
+      <h3 className="text-lg font-medium text-foreground mb-4">
         Publish Single Message
       </h3>
 
@@ -33,7 +33,7 @@ export function SinglePublishForm({ suggestions }: { suggestions: string[] }) {
         <div>
           <label
             htmlFor="pub-subject"
-            className="block text-sm font-medium text-gray-700 mb-1"
+            className="block text-sm font-medium text-foreground/80 mb-1"
           >
             Subject *
           </label>
@@ -49,7 +49,7 @@ export function SinglePublishForm({ suggestions }: { suggestions: string[] }) {
         <div>
           <label
             htmlFor="pub-message-data"
-            className="block text-sm font-medium text-gray-700 mb-1"
+            className="block text-sm font-medium text-foreground/80 mb-1"
           >
             Message Data *
           </label>
@@ -74,8 +74,8 @@ export function SinglePublishForm({ suggestions }: { suggestions: string[] }) {
         </div>
 
         {publishMutation.data && (
-          <div className="p-4 bg-green-50 border border-green-200 rounded-md">
-            <p className="text-sm text-green-800">
+          <div className="p-4 bg-success/5 border border-success/30 rounded-md">
+            <p className="text-sm text-success">
               Message published successfully to subject:{' '}
               {publishMutation.data.subject}
             </p>
@@ -83,8 +83,8 @@ export function SinglePublishForm({ suggestions }: { suggestions: string[] }) {
         )}
 
         {publishMutation.error && (
-          <div className="p-4 bg-red-50 border border-red-200 rounded-md">
-            <p className="text-sm text-red-800">
+          <div className="p-4 bg-destructive/5 border border-destructive/30 rounded-md">
+            <p className="text-sm text-destructive">
               Error: {publishMutation.error.message}
             </p>
           </div>

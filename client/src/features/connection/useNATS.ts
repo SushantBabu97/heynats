@@ -76,14 +76,7 @@ export function useConnectToNATS() {
         'All NATS features are now available'
       );
     },
-    onError: (error) => {
-      console.error('Connection failed:', error);
-      showErrorToast(
-        'connect to NATS server',
-        error,
-        'Failed to connect to NATS server. Please check your credentials.'
-      );
-    },
+    // Errors are shown inline in the login form.
   });
 }
 

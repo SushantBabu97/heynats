@@ -1,3 +1,4 @@
+import { X } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 
@@ -30,7 +31,7 @@ export function HeadersEditor({
 
   return (
     <div>
-      <p className="block text-sm font-medium text-gray-700 mb-1">
+      <p className="block text-sm font-medium text-foreground/80 mb-1">
         Headers (Optional)
       </p>
       <div className="space-y-2">
@@ -60,7 +61,7 @@ export function HeadersEditor({
                 aria-label={`Remove header ${index + 1}`}
                 onClick={() => onChange(headers.filter((_, i) => i !== index))}
               >
-                ✕
+                <X />
               </Button>
             )}
           </div>

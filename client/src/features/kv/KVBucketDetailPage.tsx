@@ -1,6 +1,5 @@
 import {
   Archive,
-  ArrowLeft,
   Clock,
   HardDrive,
   Hash,
@@ -11,6 +10,7 @@ import {
 import { useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { ConfirmDialog } from '@/components/ConfirmDialog';
+import { EmptyState, LoadingState, PageIntro } from '@/components/PageStates';
 import { StatsCard } from '@/components/StatsCard';
 import { Button } from '@/components/ui/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
@@ -62,159 +62,55 @@ export function KVBucketDetailPage() {
     }
   };
 
-  // Redirect if not connected
-  if (!isConnected) {
-    return (
-      <div className="p-3">
-        <div className="max-w-full">
-          <Button
-            onClick={() => navigate('/dashboard/kv')}
-            variant="outline"
-            size="sm"
-            className="mb-4"
-          >
-            <ArrowLeft className="w-4 h-4 mr-2" />
-            Back to KV Store
-          </Button>
-
-          <div className="bg-card rounded-lg border border-gray-200 p-8">
-            <div className="text-center">
-              <Key className="mx-auto h-16 w-16 text-gray-300 mb-4" />
-              <h3 className="text-lg font-medium text-gray-900 mb-2">
-                Connection Required
-              </h3>
-              <p className="text-gray-500 mb-6">
-                Please connect to a NATS server to access Key-Value store
-                features.
-              </p>
-              <Button onClick={() => navigate('/dashboard')}>
-                Go to Connection Settings
-              </Button>
-            </div>
-          </div>
-        </div>
-      </div>
-    );
-  }
-
-  // Loading state
   if (bucketLoading) {
-    return (
-      <div className="p-3">
-        <div className="max-w-full">
-          <Button
-            onClick={() => navigate('/dashboard/kv')}
-            variant="outline"
-            size="sm"
-            className="mb-4"
-          >
-            <ArrowLeft className="w-4 h-4 mr-2" />
-            Back to KV Store
-          </Button>
-
-          <div className="bg-card rounded-lg border border-gray-200 p-8">
-            <div className="text-center">
-              <div className="animate-spin rounded-full h-16 w-16 border-b-2 border-indigo-600 mx-auto mb-4" />
-              <h3 className="text-lg font-medium text-gray-900 mb-2">
-                Loading Bucket
-              </h3>
-              <p className="text-gray-500">Fetching bucket details...</p>
-            </div>
-          </div>
-        </div>
-      </div>
-    );
+    return <LoadingState label="Loading bucket…" />;
   }
 
-  // Error state
   if (bucketError) {
     return (
-      <div className="p-3">
-        <div className="max-w-full">
-          <Button
-            onClick={() => navigate('/dashboard/kv')}
-            variant="outline"
-            size="sm"
-            className="mb-4"
-          >
-            <ArrowLeft className="w-4 h-4 mr-2" />
-            Back to KV Store
-          </Button>
-
-          <div className="bg-card rounded-lg border border-gray-200 p-8">
-            <div className="text-center">
-              <svg
-                className="mx-auto h-16 w-16 text-red-300 mb-4"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
-                />
-              </svg>
-              <h3 className="text-lg font-medium text-gray-900 mb-2">
-                Error Loading Bucket
-              </h3>
-              <p className="text-gray-500 mb-6">
-                Failed to load bucket details. The bucket may not exist.
-              </p>
-            </div>
-          </div>
-        </div>
+      <div className="p-4 sm:p-6">
+        <EmptyState
+          tone="error"
+          title="Couldn't load this bucket"
+          description="It may have been deleted, or the name in the URL is wrong."
+          action={
+            <Button variant="outline" onClick={() => navigate('/dashboard/kv')}>
+              Back to buckets
+            </Button>
+          }
+        />
       </div>
     );
   }
 
   return (
-    <div className="p-3">
+    <div className="p-4 sm:p-6">
       <div className="max-w-full">
-        {/* Header */}
-        <div className="mb-4">
-          <Button
-            onClick={() => navigate('/dashboard/kv')}
-            variant="outline"
-            size="sm"
-            className="mb-3"
-          >
-            <ArrowLeft className="w-4 h-4 mr-2" />
-            Back to KV Store
-          </Button>
-
-          <div className="flex items-center justify-between">
-            <div>
-              <h2 className="text-xl font-bold text-gray-900">{bucketName}</h2>
-              <p className="text-sm text-gray-600">
-                Key-Value bucket management
-              </p>
-            </div>
-            <div className="flex items-center space-x-2">
+        <PageIntro
+          description="Key-value bucket"
+          actions={
+            <>
               <Button
+                variant="outline"
                 onClick={() => {
                   setIsAddingKey(true);
                   setActiveTab('keys');
                 }}
-                variant="outline"
-                size="sm"
               >
-                <Plus className="w-4 h-4 mr-1" />
-                Add Key
+                <Plus />
+                Add key
               </Button>
               <Button
-                onClick={() => setConfirmDeleteBucket(true)}
                 variant="outline"
-                size="sm"
-                className="text-red-600 hover:text-red-700"
+                onClick={() => setConfirmDeleteBucket(true)}
+                className="text-destructive hover:bg-destructive/10 hover:text-destructive"
               >
-                <Trash2 className="w-4 h-4 mr-2" />
-                Delete Bucket
+                <Trash2 />
+                Delete bucket
               </Button>
-            </div>
-          </div>
-        </div>
+            </>
+          }
+        />
 
         {/* Tabs */}
         <Tabs
@@ -235,62 +131,62 @@ export function KVBucketDetailPage() {
                 <StatsCard
                   title="Total Keys"
                   value={bucket.values?.toLocaleString() || 'N/A'}
-                  icon={<Hash className="w-4 h-4 text-indigo-600" />}
+                  icon={<Hash className="w-4 h-4 text-primary" />}
                 />
                 <StatsCard
                   title="Storage Used"
                   value={formatBytes(bucket.bytes)}
-                  icon={<HardDrive className="w-4 h-4 text-indigo-600" />}
+                  icon={<HardDrive className="w-4 h-4 text-primary" />}
                 />
                 <StatsCard
                   title="History"
                   value={`${bucket.history} revisions`}
-                  icon={<Archive className="w-4 h-4 text-indigo-600" />}
+                  icon={<Archive className="w-4 h-4 text-primary" />}
                 />
                 <StatsCard
                   title="TTL"
                   value={formatTTL(bucket.ttl)}
-                  icon={<Clock className="w-4 h-4 text-indigo-600" />}
+                  icon={<Clock className="w-4 h-4 text-primary" />}
                 />
               </div>
             )}
 
             {/* Bucket Configuration */}
             {bucket && (
-              <div className="bg-card rounded-lg border border-gray-200 p-4">
-                <h3 className="text-base font-semibold text-gray-900 mb-3">
+              <div className="bg-card rounded-lg border border-border p-4">
+                <h3 className="text-base font-semibold text-foreground mb-3">
                   Configuration
                 </h3>
                 <dl className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 text-sm">
                   <div>
-                    <dt className="text-sm font-medium text-gray-500">
+                    <dt className="text-sm font-medium text-muted-foreground">
                       Storage Type
                     </dt>
-                    <dd className="text-sm text-gray-900 capitalize">
+                    <dd className="text-sm text-foreground capitalize">
                       {bucket.backing_store}
                     </dd>
                   </div>
                   <div>
-                    <dt className="text-sm font-medium text-gray-500">
+                    <dt className="text-sm font-medium text-muted-foreground">
                       Compression
                     </dt>
-                    <dd className="text-sm text-gray-900">
+                    <dd className="text-sm text-foreground">
                       {bucket.is_compressed ? 'Enabled' : 'Disabled'}
                     </dd>
                   </div>
                   <div>
-                    <dt className="text-sm font-medium text-gray-500">
+                    <dt className="text-sm font-medium text-muted-foreground">
                       History per Key
                     </dt>
-                    <dd className="text-sm text-gray-900">
+                    <dd className="text-sm text-foreground">
                       {bucket.history} revisions
                     </dd>
                   </div>
                   <div>
-                    <dt className="text-sm font-medium text-gray-500">
+                    <dt className="text-sm font-medium text-muted-foreground">
                       Time to Live
                     </dt>
-                    <dd className="text-sm text-gray-900">
+                    <dd className="text-sm text-foreground">
                       {formatTTL(bucket.ttl)}
                     </dd>
                   </div>
@@ -299,8 +195,8 @@ export function KVBucketDetailPage() {
             )}
 
             {/* Quick Actions */}
-            <div className="bg-card rounded-lg border border-gray-200 p-6">
-              <h3 className="text-lg font-semibold text-gray-900 mb-4">
+            <div className="bg-card rounded-lg border border-border p-6">
+              <h3 className="text-lg font-semibold text-foreground mb-4">
                 Quick Actions
               </h3>
               <div className="flex flex-wrap gap-3">

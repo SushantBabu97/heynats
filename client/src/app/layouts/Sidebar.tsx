@@ -8,6 +8,7 @@ import {
 } from 'lucide-react';
 import { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
+import { ServerStatus } from '@/app/ServerStatus';
 import {
   Tooltip,
   TooltipContent,
@@ -30,14 +31,14 @@ const NavItem = ({ name, path, icon, small, isActive }: NavItemProps) => {
       to={path}
       className={`p-3 rounded-lg flex items-center gap-3 transition-all duration-200 ease-in-out group overflow-hidden ${
         isActive
-          ? 'bg-indigo-50 text-indigo-700 font-medium'
-          : 'hover:bg-gray-50 text-gray-600'
+          ? 'bg-primary/5 text-primary font-medium'
+          : 'hover:bg-muted text-muted-foreground'
       }`}
     >
       <span
         className={`transform transition-transform duration-300 ${
           small ? 'scale-110' : 'scale-100'
-        } ${isActive ? 'text-indigo-600' : 'text-gray-500'}`}
+        } ${isActive ? 'text-primary' : 'text-muted-foreground'}`}
       >
         {icon}
       </span>
@@ -102,18 +103,18 @@ const Sidebar = () => {
 
   return (
     <div
-      className={`h-screen bg-card flex-none relative transition-all duration-300 ease-in-out border-r border-gray-200 ${
+      className={`h-screen bg-card flex-none relative transition-all duration-300 ease-in-out border-r border-border ${
         small ? 'w-[70px]' : 'w-[250px]'
       }`}
     >
       <button
         type="button"
         onClick={() => setSmall(!small)}
-        className={`absolute -right-3 z-10 top-[90px] bg-card rounded-full p-1.5 border shadow-md cursor-pointer hover:bg-gray-50 transition-all duration-300 ease-in-out ${
+        className={`absolute -right-3 z-10 top-[90px] bg-card rounded-full p-1.5 border shadow-md cursor-pointer hover:bg-muted transition-all duration-300 ease-in-out ${
           small ? 'rotate-180' : ''
         }`}
       >
-        <ChevronLeft className="h-4 w-4 text-gray-600" />
+        <ChevronLeft className="h-4 w-4 text-muted-foreground" />
       </button>
 
       <div className="flex flex-col gap-5 h-full">
@@ -124,7 +125,7 @@ const Sidebar = () => {
             }`}
           >
             {small ? (
-              <div className="w-8 h-8 bg-indigo-600 rounded-full flex items-center justify-center">
+              <div className="w-8 h-8 bg-primary rounded-full flex items-center justify-center">
                 <img
                   src="/heynats.jpg"
                   className="w-full h-full object-cover"
@@ -133,14 +134,14 @@ const Sidebar = () => {
               </div>
             ) : (
               <div className="flex items-center">
-                <div className="w-8 h-8 bg-indigo-600 rounded-full flex items-center justify-center overflow-hidden mr-3">
+                <div className="w-8 h-8 bg-primary rounded-full flex items-center justify-center overflow-hidden mr-3">
                   <img
                     src="/heynats.jpg"
                     className="w-full h-full object-cover"
                     alt="HeyNATS logo"
                   />
                 </div>
-                <h1 className="text-xl font-semibold text-gray-900">
+                <h1 className="text-xl font-semibold text-foreground">
                   Hey NATS
                 </h1>
               </div>
@@ -204,6 +205,7 @@ const Sidebar = () => {
               </Tooltip>
             </TooltipProvider>
           ))}
+          <ServerStatus compact={small} />
         </div>
       </div>
     </div>

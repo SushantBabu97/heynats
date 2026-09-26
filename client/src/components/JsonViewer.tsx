@@ -41,15 +41,15 @@ function JsonNode({
     if (!name) return null;
     return (
       <span className="mr-1">
-        <span className="text-purple-600">"{name}"</span>
-        <span className="text-gray-600">:</span>
+        <span className="text-primary">"{name}"</span>
+        <span className="text-muted-foreground">:</span>
       </span>
     );
   };
 
   // Helper to render trailing comma
   const renderComma = () => {
-    if (!isLast) return <span className="text-gray-600">,</span>;
+    if (!isLast) return <span className="text-muted-foreground">,</span>;
     return null;
   };
 
@@ -57,7 +57,7 @@ function JsonNode({
     return (
       <div className="font-mono text-sm leading-6">
         {renderKey()}
-        <span className="text-gray-500">null</span>
+        <span className="text-muted-foreground">null</span>
         {renderComma()}
       </div>
     );
@@ -67,7 +67,7 @@ function JsonNode({
     return (
       <div className="font-mono text-sm leading-6">
         {renderKey()}
-        <span className="text-orange-600">{value.toString()}</span>
+        <span className="text-warning">{value.toString()}</span>
         {renderComma()}
       </div>
     );
@@ -77,7 +77,7 @@ function JsonNode({
     return (
       <div className="font-mono text-sm leading-6">
         {renderKey()}
-        <span className="text-blue-600">{value}</span>
+        <span className="text-primary">{value}</span>
         {renderComma()}
       </div>
     );
@@ -87,7 +87,7 @@ function JsonNode({
     return (
       <div className="font-mono text-sm leading-6">
         {renderKey()}
-        <span className="text-green-600">"{value}"</span>
+        <span className="text-success">"{value}"</span>
         {renderComma()}
       </div>
     );
@@ -106,7 +106,7 @@ function JsonNode({
       return (
         <div className="font-mono text-sm leading-6">
           {renderKey()}
-          <span className="text-gray-600">
+          <span className="text-muted-foreground">
             {openChar}
             {closeChar}
           </span>
@@ -124,19 +124,19 @@ function JsonNode({
               e.stopPropagation();
               setExpanded(!expanded);
             }}
-            className="mr-1 mt-1 p-0.5 hover:bg-gray-200 rounded focus:outline-none focus:ring-1 focus:ring-gray-300"
+            className="mr-1 mt-1 p-0.5 hover:bg-muted rounded focus:outline-none focus:ring-1 focus:ring-border"
           >
             {expanded ? (
-              <ChevronDown className="w-3 h-3 text-gray-500" />
+              <ChevronDown className="w-3 h-3 text-muted-foreground" />
             ) : (
-              <ChevronRight className="w-3 h-3 text-gray-500" />
+              <ChevronRight className="w-3 h-3 text-muted-foreground" />
             )}
           </button>
 
           <div className="flex-1">
             <span>
               {renderKey()}
-              <span className="text-gray-600">{openChar}</span>
+              <span className="text-muted-foreground">{openChar}</span>
             </span>
 
             {!expanded && (
@@ -144,11 +144,11 @@ function JsonNode({
                 <button
                   type="button"
                   onClick={() => setExpanded(true)}
-                  className="px-1 text-gray-400 hover:text-gray-600 text-xs bg-gray-50 rounded mx-1"
+                  className="px-1 text-muted-foreground hover:text-muted-foreground text-xs bg-muted rounded mx-1"
                 >
                   {itemCount} {itemCount === 1 ? 'item' : 'items'}
                 </button>
-                <span className="text-gray-600">{closeChar}</span>
+                <span className="text-muted-foreground">{closeChar}</span>
                 {renderComma()}
               </>
             )}
@@ -157,7 +157,7 @@ function JsonNode({
 
         {expanded && (
           <div>
-            <div className="pl-6 border-l border-gray-200 ml-2.5">
+            <div className="pl-6 border-l border-border ml-2.5">
               {keys.map((key, index) => (
                 <JsonNode
                   key={key}
@@ -169,7 +169,7 @@ function JsonNode({
               ))}
             </div>
             <div className="ml-5">
-              <span className="text-gray-600">{closeChar}</span>
+              <span className="text-muted-foreground">{closeChar}</span>
               {renderComma()}
             </div>
           </div>
@@ -181,7 +181,7 @@ function JsonNode({
   return (
     <div className="font-mono text-sm leading-6">
       {renderKey()}
-      <span className="text-gray-800">{String(value)}</span>
+      <span className="text-foreground">{String(value)}</span>
       {renderComma()}
     </div>
   );
@@ -219,19 +219,19 @@ export function CodeDisplay({
     <div className="relative">
       <button
         onClick={handleCopy}
-        className="absolute top-2 right-2 p-2 bg-gray-200 hover:bg-gray-300 rounded transition-colors z-10"
+        className="absolute top-2 right-2 p-2 bg-muted hover:bg-muted rounded transition-colors z-10"
         title="Copy to clipboard"
         type="button"
       >
         <Copy className="w-4 h-4" />
       </button>
       {copied && (
-        <div className="absolute top-2 right-12 px-2 py-1 bg-green-500 text-white text-xs rounded">
+        <div className="absolute top-2 right-12 px-2 py-1 bg-success text-success-foreground text-xs rounded">
           Copied!
         </div>
       )}
       <pre
-        className={`p-3 bg-gray-900 text-gray-100 rounded border border-gray-700 font-mono text-sm overflow-auto ${maxHeight}`}
+        className={`p-3 bg-muted text-foreground rounded border border-input font-mono text-sm overflow-auto ${maxHeight}`}
       >
         <code>{code}</code>
       </pre>

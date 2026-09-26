@@ -17,12 +17,12 @@ export function ErrorBoundary() {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50">
+    <div className="min-h-screen flex items-center justify-center bg-background">
       <div className="text-center max-w-md mx-auto p-6">
         <div className="mb-4">
-          <div className="mx-auto w-12 h-12 bg-red-100 rounded-full flex items-center justify-center">
+          <div className="mx-auto w-12 h-12 bg-destructive/10 rounded-full flex items-center justify-center">
             <svg
-              className="w-6 h-6 text-red-600"
+              className="w-6 h-6 text-destructive"
               fill="none"
               stroke="currentColor"
               viewBox="0 0 24 24"
@@ -36,10 +36,10 @@ export function ErrorBoundary() {
             </svg>
           </div>
         </div>
-        <h1 className="text-2xl font-bold text-gray-900 mb-2">
+        <h1 className="text-2xl font-bold text-foreground mb-2">
           Oops! Something went wrong
         </h1>
-        <p className="text-gray-600 mb-6">{errorMessage}</p>
+        <p className="text-muted-foreground mb-6">{errorMessage}</p>
         <Button onClick={() => (window.location.href = '/')}>
           Go back to home
         </Button>

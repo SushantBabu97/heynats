@@ -93,14 +93,6 @@ export const router = createBrowserRouter([
               'SubscribePage'
             ),
           },
-          {
-            path: 'account',
-            handle: { title: 'Account' } satisfies RouteHandle,
-            ...page(
-              () => import('@/features/dashboard/AccountPage'),
-              'AccountPage'
-            ),
-          },
         ],
       },
     ],

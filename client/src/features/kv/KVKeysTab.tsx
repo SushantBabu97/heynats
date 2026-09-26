@@ -129,16 +129,16 @@ export function KVKeysTab({
     <>
       {/* Add Key Form */}
       {isAddingKey && (
-        <div className="bg-card rounded-lg border-2 border-indigo-200 shadow-md p-6 transition-all duration-300 ease-in-out">
-          <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center">
-            <Plus className="w-5 h-5 mr-2 text-indigo-600" />
+        <div className="bg-card rounded-lg border-2 border-primary/30 shadow-md p-6 transition-all duration-300 ease-in-out">
+          <h3 className="text-lg font-semibold text-foreground mb-4 flex items-center">
+            <Plus className="w-5 h-5 mr-2 text-primary" />
             Add New Key
           </h3>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
               <label
                 htmlFor="kv-key"
-                className="block text-sm font-medium text-gray-700 mb-1"
+                className="block text-sm font-medium text-foreground/80 mb-1"
               >
                 Key
               </label>
@@ -158,7 +158,7 @@ export function KVKeysTab({
             <div>
               <label
                 htmlFor="kv-value"
-                className="block text-sm font-medium text-gray-700 mb-1"
+                className="block text-sm font-medium text-foreground/80 mb-1"
               >
                 Value
               </label>
@@ -191,7 +191,7 @@ export function KVKeysTab({
 
       {/* Search */}
       <div className="relative">
-        <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
+        <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-4 h-4" />
         <Input
           placeholder="Search keys..."
           value={searchTerm}
@@ -202,28 +202,28 @@ export function KVKeysTab({
 
       {/* Keys List */}
       {keysLoading ? (
-        <div className="bg-card rounded-lg border border-gray-200 p-8">
+        <div className="bg-card rounded-lg border border-border p-8">
           <div className="text-center">
-            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-indigo-600 mx-auto mb-4" />
-            <p className="text-gray-500">Loading keys...</p>
+            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto mb-4" />
+            <p className="text-muted-foreground">Loading keys...</p>
           </div>
         </div>
       ) : keysError ? (
-        <div className="bg-card rounded-lg border border-gray-200 p-8">
+        <div className="bg-card rounded-lg border border-border p-8">
           <div className="text-center">
-            <p className="text-red-600">Error loading keys</p>
+            <p className="text-destructive">Error loading keys</p>
           </div>
         </div>
       ) : filteredKeys.length === 0 ? (
-        <div className="bg-card rounded-lg border border-gray-200 p-8">
+        <div className="bg-card rounded-lg border border-border p-8">
           <div className="text-center">
-            <Key className="mx-auto h-16 w-16 text-gray-300 mb-4" />
-            <h3 className="text-lg font-medium text-gray-900 mb-2">
+            <Key className="mx-auto h-16 w-16 text-muted-foreground/70 mb-4" />
+            <h3 className="text-lg font-medium text-foreground mb-2">
               {keys.length === 0
                 ? 'No Keys Found'
                 : 'No Keys Match Your Search'}
             </h3>
-            <p className="text-gray-500 mb-6">
+            <p className="text-muted-foreground mb-6">
               {keys.length === 0
                 ? 'Add your first key-value pair to get started.'
                 : 'Try adjusting your search term.'}
@@ -237,9 +237,9 @@ export function KVKeysTab({
           </div>
         </div>
       ) : (
-        <div className="bg-card rounded-lg border border-gray-200 overflow-hidden">
-          <div className="px-6 py-3 border-b border-gray-200 bg-gray-50">
-            <div className="grid grid-cols-5 gap-4 text-sm font-medium text-gray-500">
+        <div className="bg-card rounded-lg border border-border overflow-hidden">
+          <div className="px-6 py-3 border-b border-border bg-muted">
+            <div className="grid grid-cols-5 gap-4 text-sm font-medium text-muted-foreground">
               <div>Key</div>
               <div>Value</div>
               <div>Created At</div>
@@ -247,12 +247,12 @@ export function KVKeysTab({
               <div>Actions</div>
             </div>
           </div>
-          <div className="divide-y divide-gray-200">
+          <div className="divide-y divide-border">
             {filteredKeys.map((entry) => (
               <div key={entry.key} className="px-6 py-4">
                 <div className="grid grid-cols-5 gap-4 items-center">
                   <div className="flex items-center space-x-2">
-                    <code className="text-sm bg-gray-100 px-2 py-1 rounded">
+                    <code className="text-sm bg-muted px-2 py-1 rounded">
                       {entry.key}
                     </code>
                     <Button
@@ -275,11 +275,11 @@ export function KVKeysTab({
                     ) : (
                       <div className="flex items-center space-x-2">
                         {visibleValues.has(entry.key) ? (
-                          <code className="text-sm bg-gray-100 px-2 py-1 rounded max-w-xs truncate">
+                          <code className="text-sm bg-muted px-2 py-1 rounded max-w-xs truncate">
                             {entry.value}
                           </code>
                         ) : (
-                          <span className="text-gray-400 text-sm">
+                          <span className="text-muted-foreground text-sm">
                             ••••••••
                           </span>
                         )}
@@ -298,8 +298,12 @@ export function KVKeysTab({
                       </div>
                     )}
                   </div>
-                  <div className="text-sm text-gray-500">{entry.created}</div>
-                  <div className="text-sm text-gray-500">#{entry.revision}</div>
+                  <div className="text-sm text-muted-foreground">
+                    {entry.created}
+                  </div>
+                  <div className="text-sm text-muted-foreground">
+                    #{entry.revision}
+                  </div>
 
                   <div className="flex items-center space-x-2">
                     {editingKey === entry.key ? (
@@ -333,7 +337,7 @@ export function KVKeysTab({
                           size="sm"
                           variant="ghost"
                           onClick={() => handleDeleteKey(entry.key)}
-                          className="h-6 w-6 p-0 text-red-600 hover:text-red-700"
+                          className="h-6 w-6 p-0 text-destructive hover:text-destructive"
                           disabled={deleteKeyMutation.isPending}
                         >
                           <Trash2 className="w-3 h-3" />

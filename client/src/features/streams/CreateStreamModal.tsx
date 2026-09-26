@@ -144,14 +144,14 @@ export function CreateStreamModal({
         <form onSubmit={handleSubmit} className="space-y-6">
           {/* Basic Configuration */}
           <div className="space-y-4">
-            <h3 className="text-lg font-semibold text-gray-900">
+            <h3 className="text-lg font-semibold text-foreground">
               Basic Configuration
             </h3>
 
             <div>
               <label
                 htmlFor="stream-stream-name"
-                className="block text-sm font-medium text-gray-700 mb-2"
+                className="block text-sm font-medium text-foreground/80 mb-2"
               >
                 Stream Name *
               </label>
@@ -162,21 +162,21 @@ export function CreateStreamModal({
                 onChange={(e) =>
                   setFormData({ ...formData, name: e.target.value })
                 }
-                className={`w-full px-3 py-2 border rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 ${
-                  errors.name ? 'border-red-300' : 'border-gray-300'
+                className={`w-full px-3 py-2 border rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-ring ${
+                  errors.name ? 'border-destructive/30' : 'border-border'
                 }`}
                 placeholder="my_stream"
                 disabled={isLoading}
               />
               {errors.name && (
-                <p className="text-red-500 text-sm mt-1">{errors.name}</p>
+                <p className="text-destructive text-sm mt-1">{errors.name}</p>
               )}
             </div>
 
             <div>
               <label
                 htmlFor="stream-subjects"
-                className="block text-sm font-medium text-gray-700 mb-2"
+                className="block text-sm font-medium text-foreground/80 mb-2"
               >
                 Subjects *
               </label>
@@ -188,7 +188,7 @@ export function CreateStreamModal({
                 disabled={isLoading}
                 error={errors.subjects}
               />
-              <p className="text-gray-500 text-sm mt-1">
+              <p className="text-muted-foreground text-sm mt-1">
                 Type subjects and press Enter to add them as chips. Use commas
                 to separate multiple subjects at once.
               </p>
@@ -198,7 +198,7 @@ export function CreateStreamModal({
               <div>
                 <label
                   htmlFor="stream-storage-type"
-                  className="block text-sm font-medium text-gray-700 mb-2"
+                  className="block text-sm font-medium text-foreground/80 mb-2"
                 >
                   Storage Type
                 </label>
@@ -211,7 +211,7 @@ export function CreateStreamModal({
                       storage: e.target.value as 'file' | 'memory',
                     })
                   }
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="w-full px-3 py-2 border border-border rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-ring"
                   disabled={isLoading}
                 >
                   <option value="file">File</option>
@@ -222,7 +222,7 @@ export function CreateStreamModal({
               <div>
                 <label
                   htmlFor="stream-retention-policy"
-                  className="block text-sm font-medium text-gray-700 mb-2"
+                  className="block text-sm font-medium text-foreground/80 mb-2"
                 >
                   Retention Policy
                 </label>
@@ -238,7 +238,7 @@ export function CreateStreamModal({
                         | 'workqueue',
                     })
                   }
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="w-full px-3 py-2 border border-border rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-ring"
                   disabled={isLoading}
                 >
                   <option value="limits">Limits</option>
@@ -251,13 +251,13 @@ export function CreateStreamModal({
 
           {/* Limits */}
           <div className="space-y-4">
-            <h3 className="text-lg font-semibold text-gray-900">Limits</h3>
+            <h3 className="text-lg font-semibold text-foreground">Limits</h3>
 
             <div className="grid grid-cols-2 gap-4">
               <div>
                 <label
                   htmlFor="stream-max-messages"
-                  className="block text-sm font-medium text-gray-700 mb-2"
+                  className="block text-sm font-medium text-foreground/80 mb-2"
                 >
                   Max Messages
                 </label>
@@ -268,7 +268,7 @@ export function CreateStreamModal({
                   onChange={(e) =>
                     setFormData({ ...formData, max_msgs: e.target.value })
                   }
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="w-full px-3 py-2 border border-border rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-ring"
                   placeholder="No limit"
                   min="-1"
                   disabled={isLoading}
@@ -278,7 +278,7 @@ export function CreateStreamModal({
               <div>
                 <label
                   htmlFor="stream-max-bytes"
-                  className="block text-sm font-medium text-gray-700 mb-2"
+                  className="block text-sm font-medium text-foreground/80 mb-2"
                 >
                   Max Bytes
                 </label>
@@ -289,7 +289,7 @@ export function CreateStreamModal({
                   onChange={(e) =>
                     setFormData({ ...formData, max_bytes: e.target.value })
                   }
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="w-full px-3 py-2 border border-border rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-ring"
                   placeholder="No limit"
                   min="-1"
                   disabled={isLoading}
@@ -299,7 +299,7 @@ export function CreateStreamModal({
               <div>
                 <label
                   htmlFor="stream-max-age-seconds"
-                  className="block text-sm font-medium text-gray-700 mb-2"
+                  className="block text-sm font-medium text-foreground/80 mb-2"
                 >
                   Max Age (seconds)
                 </label>
@@ -310,7 +310,7 @@ export function CreateStreamModal({
                   onChange={(e) =>
                     setFormData({ ...formData, max_age: e.target.value })
                   }
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="w-full px-3 py-2 border border-border rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-ring"
                   placeholder="No limit"
                   min="-1"
                   disabled={isLoading}
@@ -320,7 +320,7 @@ export function CreateStreamModal({
               <div>
                 <label
                   htmlFor="stream-max-consumers"
-                  className="block text-sm font-medium text-gray-700 mb-2"
+                  className="block text-sm font-medium text-foreground/80 mb-2"
                 >
                   Max Consumers
                 </label>
@@ -331,7 +331,7 @@ export function CreateStreamModal({
                   onChange={(e) =>
                     setFormData({ ...formData, max_consumers: e.target.value })
                   }
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="w-full px-3 py-2 border border-border rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-ring"
                   placeholder="No limit"
                   min="-1"
                   disabled={isLoading}
@@ -342,7 +342,7 @@ export function CreateStreamModal({
 
           {/* Advanced Options */}
           <div className="space-y-4">
-            <h3 className="text-lg font-semibold text-gray-900">
+            <h3 className="text-lg font-semibold text-foreground">
               Advanced Options
             </h3>
 
@@ -350,7 +350,7 @@ export function CreateStreamModal({
               <div>
                 <label
                   htmlFor="stream-replicas"
-                  className="block text-sm font-medium text-gray-700 mb-2"
+                  className="block text-sm font-medium text-foreground/80 mb-2"
                 >
                   Replicas
                 </label>
@@ -364,7 +364,7 @@ export function CreateStreamModal({
                       num_replicas: Number.parseInt(e.target.value) || 1,
                     })
                   }
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="w-full px-3 py-2 border border-border rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-ring"
                   min="1"
                   max="5"
                   disabled={isLoading}
@@ -374,7 +374,7 @@ export function CreateStreamModal({
               <div>
                 <label
                   htmlFor="stream-discard-policy"
-                  className="block text-sm font-medium text-gray-700 mb-2"
+                  className="block text-sm font-medium text-foreground/80 mb-2"
                 >
                   Discard Policy
                 </label>
@@ -387,7 +387,7 @@ export function CreateStreamModal({
                       discard: e.target.value as 'old' | 'new',
                     })
                   }
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="w-full px-3 py-2 border border-border rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-ring"
                   disabled={isLoading}
                 >
                   <option value="old">Old</option>
@@ -404,10 +404,10 @@ export function CreateStreamModal({
                   onChange={(e) =>
                     setFormData({ ...formData, allow_direct: e.target.checked })
                   }
-                  className="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+                  className="rounded border-border text-primary focus:ring-ring"
                   disabled={isLoading}
                 />
-                <span className="ml-2 text-sm text-gray-700">
+                <span className="ml-2 text-sm text-foreground/80">
                   Allow Direct Access
                 </span>
               </label>
@@ -422,10 +422,10 @@ export function CreateStreamModal({
                       allow_msg_ttl: e.target.checked,
                     })
                   }
-                  className="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+                  className="rounded border-border text-primary focus:ring-ring"
                   disabled={isLoading}
                 />
-                <span className="ml-2 text-sm text-gray-700">
+                <span className="ml-2 text-sm text-foreground/80">
                   Allow Message TTL
                 </span>
               </label>
@@ -433,7 +433,7 @@ export function CreateStreamModal({
           </div>
 
           {/* Actions */}
-          <div className="flex justify-end gap-3 pt-6 border-t border-gray-200">
+          <div className="flex justify-end gap-3 pt-6 border-t border-border">
             <Button
               type="button"
               variant="outline"

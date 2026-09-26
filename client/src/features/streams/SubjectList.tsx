@@ -36,14 +36,14 @@ export function SubjectList({
   );
 
   return (
-    <div className="bg-card rounded-lg border border-gray-200 p-4 flex-1 flex flex-col min-h-0">
+    <div className="bg-card rounded-lg border border-border p-4 flex-1 flex flex-col min-h-0">
       <div className="flex items-center justify-between mb-3 shrink-0">
         <div className="flex items-center gap-4 w-full">
           <h2 className="text-base font-semibold">
             Subjects ({subjects.length})
           </h2>
           {subjects.length > 0 && (
-            <span className="text-sm text-gray-500 ml-auto">
+            <span className="text-sm text-muted-foreground ml-auto">
               Showing {subjectsVirtualizer.getVirtualItems().length} of{' '}
               {subjects.length}
             </span>
@@ -51,8 +51,8 @@ export function SubjectList({
         </div>
         {hasActiveSubscriptions && (
           <div className="flex items-center gap-2 text-sm">
-            <div className="w-2 h-2 bg-green-700 rounded-full animate-pulse" />
-            <span className="text-green-600">
+            <div className="w-2 h-2 bg-success/90 rounded-full animate-pulse" />
+            <span className="text-success">
               {
                 Object.values(subscriptions).filter((sub) => sub.isActive)
                   .length
@@ -64,13 +64,13 @@ export function SubjectList({
       </div>
 
       {subjects.length === 0 ? (
-        <p className="text-gray-500 shrink-0">
+        <p className="text-muted-foreground shrink-0">
           No subjects configured for this stream
         </p>
       ) : (
         <div
           ref={subjectsContainerRef}
-          className="relative overflow-auto border border-gray-200 rounded-lg flex-1 min-h-0"
+          className="relative overflow-auto border border-border rounded-lg flex-1 min-h-0"
         >
           <div style={{ height: subjectsVirtualizer.getTotalSize() }}>
             {subjectsVirtualizer.getVirtualItems().map((virtualItem) => {
@@ -85,10 +85,10 @@ export function SubjectList({
                   key={virtualItem.key}
                   className={`absolute top-0 left-0 w-full flex items-center justify-between p-4 border-b transition-colors ${
                     isActive
-                      ? 'bg-green-50 border-green-200'
+                      ? 'bg-success/5 border-success/30'
                       : isSelected
-                        ? 'bg-blue-50 border-blue-200'
-                        : 'bg-gray-50 border-gray-200 hover:bg-gray-100'
+                        ? 'bg-primary/5 border-primary/30'
+                        : 'bg-muted border-border hover:bg-muted'
                   }`}
                   style={{
                     height: virtualItem.size,
@@ -101,10 +101,10 @@ export function SubjectList({
                       checked={isSelected}
                       onChange={() => handleSubjectToggle(subject)}
                       disabled={isActive}
-                      className="mr-3 h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+                      className="mr-3 h-4 w-4 text-primary focus:ring-ring border-border rounded"
                     />
                     <div>
-                      <span className="font-medium text-gray-900 truncate max-w-xs block">
+                      <span className="font-medium text-foreground truncate max-w-xs block">
                         {subject}
                       </span>
                       {isActive && (
@@ -113,23 +113,23 @@ export function SubjectList({
                           <div className="flex items-center">
                             {subscription?.connectionStatus === 'connected' ? (
                               <>
-                                <div className="w-2 h-2 bg-green-500 rounded-full mr-2 animate-pulse" />
-                                <span className="text-sm text-green-600">
+                                <div className="w-2 h-2 bg-success rounded-full mr-2 animate-pulse" />
+                                <span className="text-sm text-success">
                                   Connected
                                 </span>
                               </>
                             ) : subscription?.connectionStatus ===
                               'connecting' ? (
                               <>
-                                <div className="w-2 h-2 bg-yellow-500 rounded-full mr-2 animate-pulse" />
-                                <span className="text-sm text-yellow-600">
+                                <div className="w-2 h-2 bg-warning rounded-full mr-2 animate-pulse" />
+                                <span className="text-sm text-warning">
                                   Connecting
                                 </span>
                               </>
                             ) : (
                               <>
-                                <div className="w-2 h-2 bg-blue-500 rounded-full mr-2 animate-pulse" />
-                                <span className="text-sm text-blue-600">
+                                <div className="w-2 h-2 bg-primary rounded-full mr-2 animate-pulse" />
+                                <span className="text-sm text-primary">
                                   Subscribing
                                 </span>
                               </>
@@ -139,7 +139,7 @@ export function SubjectList({
                           {/* Message Count */}
                           {messageCount > 0 && (
                             <div className="flex items-center">
-                              <span className="text-sm text-gray-600">
+                              <span className="text-sm text-muted-foreground">
                                 {messageCount} message
                                 {messageCount !== 1 ? 's' : ''}
                               </span>
@@ -165,7 +165,7 @@ export function SubjectList({
                         size="sm"
                         variant="outline"
                         onClick={() => stopSubscription(subject)}
-                        className="border-red-300 text-red-600 hover:bg-red-50"
+                        className="border-destructive/30 text-destructive hover:bg-destructive/5"
                       >
                         <Square className="w-4 h-4 mr-1" />
                         Stop
@@ -174,7 +174,7 @@ export function SubjectList({
                       <Button
                         size="sm"
                         onClick={() => startSubscription(subject)}
-                        className="bg-green-600 hover:bg-green-700"
+                        className="bg-success hover:bg-success/90"
                       >
                         <Play className="w-4 h-4 mr-1" />
                         Subscribe

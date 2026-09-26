@@ -66,8 +66,8 @@ export function ContextManager({
     return (
       <div className="flex items-center justify-center p-8">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-indigo-600 mx-auto mb-4" />
-          <p className="text-gray-600">Loading contexts...</p>
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto mb-4" />
+          <p className="text-muted-foreground">Loading contexts...</p>
         </div>
       </div>
     );
@@ -76,8 +76,8 @@ export function ContextManager({
   return (
     <div className="space-y-4">
       {error && (
-        <div className="bg-red-50 border border-red-200 rounded-md p-4">
-          <p className="text-sm text-red-800">{error}</p>
+        <div className="bg-destructive/5 border border-destructive/30 rounded-md p-4">
+          <p className="text-sm text-destructive">{error}</p>
         </div>
       )}
 
@@ -86,7 +86,7 @@ export function ContextManager({
       ) : (
         <>
           <div className="flex justify-between items-center">
-            <h3 className="text-lg font-semibold text-gray-900">
+            <h3 className="text-lg font-semibold text-foreground">
               Saved Contexts
             </h3>
             <Button
@@ -94,7 +94,7 @@ export function ContextManager({
                 setEditingId(null);
                 setShowForm(true);
               }}
-              className="flex items-center gap-2 bg-indigo-600 hover:bg-indigo-700 text-white"
+              className="flex items-center gap-2 bg-primary hover:bg-primary/90 text-primary-foreground"
               type="button"
             >
               <Plus className="w-4 h-4" />
@@ -104,10 +104,12 @@ export function ContextManager({
 
           {contexts.length === 0 ? (
             <div className="text-center py-8">
-              <p className="text-gray-500 mb-4">No contexts saved yet</p>
+              <p className="text-muted-foreground mb-4">
+                No contexts saved yet
+              </p>
               <Button
                 onClick={() => setShowForm(true)}
-                className="bg-indigo-600 hover:bg-indigo-700 text-white"
+                className="bg-primary hover:bg-primary/90 text-primary-foreground"
                 type="button"
               >
                 Create Your First Context
@@ -118,7 +120,7 @@ export function ContextManager({
               {contexts.map((context) => (
                 <div
                   key={context.id}
-                  className="flex items-center justify-between p-4 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors"
+                  className="flex items-center justify-between p-4 border border-border rounded-lg hover:bg-muted transition-colors"
                 >
                   <button
                     className="flex-1 cursor-pointer text-left p-0 border-0 bg-transparent hover:bg-transparent"
@@ -126,21 +128,21 @@ export function ContextManager({
                     type="button"
                   >
                     <div className="flex items-center gap-2">
-                      <h4 className="font-medium text-gray-900">
+                      <h4 className="font-medium text-foreground">
                         {context.name}
                       </h4>
                       {context.isDefault && (
-                        <span className="text-xs bg-indigo-100 text-indigo-800 px-2 py-1 rounded">
+                        <span className="text-xs bg-primary/10 text-primary px-2 py-1 rounded">
                           Default
                         </span>
                       )}
                     </div>
                     {context.description && (
-                      <p className="text-sm text-gray-600 mt-1">
+                      <p className="text-sm text-muted-foreground mt-1">
                         {context.description}
                       </p>
                     )}
-                    <p className="text-xs text-gray-500 mt-2">
+                    <p className="text-xs text-muted-foreground mt-2">
                       {context.host}:{context.port}
                       {context.username && ` (${context.username})`}
                     </p>
@@ -149,7 +151,7 @@ export function ContextManager({
                     {!context.isDefault && (
                       <button
                         onClick={() => handleSetDefault(context.id)}
-                        className="p-2 text-gray-600 hover:text-yellow-600 rounded"
+                        className="p-2 text-muted-foreground hover:text-warning rounded"
                         title="Set as default"
                         aria-label="Set as default context"
                         type="button"
@@ -160,7 +162,7 @@ export function ContextManager({
 
                     <button
                       onClick={() => handleEditClick(context.id)}
-                      className="p-2 text-gray-600 hover:text-blue-600 rounded"
+                      className="p-2 text-muted-foreground hover:text-primary rounded"
                       title="Edit context"
                       aria-label="Edit context"
                       type="button"
@@ -170,7 +172,7 @@ export function ContextManager({
 
                     <button
                       onClick={() => handleDeleteClick(context.id)}
-                      className="p-2 text-gray-600 hover:text-red-600 rounded"
+                      className="p-2 text-muted-foreground hover:text-destructive rounded"
                       title="Delete context"
                       aria-label="Delete context"
                       type="button"

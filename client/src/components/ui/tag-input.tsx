@@ -53,21 +53,21 @@ const TagInput = forwardRef<HTMLDivElement, TagInputProps>(
       <div ref={ref} className={cn("w-full", className)}>
         <div
           className={cn(
-            "flex min-h-9 w-full flex-wrap items-center gap-2 rounded-md border border-neutral-200 bg-transparent px-3 py-2 text-sm shadow-xs focus-within:border-neutral-950 focus-within:ring-[3px] focus-within:ring-neutral-950/50 dark:border-neutral-800 dark:focus-within:border-neutral-300 dark:focus-within:ring-neutral-300/50",
+            "flex min-h-9 w-full flex-wrap items-center gap-2 rounded-md border border-input bg-card px-3 py-2 text-sm shadow-xs focus-within:border-ring focus-within:ring-[3px] focus-within:ring-ring/30 ",
             disabled && "cursor-not-allowed opacity-50",
-            error && "border-red-500 focus-within:border-red-500 focus-within:ring-red-500/20 dark:border-red-900 dark:focus-within:border-red-900 dark:focus-within:ring-red-900/40"
+            error && "border-destructive focus-within:border-destructive focus-within:ring-destructive "
           )}
         >
           {value.map((tag, index) => (
             <div
               key={index}
-              className="inline-flex items-center gap-1 rounded-md bg-blue-100 px-2 py-1 text-xs font-medium text-blue-800 dark:bg-blue-900/30 dark:text-blue-200"
+              className="inline-flex items-center gap-1 rounded-md bg-primary/10 px-2 py-1 text-xs font-medium text-primary "
             >
               <span>{tag}</span>
               {!disabled && (
                 <button
                   type="button"
-                  className="text-blue-600 hover:text-blue-800 focus:outline-none dark:text-blue-300 dark:hover:text-blue-100"
+                  className="text-primary hover:text-primary focus:outline-none "
                   onClick={() => removeTag(index)}
                 >
                   <svg
@@ -99,11 +99,11 @@ const TagInput = forwardRef<HTMLDivElement, TagInputProps>(
             }}
             placeholder={value.length === 0 ? placeholder : ""}
             disabled={disabled}
-            className="flex-1 bg-transparent outline-none placeholder:text-neutral-500 dark:placeholder:text-neutral-400"
+            className="flex-1 bg-transparent outline-none placeholder:text-muted-foreground "
           />
         </div>
         {error && (
-          <p className="mt-1 text-sm text-red-500 dark:text-red-400">{error}</p>
+          <p className="mt-1 text-sm text-destructive ">{error}</p>
         )}
       </div>
     );

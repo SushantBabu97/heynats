@@ -3,7 +3,7 @@ import { useEffect, useMemo, useRef, useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import { subscribeApi } from '@/lib/api';
-import type { Subscription } from './types';
+import { type Subscription, subscriptionTypeIcon } from './types';
 
 interface SubscriptionsPanelProps {
   subscriptions: Record<string, Subscription>;
@@ -85,23 +85,17 @@ export function SubscriptionsPanel({
   };
 
   return (
-    <div className="bg-card rounded-lg border border-gray-200 flex-1 flex flex-col min-h-0">
+    <div className="bg-card rounded-lg border border-border flex-1 flex flex-col min-h-0">
       {/* Subscription Tabs */}
-      <div className="border-b border-gray-200 px-4">
+      <div className="border-b border-border px-4">
         <div className="flex space-x-1 overflow-x-auto py-2">
           {activeSubscriptions.map(([key, subscription]) => {
             const isSelected = activeTab === key;
-            const typePrefix =
-              subscription.subscriptionType === 'reply'
-                ? '📩'
-                : subscription.subscriptionType === 'request-handler'
-                  ? '⚙️'
-                  : subscription.subscriptionType === 'queue'
-                    ? '👥'
-                    : '📡';
+            const TypeIcon =
+              subscriptionTypeIcon[subscription.subscriptionType];
             const displayName = subscription.queueGroup
-              ? `${typePrefix} ${subscription.subject} (${subscription.queueGroup})`
-              : `${typePrefix} ${subscription.subject}`;
+              ? `${subscription.subject} (${subscription.queueGroup})`
+              : subscription.subject;
 
             return (
               <div
@@ -110,8 +104,8 @@ export function SubscriptionsPanel({
                   px-3 py-2 text-sm font-medium rounded-md whitespace-nowrap shrink-0 flex items-center gap-2
                   ${
                     isSelected
-                      ? 'bg-blue-100 text-blue-700 border border-blue-200'
-                      : 'text-gray-500 hover:text-gray-700 hover:bg-gray-50'
+                      ? 'bg-primary/10 text-primary border border-primary/30'
+                      : 'text-muted-foreground hover:text-foreground/80 hover:bg-muted'
                   }
                 `}
               >
@@ -121,10 +115,14 @@ export function SubscriptionsPanel({
                   className="flex items-center gap-2"
                 >
                   <div
-                    className={`w-2 h-2 rounded-full ${subscription.isActive ? 'bg-green-500' : 'bg-gray-400'}`}
+                    className={`w-2 h-2 rounded-full ${subscription.isActive ? 'bg-success' : 'bg-muted-foreground'}`}
+                  />
+                  <TypeIcon
+                    className="size-3.5 shrink-0"
+                    aria-label={subscription.subscriptionType}
                   />
                   <span className="truncate max-w-[200px]">{displayName}</span>
-                  <span className="text-xs bg-gray-200 px-1.5 py-0.5 rounded">
+                  <span className="text-xs bg-muted px-1.5 py-0.5 rounded">
                     {subscription.messages.length}
                   </span>
                 </button>
@@ -132,7 +130,7 @@ export function SubscriptionsPanel({
                   type="button"
                   aria-label="Disconnect subscription"
                   onClick={() => handleDisconnectClick(key)}
-                  className="ml-1 w-5 h-5 flex items-center justify-center text-gray-400 hover:text-red-500 hover:bg-red-100 rounded-full transition-colors"
+                  className="ml-1 w-5 h-5 flex items-center justify-center text-muted-foreground hover:text-destructive hover:bg-destructive/10 rounded-full transition-colors"
                   title="Disconnect subscription"
                 >
                   <svg
@@ -159,14 +157,14 @@ export function SubscriptionsPanel({
       {activeTab && (
         <div className="flex-1 flex flex-col min-h-0">
           {/* Subscription Controls Header */}
-          <div className="bg-gray-50 border-b border-gray-200 px-4 py-3">
+          <div className="bg-muted border-b border-border px-4 py-3">
             <div className="flex items-center justify-between">
               <div className="flex items-center space-x-3">
                 <div className="flex items-center space-x-2">
                   <div
-                    className={`w-3 h-3 rounded-full ${subscriptions[activeTab].isActive ? 'bg-green-500 animate-pulse' : 'bg-gray-400'}`}
+                    className={`w-3 h-3 rounded-full ${subscriptions[activeTab].isActive ? 'bg-success animate-pulse' : 'bg-muted-foreground'}`}
                   />
-                  <span className="text-sm font-medium text-gray-900">
+                  <span className="text-sm font-medium text-foreground">
                     {subscriptions[activeTab].subscriptionType === 'reply'
                       ? 'Reply Subscription'
                       : subscriptions[activeTab].subscriptionType ===
@@ -177,15 +175,15 @@ export function SubscriptionsPanel({
                           : 'Regular Subscription'}
                   </span>
                 </div>
-                <div className="text-xs text-gray-500">
+                <div className="text-xs text-muted-foreground">
                   Subject:{' '}
-                  <code className="bg-gray-200 px-1 py-0.5 rounded">
+                  <code className="bg-muted px-1 py-0.5 rounded">
                     {subscriptions[activeTab].subject}
                   </code>
                   {subscriptions[activeTab].queueGroup && (
                     <span className="ml-2">
                       Queue:{' '}
-                      <code className="bg-gray-200 px-1 py-0.5 rounded">
+                      <code className="bg-muted px-1 py-0.5 rounded">
                         {subscriptions[activeTab].queueGroup}
                       </code>
                     </span>
@@ -193,7 +191,7 @@ export function SubscriptionsPanel({
                 </div>
               </div>
               <div className="flex items-center space-x-2">
-                <div className="text-xs text-gray-500">
+                <div className="text-xs text-muted-foreground">
                   {subscriptions[activeTab].messages.length} messages
                 </div>
                 {activeSubscriptions.length > 1 && (
@@ -201,7 +199,7 @@ export function SubscriptionsPanel({
                     size="sm"
                     variant="outline"
                     onClick={handleDisconnectAll}
-                    className="text-red-600 border-red-200 hover:bg-red-50 hover:border-red-300"
+                    className="text-destructive border-destructive/30 hover:bg-destructive/5 hover:border-destructive/30"
                   >
                     Disconnect All
                   </Button>
@@ -210,7 +208,7 @@ export function SubscriptionsPanel({
                   size="sm"
                   variant="outline"
                   onClick={() => handleDisconnectClick(activeTab)}
-                  className="text-red-600 border-red-200 hover:bg-red-50 hover:border-red-300"
+                  className="text-destructive border-destructive/30 hover:bg-destructive/5 hover:border-destructive/30"
                 >
                   Disconnect
                 </Button>
@@ -226,7 +224,7 @@ export function SubscriptionsPanel({
             style={{ minHeight: 0 }}
           >
             {activeMessages.length === 0 ? (
-              <div className="text-center text-gray-500 mt-8">
+              <div className="text-center text-muted-foreground mt-8">
                 <div className="text-sm">
                   Waiting for{' '}
                   {subscriptions[activeTab].subscriptionType === 'reply'
@@ -236,14 +234,14 @@ export function SubscriptionsPanel({
                       ? 'requests'
                       : 'messages'}{' '}
                   on subject:
-                  <code className="bg-gray-100 px-1 py-0.5 rounded ml-1">
+                  <code className="bg-muted px-1 py-0.5 rounded ml-1">
                     {subscriptions[activeTab].subject}
                   </code>
                 </div>
                 {subscriptions[activeTab].queueGroup && (
                   <div className="text-xs mt-1">
                     Queue group:{' '}
-                    <code className="bg-gray-100 px-1 py-0.5 rounded">
+                    <code className="bg-muted px-1 py-0.5 rounded">
                       {subscriptions[activeTab].queueGroup}
                     </code>
                   </div>
@@ -257,27 +255,27 @@ export function SubscriptionsPanel({
               activeMessages.map((message, index) => (
                 <div
                   key={index}
-                  className="bg-gray-50 rounded-lg p-3 border border-gray-200"
+                  className="bg-muted rounded-lg p-3 border border-border"
                 >
                   <div className="flex justify-between items-start mb-2">
                     <div className="space-y-1">
-                      <div className="text-sm font-medium text-gray-900">
+                      <div className="text-sm font-medium text-foreground">
                         {message.subject}
                       </div>
                       {message.reply && (
-                        <div className="text-xs text-blue-600 font-mono">
+                        <div className="text-xs text-primary font-mono">
                           Reply to: {message.reply}
                         </div>
                       )}
                     </div>
-                    <div className="text-xs text-gray-500">
+                    <div className="text-xs text-muted-foreground">
                       {new Date(message.timestamp).toLocaleTimeString()}
                     </div>
                   </div>
 
                   {message.data && (
                     <div className="mb-2">
-                      <pre className="text-sm text-gray-800 whitespace-pre-wrap break-words font-mono bg-card p-2 rounded border">
+                      <pre className="text-sm text-foreground whitespace-pre-wrap break-words font-mono bg-card p-2 rounded border">
                         {message.data}
                       </pre>
                     </div>
@@ -285,13 +283,13 @@ export function SubscriptionsPanel({
 
                   {message.headers &&
                     Object.keys(message.headers).length > 0 && (
-                      <div className="text-xs text-gray-600">
+                      <div className="text-xs text-muted-foreground">
                         <div className="font-medium mb-1">Headers:</div>
                         <div className="space-y-1">
                           {Object.entries(message.headers).map(
                             ([key, value]) => (
                               <div key={key} className="flex">
-                                <span className="font-mono bg-gray-100 px-1 rounded mr-2">
+                                <span className="font-mono bg-muted px-1 rounded mr-2">
                                   {key}:
                                 </span>
                                 <span className="font-mono">{value}</span>
@@ -306,12 +304,12 @@ export function SubscriptionsPanel({
                   {subscriptions[activeTab]?.subscriptionType ===
                     'request-handler' &&
                     message.reply && (
-                      <div className="mt-3 pt-3 border-t border-gray-200">
+                      <div className="mt-3 pt-3 border-t border-border">
                         <div className="flex gap-2 items-end">
                           <div className="flex-1">
                             <label
                               htmlFor="sub-quick-reply"
-                              className="block text-xs font-medium text-gray-700 mb-1"
+                              className="block text-xs font-medium text-foreground/80 mb-1"
                             >
                               Quick Reply
                             </label>
@@ -367,7 +365,7 @@ export function SubscriptionsPanel({
               <Button
                 onClick={scrollToBottom}
                 size="sm"
-                className="bg-blue-600 hover:bg-blue-700 text-white shadow-lg"
+                className="bg-primary hover:bg-primary/90 text-primary-foreground shadow-lg"
               >
                 ↓ Jump to Latest
               </Button>

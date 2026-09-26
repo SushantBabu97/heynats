@@ -35,16 +35,16 @@ export function BatchPublishForm({ suggestions }: { suggestions: string[] }) {
   };
 
   return (
-    <div className="bg-card rounded-lg border border-gray-200 p-6">
-      <h3 className="text-lg font-medium text-gray-900 mb-4">
+    <div className="bg-card rounded-lg border border-border p-6">
+      <h3 className="text-lg font-medium text-foreground mb-4">
         Publish Batch Messages
       </h3>
 
       <div className="space-y-4">
         {batchMessages.map((message, index) => (
-          <div key={index} className="border border-gray-200 rounded-md p-4">
+          <div key={index} className="border border-border rounded-md p-4">
             <div className="flex justify-between items-center mb-3">
-              <h4 className="text-sm font-medium text-gray-700">
+              <h4 className="text-sm font-medium text-foreground/80">
                 Message {index + 1}
               </h4>
               {batchMessages.length > 1 && (
@@ -67,7 +67,7 @@ export function BatchPublishForm({ suggestions }: { suggestions: string[] }) {
               <div>
                 <label
                   htmlFor={`batch-subject-${index}`}
-                  className="block text-sm font-medium text-gray-700 mb-1"
+                  className="block text-sm font-medium text-foreground/80 mb-1"
                 >
                   Subject *
                 </label>
@@ -84,7 +84,7 @@ export function BatchPublishForm({ suggestions }: { suggestions: string[] }) {
               <div>
                 <label
                   htmlFor={`batch-data-${index}`}
-                  className="block text-sm font-medium text-gray-700 mb-1"
+                  className="block text-sm font-medium text-foreground/80 mb-1"
                 >
                   Message Data *
                 </label>
@@ -124,13 +124,13 @@ export function BatchPublishForm({ suggestions }: { suggestions: string[] }) {
         </div>
 
         {batchPublishMutation.data && (
-          <div className="p-4 bg-green-50 border border-green-200 rounded-md">
-            <p className="text-sm text-green-800 mb-2">
+          <div className="p-4 bg-success/5 border border-success/30 rounded-md">
+            <p className="text-sm text-success mb-2">
               Batch publish completed: {batchPublishMutation.data.succeeded}/
               {batchPublishMutation.data.total} successful
             </p>
             {batchPublishMutation.data.results.map((result, index) => (
-              <div key={index} className="text-xs text-green-700">
+              <div key={index} className="text-xs text-success">
                 {result.subject}:{' '}
                 {result.success ? 'Success' : `Failed - ${result.error}`}
               </div>
@@ -139,8 +139,8 @@ export function BatchPublishForm({ suggestions }: { suggestions: string[] }) {
         )}
 
         {batchPublishMutation.error && (
-          <div className="p-4 bg-red-50 border border-red-200 rounded-md">
-            <p className="text-sm text-red-800">
+          <div className="p-4 bg-destructive/5 border border-destructive/30 rounded-md">
+            <p className="text-sm text-destructive">
               Error: {batchPublishMutation.error.message}
             </p>
           </div>

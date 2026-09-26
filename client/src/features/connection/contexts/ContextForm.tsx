@@ -99,18 +99,18 @@ export function ContextForm({ editingId, onClose }: ContextFormProps) {
   return (
     <form
       onSubmit={handleSubmit}
-      className="space-y-4 p-4 bg-gray-50 rounded-lg border border-gray-200"
+      className="space-y-4 p-4 bg-muted rounded-lg border border-border"
     >
-      <h3 className="text-lg font-semibold text-gray-900 mb-4">
+      <h3 className="text-lg font-semibold text-foreground mb-4">
         {editingId ? 'Edit Context' : 'Add New Context'}
       </h3>
 
       <div>
         <label
           htmlFor="name"
-          className="block text-sm font-medium text-gray-700 mb-2"
+          className="block text-sm font-medium text-foreground/80 mb-2"
         >
-          Context Name <span className="text-red-500">*</span>
+          Context Name <span className="text-destructive">*</span>
         </label>
         <Input
           id="name"
@@ -126,7 +126,7 @@ export function ContextForm({ editingId, onClose }: ContextFormProps) {
       <div>
         <label
           htmlFor="description"
-          className="block text-sm font-medium text-gray-700 mb-2"
+          className="block text-sm font-medium text-foreground/80 mb-2"
         >
           Description
         </label>
@@ -146,9 +146,9 @@ export function ContextForm({ editingId, onClose }: ContextFormProps) {
         <div>
           <label
             htmlFor="host"
-            className="block text-sm font-medium text-gray-700 mb-2"
+            className="block text-sm font-medium text-foreground/80 mb-2"
           >
-            Host <span className="text-red-500">*</span>
+            Host <span className="text-destructive">*</span>
           </label>
           <Input
             id="host"
@@ -164,9 +164,9 @@ export function ContextForm({ editingId, onClose }: ContextFormProps) {
         <div>
           <label
             htmlFor="port"
-            className="block text-sm font-medium text-gray-700 mb-2"
+            className="block text-sm font-medium text-foreground/80 mb-2"
           >
-            Port <span className="text-red-500">*</span>
+            Port <span className="text-destructive">*</span>
           </label>
           <Input
             id="port"
@@ -184,7 +184,7 @@ export function ContextForm({ editingId, onClose }: ContextFormProps) {
         <div>
           <label
             htmlFor="username"
-            className="block text-sm font-medium text-gray-700 mb-2"
+            className="block text-sm font-medium text-foreground/80 mb-2"
           >
             Username
           </label>
@@ -203,7 +203,7 @@ export function ContextForm({ editingId, onClose }: ContextFormProps) {
         <div>
           <label
             htmlFor="password"
-            className="block text-sm font-medium text-gray-700 mb-2"
+            className="block text-sm font-medium text-foreground/80 mb-2"
           >
             Password
           </label>
@@ -231,14 +231,14 @@ export function ContextForm({ editingId, onClose }: ContextFormProps) {
           type="button"
           onClick={onClose}
           disabled={isSubmitting}
-          className="bg-gray-200 hover:bg-gray-300 text-gray-900 disabled:opacity-50"
+          className="bg-muted hover:bg-muted text-foreground disabled:opacity-50"
         >
           Cancel
         </Button>
         <Button
           type="submit"
           disabled={isSubmitting}
-          className="bg-indigo-600 hover:bg-indigo-700 text-white disabled:opacity-50"
+          className="bg-primary hover:bg-primary/90 text-primary-foreground disabled:opacity-50"
         >
           {isSubmitting
             ? 'Saving...'

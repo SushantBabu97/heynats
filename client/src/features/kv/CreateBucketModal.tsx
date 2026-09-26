@@ -99,7 +99,7 @@ export function CreateBucketModal({
           <div>
             <label
               htmlFor="kv-bucket"
-              className="block text-sm font-medium text-gray-700 mb-1"
+              className="block text-sm font-medium text-foreground/80 mb-1"
             >
               Bucket Name *
             </label>
@@ -111,18 +111,18 @@ export function CreateBucketModal({
                 setFormData((prev) => ({ ...prev, bucket: e.target.value }))
               }
               placeholder="my-bucket"
-              className={errors.bucket ? 'border-red-300' : ''}
+              className={errors.bucket ? 'border-destructive/30' : ''}
               disabled={isLoading}
             />
             {errors.bucket && (
-              <p className="text-red-600 text-sm mt-1">{errors.bucket}</p>
+              <p className="text-destructive text-sm mt-1">{errors.bucket}</p>
             )}
           </div>
 
           <div>
             <label
               htmlFor="kv-history"
-              className="block text-sm font-medium text-gray-700 mb-1"
+              className="block text-sm font-medium text-foreground/80 mb-1"
             >
               History (revisions per key)
             </label>
@@ -138,13 +138,13 @@ export function CreateBucketModal({
                   history: Number.parseInt(e.target.value) || 1,
                 }))
               }
-              className={errors.history ? 'border-red-300' : ''}
+              className={errors.history ? 'border-destructive/30' : ''}
               disabled={isLoading}
             />
             {errors.history && (
-              <p className="text-red-600 text-sm mt-1">{errors.history}</p>
+              <p className="text-destructive text-sm mt-1">{errors.history}</p>
             )}
-            <p className="text-gray-500 text-xs mt-1">
+            <p className="text-muted-foreground text-xs mt-1">
               Number of historical values to keep per key (1-64)
             </p>
           </div>
@@ -152,7 +152,7 @@ export function CreateBucketModal({
           <div>
             <label
               htmlFor="kv-ttl"
-              className="block text-sm font-medium text-gray-700 mb-1"
+              className="block text-sm font-medium text-foreground/80 mb-1"
             >
               TTL (Time To Live)
             </label>
@@ -164,13 +164,13 @@ export function CreateBucketModal({
                 setFormData((prev) => ({ ...prev, ttl: e.target.value }))
               }
               placeholder="60s, 5m, 1h30m (optional)"
-              className={errors.ttl ? 'border-red-300' : ''}
+              className={errors.ttl ? 'border-destructive/30' : ''}
               disabled={isLoading}
             />
             {errors.ttl && (
-              <p className="text-red-600 text-sm mt-1">{errors.ttl}</p>
+              <p className="text-destructive text-sm mt-1">{errors.ttl}</p>
             )}
-            <p className="text-gray-500 text-xs mt-1">
+            <p className="text-muted-foreground text-xs mt-1">
               Optional expiration time for keys (Go duration format)
             </p>
           </div>
@@ -187,7 +187,7 @@ export function CreateBucketModal({
             <Button
               type="submit"
               disabled={isLoading}
-              className="bg-indigo-600 hover:bg-indigo-700"
+              className="bg-primary hover:bg-primary/90"
             >
               {isLoading ? 'Creating...' : 'Create Bucket'}
             </Button>

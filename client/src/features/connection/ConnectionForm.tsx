@@ -1,4 +1,4 @@
-import { History } from 'lucide-react';
+import { History, Loader2 } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { Button } from '@/components/ui/button';
 import {
@@ -7,6 +7,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from '@/components/ui/dialog';
+import { Input } from '@/components/ui/input';
 import { ContextManager } from '@/features/connection/contexts/ContextManager';
 import type { NATSContext } from '@/features/connection/contexts/types';
 import { useNATSContexts } from '@/features/connection/contexts/useNATSContexts';
@@ -15,9 +16,14 @@ import type { ConnectionCredentials } from '@/lib/api';
 interface ConnectionFormProps {
   onConnect: (credentials: ConnectionCredentials) => Promise<void>;
   isLoading: boolean;
+  error?: string;
 }
 
-export function ConnectionForm({ onConnect, isLoading }: ConnectionFormProps) {
+export function ConnectionForm({
+  onConnect,
+  isLoading,
+  error,
+}: ConnectionFormProps) {
   const [credentials, setCredentials] = useState<ConnectionCredentials>({
     host: 'localhost',
     port: '4222',
@@ -95,71 +101,68 @@ export function ConnectionForm({ onConnect, isLoading }: ConnectionFormProps) {
 
   return (
     <>
-      <div className="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
-        <div className="max-w-md w-full space-y-8">
-          <div>
-            <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900">
-              Connect to NATS Server
-            </h2>
-            <p className="mt-2 text-center text-sm text-gray-600">
-              Enter your NATS server connection details
+      <main className="min-h-screen flex items-center justify-center bg-background px-4 py-12">
+        <div className="w-full max-w-md">
+          <div className="mb-6 flex flex-col items-center text-center">
+            <img
+              src="/heynats.jpg"
+              alt=""
+              className="mb-4 size-12 rounded-xl shadow-sm"
+            />
+            <h1 className="text-2xl font-semibold tracking-tight">
+              Connect to NATS
+            </h1>
+            <p className="mt-1 text-sm text-muted-foreground">
+              Manage streams, key-value buckets and live messages.
             </p>
           </div>
-          <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
-            <div className="rounded-md shadow-sm space-y-4">
-              <div>
-                <label
-                  htmlFor="host"
-                  className="block text-sm font-medium text-gray-700"
-                >
+
+          <form
+            onSubmit={handleSubmit}
+            className="space-y-5 rounded-xl border bg-card p-6 shadow-sm"
+          >
+            <div className="grid grid-cols-[1fr_7rem] gap-3">
+              <div className="space-y-1.5">
+                <label htmlFor="host" className="text-sm font-medium">
                   Host
                 </label>
-                <input
+                <Input
                   id="host"
-                  name="host"
                   type="text"
                   required
-                  className="mt-1 appearance-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
+                  autoComplete="off"
                   placeholder="localhost"
                   value={credentials.host}
                   onChange={(e) => handleInputChange('host', e.target.value)}
                   disabled={isLoading}
                 />
               </div>
-
-              <div>
-                <label
-                  htmlFor="port"
-                  className="block text-sm font-medium text-gray-700"
-                >
+              <div className="space-y-1.5">
+                <label htmlFor="port" className="text-sm font-medium">
                   Port
                 </label>
-                <input
+                <Input
                   id="port"
-                  name="port"
                   type="text"
                   required
-                  className="mt-1 appearance-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
+                  autoComplete="off"
                   placeholder="4222"
                   value={credentials.port}
                   onChange={(e) => handleInputChange('port', e.target.value)}
                   disabled={isLoading}
                 />
               </div>
-
-              <div>
-                <label
-                  htmlFor="username"
-                  className="block text-sm font-medium text-gray-700"
-                >
-                  Username (optional)
+            </div>
+            <div className="grid gap-3 sm:grid-cols-2">
+              <div className="space-y-1.5">
+                <label htmlFor="username" className="text-sm font-medium">
+                  Username
                 </label>
-                <input
+                <Input
                   id="username"
-                  name="username"
                   type="text"
-                  className="mt-1 appearance-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
-                  placeholder="Username"
+                  autoComplete="username"
+                  placeholder="optional"
                   value={credentials.username}
                   onChange={(e) =>
                     handleInputChange('username', e.target.value)
@@ -167,20 +170,15 @@ export function ConnectionForm({ onConnect, isLoading }: ConnectionFormProps) {
                   disabled={isLoading}
                 />
               </div>
-
-              <div>
-                <label
-                  htmlFor="password"
-                  className="block text-sm font-medium text-gray-700"
-                >
-                  Password (optional)
+              <div className="space-y-1.5">
+                <label htmlFor="password" className="text-sm font-medium">
+                  Password
                 </label>
-                <input
+                <Input
                   id="password"
-                  name="password"
                   type="password"
-                  className="mt-1 appearance-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
-                  placeholder="Password"
+                  autoComplete="current-password"
+                  placeholder="optional"
                   value={credentials.password}
                   onChange={(e) =>
                     handleInputChange('password', e.target.value)
@@ -190,74 +188,54 @@ export function ConnectionForm({ onConnect, isLoading }: ConnectionFormProps) {
               </div>
             </div>
 
-            <div className="flex items-center">
+            <label
+              htmlFor="save-connection"
+              className="flex items-start gap-2 text-sm"
+            >
               <input
                 id="save-connection"
-                name="save-connection"
                 type="checkbox"
                 checked={saveConnection}
                 onChange={(e) => setSaveConnection(e.target.checked)}
                 disabled={isLoading}
-                className="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded"
+                className="mt-0.5 size-4 rounded border-input accent-primary"
               />
-              <label
-                htmlFor="save-connection"
-                className="ml-2 block text-sm text-gray-700"
-              >
-                Save connection information
-              </label>
-            </div>
+              <span>
+                Remember in this browser
+                <span className="block text-xs text-muted-foreground">
+                  Stored unencrypted in local storage, including the password.
+                </span>
+              </span>
+            </label>
 
-            <div className="space-y-3">
-              <Button
-                type="submit"
-                disabled={isLoading}
-                className="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 disabled:opacity-50"
+            {error && (
+              <p
+                role="alert"
+                className="rounded-md border border-destructive/30 bg-destructive/10 px-3 py-2 text-sm text-destructive"
               >
-                {isLoading ? (
-                  <>
-                    <svg
-                      className="animate-spin -ml-1 mr-3 h-5 w-5 text-white"
-                      xmlns="http://www.w3.org/2000/svg"
-                      fill="none"
-                      viewBox="0 0 24 24"
-                      aria-hidden="true"
-                    >
-                      <circle
-                        className="opacity-25"
-                        cx="12"
-                        cy="12"
-                        r="10"
-                        stroke="currentColor"
-                        strokeWidth="4"
-                      />
-                      <path
-                        className="opacity-75"
-                        fill="currentColor"
-                        d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-                      />
-                    </svg>
-                    Connecting...
-                  </>
-                ) : (
-                  'Connect to NATS'
-                )}
+                {error}
+              </p>
+            )}
+
+            <div className="space-y-2">
+              <Button type="submit" disabled={isLoading} className="w-full">
+                {isLoading && <Loader2 className="animate-spin" />}
+                {isLoading ? 'Connecting…' : 'Connect'}
               </Button>
-
-              <button
+              <Button
                 type="button"
+                variant="outline"
                 onClick={() => setShowContextManager(true)}
                 disabled={isLoading}
-                className="group relative w-full flex justify-center items-center gap-2 py-2 px-4 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-card hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 disabled:opacity-50"
-                aria-label="Manage saved contexts"
+                className="w-full"
               >
-                <History size={18} />
-                Manage Contexts
-              </button>
+                <History />
+                Saved connections
+              </Button>
             </div>
           </form>
         </div>
-      </div>
+      </main>
 
       <Dialog open={showContextManager} onOpenChange={setShowContextManager}>
         <DialogContent
@@ -265,7 +243,7 @@ export function ConnectionForm({ onConnect, isLoading }: ConnectionFormProps) {
           className="max-h-[90vh] overflow-y-auto sm:max-w-2xl"
         >
           <DialogHeader>
-            <DialogTitle className="text-2xl">NATS Contexts</DialogTitle>
+            <DialogTitle>Saved connections</DialogTitle>
           </DialogHeader>
           <ContextManager
             onSelectContext={handleSelectContext}
