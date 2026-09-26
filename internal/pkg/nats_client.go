@@ -12,6 +12,7 @@ import (
 	"github.com/dustin/go-humanize"
 	"github.com/nats-io/nats.go"
 	"github.com/nats-io/nats.go/jetstream"
+	"github.com/nats-io/nkeys"
 )
 
 type NATSCredential struct {
@@ -22,6 +23,9 @@ type NATSCredential struct {
 	Port      string `json:"port"`
 	Username  string `json:"username"`
 	Password  string `json:"password"`
+	Token     string `json:"-"`
+	NKeySeed  string `json:"-"`
+	Creds     string `json:"-"`
 }
 
 type ConnectionRequest struct {
@@ -29,6 +33,56 @@ type ConnectionRequest struct {
 	Port     string `json:"port" binding:"required"`
 	Username string `json:"username"`
 	Password string `json:"password"`
+	Token    string `json:"token"`
+	NKeySeed string `json:"nkeySeed"`
+	Creds    string `json:"creds"` // contents of a .creds file (JWT + NKey seed)
+}
+
+func NewNATSCredential(req *ConnectionRequest) *NATSCredential {
+	return &NATSCredential{
+		Host:     req.Host,
+		Port:     req.Port,
+		Username: req.Username,
+		Password: req.Password,
+		Token:    req.Token,
+		NKeySeed: req.NKeySeed,
+		Creds:    req.Creds,
+	}
+}
+
+// authOption picks one auth method; precedence: creds > nkey > token > user/pass.
+func (nc *NATSCredential) authOption() (nats.Option, error) {
+	switch {
+	case nc.Creds != "":
+		jwt, err := nkeys.ParseDecoratedJWT([]byte(nc.Creds))
+		if err != nil {
+			return nil, fmt.Errorf("invalid creds JWT: %w", err)
+		}
+		kp, err := nkeys.ParseDecoratedUserNKey([]byte(nc.Creds))
+		if err != nil {
+			return nil, fmt.Errorf("invalid creds seed: %w", err)
+		}
+		seed, err := kp.Seed()
+		if err != nil {
+			return nil, fmt.Errorf("invalid creds seed: %w", err)
+		}
+		return nats.UserJWTAndSeed(jwt, string(seed)), nil
+	case nc.NKeySeed != "":
+		kp, err := nkeys.FromSeed([]byte(strings.TrimSpace(nc.NKeySeed)))
+		if err != nil {
+			return nil, fmt.Errorf("invalid nkey seed: %w", err)
+		}
+		pub, err := kp.PublicKey()
+		if err != nil {
+			return nil, fmt.Errorf("invalid nkey seed: %w", err)
+		}
+		return nats.Nkey(pub, kp.Sign), nil
+	case nc.Token != "":
+		return nats.Token(nc.Token), nil
+	case nc.Username != "" && nc.Password != "":
+		return nats.UserInfo(nc.Username, nc.Password), nil
+	}
+	return nil, nil
 }
 
 type NATSInfo struct {
@@ -59,8 +113,12 @@ func (nc *NATSCredential) Connect() error {
 	url := fmt.Sprintf("nats://%s:%s", nc.Host, nc.Port)
 
 	// Add authentication if provided
-	if nc.Username != "" && nc.Password != "" {
-		opts = append(opts, nats.UserInfo(nc.Username, nc.Password))
+	auth, err := nc.authOption()
+	if err != nil {
+		return err
+	}
+	if auth != nil {
+		opts = append(opts, auth)
 	}
 
 	// Add connection options with better reconnection handling

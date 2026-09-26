@@ -57,12 +57,7 @@ func (e *HeyNats) RegisterRoutes() {
 		} else {
 			// Create new connection
 			connectionID = uuid.New().String()
-			natsConn = &pkg.NATSCredential{
-				Host:     req.Host,
-				Port:     req.Port,
-				Username: req.Username,
-				Password: req.Password,
-			}
+			natsConn = pkg.NewNATSCredential(&req)
 
 			// Attempt to connect
 			if err := natsConn.Connect(); err != nil {
@@ -202,6 +197,30 @@ func (e *HeyNats) RegisterRoutes() {
 		}
 
 		c.JSON(http.StatusOK, accountInfo)
+	})
+
+	// Dial with the given credentials, then close; no session is stored.
+	api.POST("/test", func(c *gin.Context) {
+		var req pkg.ConnectionRequest
+		if err := c.ShouldBindJSON(&req); err != nil {
+			c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+			return
+		}
+		conn := pkg.NewNATSCredential(&req)
+		if err := conn.Connect(); err != nil {
+			c.JSON(http.StatusUnauthorized, gin.H{"error": "Connection failed", "details": err.Error()})
+			return
+		}
+		defer conn.Disconnect()
+		if err := conn.TestConnection(); err != nil {
+			c.JSON(http.StatusUnauthorized, gin.H{"error": "Connection test failed", "details": err.Error()})
+			return
+		}
+		c.JSON(http.StatusOK, gin.H{
+			"ok":          true,
+			"server_name": conn.Conn.ConnectedServerName(),
+			"version":     conn.Conn.ConnectedServerVersion(),
+		})
 	})
 
 	api.POST("/disconnect", e.middleware.RequireConnection(), func(c *gin.Context) {

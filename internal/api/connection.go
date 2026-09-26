@@ -103,12 +103,7 @@ func (n *NatsConnectionStore) GetOrReconnect(id string) (*pkg.NATSCredential, bo
 	// Connection is dead, attempt to reconnect
 	log.Printf("Reconnecting to NATS server for connection %s", id)
 
-	newConn := &pkg.NATSCredential{
-		Host:     connInfo.Config.Host,
-		Port:     connInfo.Config.Port,
-		Username: connInfo.Config.Username,
-		Password: connInfo.Config.Password,
-	}
+	newConn := pkg.NewNATSCredential(connInfo.Config)
 
 	if err := newConn.Connect(); err != nil {
 		// Remove failed connection
