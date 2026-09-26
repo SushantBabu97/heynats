@@ -86,21 +86,11 @@ func (e *HeyNats) RegisterRoutes() {
 			// Store the connection and set HTTP-only cookie
 			e.conns.AddConnection(connectionID, natsConn, &req)
 
-			// Set HTTP-only cookie with secure settings
-			c.SetCookie(
-				ConnectionIDKey, // name
-				connectionID,    // value
-				3600*24,         // maxAge (24 hours)
-				"/",             // path
-				"",              // domain (empty for current domain)
-				false,           // secure (set to true in production with HTTPS)
-				true,            // httpOnly
-			)
+			setSessionCookie(c, connectionID, 3600*24)
 		}
 		c.JSON(http.StatusOK, gin.H{
-			"message":      "Successfully connected to NATS server",
-			"connected":    true,
-			"connectionId": connectionID,
+			"message":   "Successfully connected to NATS server",
+			"connected": true,
 		})
 	})
 
@@ -220,7 +210,7 @@ func (e *HeyNats) RegisterRoutes() {
 			if cID, ok := connectionID.(string); ok {
 				e.conns.RemoveConnection(cID)
 				// Clear the cookie
-				c.SetCookie(ConnectionIDKey, "", -1, "/", "", false, true)
+				setSessionCookie(c, "", -1)
 			}
 		}
 
