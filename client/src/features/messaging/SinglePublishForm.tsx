@@ -42,7 +42,7 @@ export function SinglePublishForm({ suggestions }: { suggestions: string[] }) {
             value={subject}
             onChange={setSubject}
             suggestions={suggestions}
-            placeholder="e.g., events.user.created"
+            placeholder="e.g., orders.created"
           />
         </div>
 

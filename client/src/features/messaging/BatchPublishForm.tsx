@@ -78,7 +78,7 @@ export function BatchPublishForm({ suggestions }: { suggestions: string[] }) {
                     updateBatchMessage(index, 'subject', value)
                   }
                   suggestions={suggestions}
-                  placeholder="e.g., events.user.created"
+                  placeholder="e.g., orders.created"
                 />
               </div>
               <div>

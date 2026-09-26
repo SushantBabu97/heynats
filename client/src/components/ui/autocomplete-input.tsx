@@ -160,6 +160,12 @@ export function AutocompleteInput({
         disabled={disabled}
         className={`pr-8 ${className}`}
         autoComplete="off"
+        // NATS subjects, not credentials: keep password managers from offering logins here.
+        // (they ignore autoComplete="off"; each honours its own opt-out attribute)
+        data-bwignore="true"
+        data-1p-ignore="true"
+        data-lpignore="true"
+        data-form-type="other"
       />
       <div className="absolute inset-y-0 right-0 flex items-center pr-2 pointer-events-none">
         <svg className="w-4 h-4 text-muted-foreground" fill="none" stroke="currentColor" viewBox="0 0 24 24">

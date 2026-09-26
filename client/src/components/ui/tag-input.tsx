@@ -89,6 +89,11 @@ const TagInput = forwardRef<HTMLDivElement, TagInputProps>(
           ))}
           <input
             id={id}
+            autoComplete="off"
+            data-bwignore="true"
+            data-1p-ignore="true"
+            data-lpignore="true"
+            data-form-type="other"
             value={inputValue}
             onChange={handleInputChange}
             onKeyDown={handleKeyDown}

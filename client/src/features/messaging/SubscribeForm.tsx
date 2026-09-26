@@ -109,7 +109,7 @@ export function SubscribeForm({ subscribe }: { subscribe: SubscribeFn }) {
                 id="sub-subject"
                 value={subject}
                 onChange={setSubject}
-                placeholder="e.g., events.*, user.login"
+                placeholder="e.g., events.*, orders.created"
                 suggestions={subjectsData?.subjects || []}
                 className="w-full"
               />
@@ -252,7 +252,7 @@ export function SubscribeForm({ subscribe }: { subscribe: SubscribeFn }) {
                   id="sub-request-subject"
                   value={requestSubject}
                   onChange={setRequestSubject}
-                  placeholder="e.g., api.*, service.user.*"
+                  placeholder="e.g., api.*, service.orders.*"
                   suggestions={subjectsData?.subjects || []}
                   className="w-full"
                 />

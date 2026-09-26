@@ -46,7 +46,7 @@ export function RequestReplyForm({ suggestions }: { suggestions: string[] }) {
             value={requestSubject}
             onChange={setRequestSubject}
             suggestions={suggestions}
-            placeholder="e.g., api.user.get"
+            placeholder="e.g., api.orders.get"
           />
         </div>
 
